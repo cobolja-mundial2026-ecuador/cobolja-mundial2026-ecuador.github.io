@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stand digital de la República del Ecuador para la feria COBOLJA: mapa de regiones, informe, sabores y juegos.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2'%3E%3Crect width='3' height='1' fill='%23FFDD00'/%3E%3Crect y='1' width='3' height='.5' fill='%230033A0'/%3E%3Crect y='1.5' width='3' height='.5' fill='%23EF3340'/%3E%3C/svg%3E">
+    <title>República del Ecuador | COBOLJA — Feria Educativa & Mundial 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Enlace a tu hoja de estilos en VS Code -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="antialiased selection:bg-yellow-400 selection:text-slate-950">
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<!-- Franja Constitucional Superior -->
+    <div class="franja-tricolor sticky top-0 z-50" aria-hidden="true"></div>
+
+    <nav class="portal-nav sticky top-2 z-40 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 text-white shadow-xl" aria-label="Recorrido del stand">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="flex items-center justify-between min-h-16 gap-3 py-2">
+                <a href="#inicio" class="flex items-center gap-3 group min-w-0">
+                    <div class="w-10 h-7 rounded overflow-hidden shadow-md border border-yellow-400/60 flex flex-col shrink-0" aria-hidden="true">
+                        <div class="h-1/2 bg-[#FFDD00]"></div>
+                        <div class="h-1/4 bg-[#0033A0]"></div>
+                        <div class="h-1/4 bg-[#EF3340]"></div>
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-xs font-bold tracking-widest uppercase text-yellow-400 block leading-none">COBOLJA · Feria 2026</span>
+                        <span class="font-titulo font-extrabold text-base sm:text-lg tracking-tight text-white group-hover:text-yellow-300 transition">Ecuador</span>
+                    </div>
+                </a>
+
+                <div id="nav-links" class="nav-links">
+                    <a href="#mapa-datos"><i class="fa-solid fa-map-location-dot text-yellow-400" aria-hidden="true"></i> Mapa</a>
+                    <a href="#informe-11-secciones"><i class="fa-solid fa-book-open text-blue-400" aria-hidden="true"></i> Informe</a>
+                    <a href="#gastronomia-3d"><i class="fa-solid fa-utensils text-red-400" aria-hidden="true"></i> Sabores</a>
+                    <a href="#multimedia"><i class="fa-solid fa-photo-film text-sky-300" aria-hidden="true"></i> Media</a>
+                    <a href="#zona-arcade"><i class="fa-solid fa-gamepad text-yellow-300" aria-hidden="true"></i> Juegos</a>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="bg-slate-900 border border-yellow-500/40 rounded-xl px-3 py-1.5 flex items-center gap-2 min-h-[44px]" title="Puntaje del visitante">
+                        <i class="fa-solid fa-trophy text-yellow-400 text-sm" aria-hidden="true"></i>
+                        <div class="text-left">
+                            <span id="score" class="font-titulo font-extrabold text-yellow-400 text-sm leading-none" aria-live="polite">0</span>
+                            <span class="text-xs text-slate-400 uppercase block leading-none" id="rango-visitante">Visitante</span>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-audio" onclick="alternarAudio()" class="min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" aria-pressed="true" aria-label="Silenciar efectos de sonido">
+                        <i class="fa-solid fa-volume-high" id="icono-audio" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" onclick="abrirModalQR()" class="min-h-[44px] px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg transition">
+                        <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+                        <span class="hidden sm:inline">QR</span>
+                    </button>
+                    <button type="button" id="btn-menu" class="menu-toggle" aria-expanded="false" aria-controls="nav-links">
+                        <i class="fa-solid fa-bars" id="icono-menu" aria-hidden="true"></i>
+                        <span class="sr-only" id="texto-menu">Abrir menú</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==========================================================================
+         1. CABECERA INICIAL (HERO SECTION) CON CÓDIGO QR INTEGRADO
+         ========================================================================== -->
+    <header id="inicio" class="hero-ecuador text-white relative overflow-hidden border-b-4 border-yellow-400">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-16 lg:py-24">
+            <div class="max-w-3xl">
+                <p class="eyebrow-hero">COBOLJA · Feria 2026 · Mitad del mundo</p>
+                <h1 class="font-titulo text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] mt-4 text-balance">
+                    República del <span class="text-yellow-300">Ecuador</span>
+                </h1>
+                <p class="mt-5 text-lg sm:text-xl text-blue-100/90 max-w-xl leading-relaxed">
+                    Stand digital: mapa real, informe, sabores, videos, audios, galería y juegos.
+                </p>
+                <div class="flex flex-wrap gap-3 mt-8">
+                    <a href="#mapa-datos" class="btn-hero-primary"><i class="fa-solid fa-map" aria-hidden="true"></i> Empezar por el mapa</a>
+                    <a href="#zona-arcade" class="btn-hero-ghost"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> Ir a los juegos</a>
+                    <button type="button" onclick="abrirModalQR()" class="btn-hero-ghost"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR del stand</button>
+                </div>
+            </div>
+        </div>
+        <div class="hero-strip" aria-label="Datos rápidos">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center lg:text-left">
+                <div><span class="hero-strip-label">Población 2026</span><strong class="hero-strip-value">18,45 M</strong></div>
+                <div><span class="hero-strip-label">Territorio</span><strong class="hero-strip-value">256.370 km²</strong></div>
+                <div><span class="hero-strip-label">PIB nominal</span><strong class="hero-strip-value">USD 121,8 mil M</strong></div>
+                <div><span class="hero-strip-label">JJ.OO.</span><strong class="hero-strip-value">10 medallas</strong></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         CONTENIDO PRINCIPAL (<MAIN>)
+         ========================================================================== -->
+
+    <section id="recorrido" class="recorrido-section reveal" data-reveal aria-labelledby="titulo-recorrido">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+            <p class="section-kicker">Recorrido</p>
+            <h2 id="titulo-recorrido" class="section-title">Cinco paradas</h2>
+            <ol class="recorrido-rail list-none p-0 m-0">
+                <li><a href="#mapa-datos"><span>01</span><strong>Mapa</strong></a></li>
+                <li><a href="#informe-11-secciones"><span>02</span><strong>Informe</strong></a></li>
+                <li><a href="#gastronomia-3d"><span>03</span><strong>Sabores</strong></a></li>
+                <li><a href="#multimedia"><span>04</span><strong>Media</strong></a></li>
+                <li><a href="#zona-arcade"><span>05</span><strong>Juegos</strong></a></li>
+            </ol>
+        </div>
+    </section>
+
+    <main id="contenido" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+        <!-- ======================================================================
+             2. EXPLORACIÓN GEOGRÁFICA (MAPA VECTORIAL INTERACTIVO) Y 10 DATOS
+             ====================================================================== -->
+        <section id="mapa-datos" class="scroll-mt-24">
+            <div class="reveal" data-reveal>
+                <p class="section-kicker">Parada 1</p>
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+                    <h2 class="section-title">Explora el mapa</h2>
+                    <p class="section-lead">Toca una provincia o un hito. El mapa real muestra las 24 provincias.</p>
+                </div>
+                <div class="map-progress" id="map-progress" aria-live="polite">
+                    <div class="map-progress-bar"><span id="map-progress-fill"></span></div>
+                    <p id="map-progress-label">0 / 4 regiones exploradas</p>
+                </div>
+            </div>
+
+            <!-- Grid: Mapa Interactivo SVG (Izquierda) + Panel de Información Regional (Derecha) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                
+                <!-- Mapa Vectorial Interactivo del Ecuador -->
+                <div class="lg:col-span-7 map-stage reveal" data-reveal>
+                    <div class="flex flex-wrap items-center justify-between gap-2 z-10 mb-2">
+                        <div>
+                            <h3 class="font-titulo font-bold text-lg text-yellow-300">Mapa interactivo</h3>
+                            <p class="text-xs text-slate-400">24 provincias · 4 regiones · línea equinoccial</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2" role="group" aria-label="Regiones">
+                            <button type="button" onclick="seleccionarRegionMapa('costa')" id="btn-reg-costa" class="region-chip region-chip-activa" aria-pressed="true">Costa</button>
+                            <button type="button" onclick="seleccionarRegionMapa('sierra')" id="btn-reg-sierra" class="region-chip" aria-pressed="false">Sierra</button>
+                            <button type="button" onclick="seleccionarRegionMapa('amazonia')" id="btn-reg-amazonia" class="region-chip" aria-pressed="false">Amazonía</button>
+                            <button type="button" onclick="seleccionarRegionMapa('galapagos')" id="btn-reg-galapagos" class="region-chip" aria-pressed="false">Galápagos</button>
+                        </div>
+                    </div>
+
+                    <!-- Lienzo SVG del Mapa de Ecuador -->
+                    <div class="relative flex items-center justify-center my-2 map-canvas">
+                        <div id="map-tooltip" class="map-tooltip" role="tooltip" hidden></div>
+                        <svg viewBox="-1202.0 -280.0 13087.0 11410.0" class="mapa-ecuador-svg w-full h-auto max-h-[560px] select-none" role="img" aria-label="Mapa interactivo del Ecuador por provincias y regiones">
+  <defs>
+    <linearGradient id="oceano" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071126"/>
+      <stop offset="100%" stop-color="#0B2A5B"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="-1202.0" y="-280.0" width="13087.0" height="11410.0" fill="url(#oceano)" rx="80"></rect>
+  <line x1="-1162.0" y1="2751.0" x2="11845.0" y2="2751.0" stroke="#EF3340" stroke-width="10" stroke-dasharray="40 28" opacity="0.85"></line>
+  <text x="-1142.0" y="2721.0" fill="#FCA5A5" font-size="180" font-weight="700" font-family="Sora, Figtree, sans-serif">PARALELO 0° · LÍNEA EQUINOCCIAL</text>
+  <g id="provincias-ecuador" class="provincias-layer">
+    <path class="prov-svg" id="prov-guayas" data-region="costa" data-provincia="Guayas" tabindex="0" role="button" aria-label="Provincia Guayas" fill="#F59E0B" stroke="#0B1938" stroke-width="18" d="M3310.0,7459.0L3283.0,7497.0L3222.0,7491.0L3160.0,7519.0L3055.0,7493.0L3061.0,7194.0L3148.0,6999.0L3404.0,6895.0L3480.0,6897.0L3597.0,6969.0L3669.0,6987.0L3627.0,7049.0L3542.0,7085.0L3466.0,7198.0L3395.0,7335.0L3345.0,7371.0L3310.0,7459.0ZM3787.0,6850.0L3713.0,6873.0L3705.0,6835.0L3764.0,6679.0L3810.0,6597.0L3828.0,6641.0L3890.0,6692.0L3854.0,6745.0L3795.0,6776.0L3787.0,6850.0ZM3680.0,7539.0L3716.0,7472.0L3699.0,7442.0L3785.0,7137.0L3841.0,7027.0L3883.0,6890.0L3953.0,6809.0L3970.0,6739.0L3931.0,6595.0L3875.0,6596.0L3841.0,6558.0L3777.0,6414.0L3763.0,6192.0L3777.0,6132.0L3729.0,6030.0L3739.0,5962.0L3813.0,5914.0L3834.0,5856.0L3902.0,5788.0L3791.0,5853.0L3786.0,5898.0L3706.0,5921.0L3674.0,6042.0L3682.0,6139.0L3733.0,6229.0L3737.0,6280.0L3711.0,6607.0L3693.0,6676.0L3634.0,6745.0L3532.0,6798.0L3431.0,6771.0L3388.0,6723.0L3462.0,6663.0L3485.0,6602.0L3548.0,6583.0L3616.0,6609.0L3542.0,6548.0L3447.0,6577.0L3445.0,6516.0L3490.0,6383.0L3543.0,6364.0L3590.0,6297.0L3534.0,6330.0L3484.0,6329.0L3450.0,6362.0L3376.0,6550.0L3261.0,6710.0L3209.0,6767.0L3097.0,6837.0L3048.0,6797.0L3032.0,6872.0L3084.0,6923.0L3090.0,6993.0L3034.0,7003.0L2962.0,6975.0L2834.0,6871.0L2713.0,6819.0L2587.0,6670.0L2709.0,6555.0L2810.0,6480.0L2955.0,6445.0L3037.0,6398.0L3113.0,6284.0L3140.0,6114.0L3144.0,5965.0L3078.0,5865.0L3017.0,5809.0L2918.0,5748.0L2784.0,5716.0L2696.0,5663.0L2648.0,5585.0L2632.0,5511.0L2751.0,5508.0L2785.0,5426.0L2848.0,5337.0L2963.0,5247.0L2998.0,5271.0L3041.0,5245.0L3108.0,5249.0L3140.0,5225.0L3119.0,5132.0L3052.0,5098.0L3026.0,5052.0L3130.0,5038.0L3195.0,4973.0L3165.0,4906.0L3191.0,4809.0L3275.0,4773.0L3296.0,4659.0L3433.0,4554.0L3518.0,4314.0L3612.0,4338.0L3668.0,4315.0L3755.0,4246.0L3847.0,4120.0L3854.0,4069.0L3977.0,3897.0L4042.0,3863.0L4151.0,3845.0L4293.0,3824.0L4324.0,3863.0L4289.0,3991.0L4298.0,4029.0L4249.0,4075.0L4225.0,4165.0L4159.0,4208.0L4097.0,4282.0L4059.0,4290.0L4037.0,4344.0L3950.0,4408.0L3933.0,4493.0L3838.0,4671.0L3765.0,4769.0L3737.0,4845.0L3725.0,4971.0L3750.0,5062.0L3751.0,5175.0L3890.0,5247.0L4003.0,5423.0L4099.0,5623.0L4196.0,5622.0L4282.0,5590.0L4349.0,5591.0L4517.0,5691.0L4588.0,5752.0L4714.0,5962.0L4800.0,6040.0L4908.0,6053.0L4946.0,6026.0L4983.0,6055.0L4978.0,6124.0L4936.0,6190.0L4800.0,6255.0L4601.0,6291.0L4477.0,6387.0L4478.0,6490.0L4327.0,6614.0L4369.0,6652.0L4457.0,6617.0L4491.0,6679.0L4478.0,6715.0L4399.0,6785.0L4028.0,7169.0L4006.0,7252.0L4021.0,7391.0L3929.0,7502.0L3909.0,7571.0L3823.0,7547.0L3680.0,7539.0Z"></path>
+<path class="prov-svg" id="prov-esmeraldas" data-region="costa" data-provincia="Esmeraldas" tabindex="0" role="button" aria-label="Provincia Esmeraldas" fill="#F59E0B" stroke="#0B1938" stroke-width="18" d="M5371.0,274.0L5348.0,318.0L5308.0,299.0L5273.0,334.0L5213.0,280.0L5233.0,212.0L5366.0,101.0L5379.0,205.0L5371.0,274.0ZM4584.0,2336.0L4551.0,2377.0L4438.0,2416.0L4486.0,2481.0L4467.0,2499.0L4366.0,2458.0L4192.0,2438.0L4153.0,2338.0L4239.0,2219.0L4137.0,2154.0L4108.0,2170.0L4083.0,2119.0L4011.0,2089.0L4090.0,1992.0L4084.0,1963.0L3989.0,1891.0L4020.0,1840.0L3985.0,1791.0L3945.0,1785.0L3821.0,1872.0L3690.0,1881.0L3632.0,1974.0L3572.0,1967.0L3507.0,1834.0L3518.0,1778.0L3445.0,1676.0L3433.0,1571.0L3478.0,1474.0L3445.0,1363.0L3354.0,1317.0L3323.0,1245.0L3323.0,1173.0L3378.0,1041.0L3428.0,1002.0L3482.0,1019.0L3563.0,1007.0L3597.0,976.0L3740.0,940.0L3857.0,864.0L3903.0,807.0L4045.0,757.0L4089.0,726.0L4099.0,759.0L4065.0,864.0L4124.0,934.0L4102.0,878.0L4114.0,779.0L4159.0,738.0L4232.0,759.0L4312.0,714.0L4427.0,610.0L4582.0,610.0L4739.0,575.0L4780.0,597.0L4951.0,547.0L5078.0,379.0L5145.0,380.0L5199.0,441.0L5214.0,530.0L5272.0,456.0L5277.0,382.0L5320.0,322.0L5382.0,319.0L5390.0,276.0L5446.0,240.0L5412.0,217.0L5421.0,152.0L5484.0,89.0L5490.0,0.0L5590.0,68.0L5675.0,157.0L5709.0,223.0L5768.0,282.0L5874.0,287.0L5929.0,401.0L5979.0,385.0L6084.0,416.0L6055.0,442.0L6057.0,561.0L5996.0,695.0L5989.0,791.0L6008.0,851.0L6146.0,946.0L6132.0,1086.0L6028.0,1125.0L6117.0,1344.0L6177.0,1427.0L6152.0,1496.0L6036.0,1509.0L5982.0,1547.0L5833.0,1730.0L5751.0,1788.0L5676.0,1737.0L5438.0,1703.0L5366.0,1764.0L5349.0,1811.0L5295.0,1859.0L5222.0,1964.0L5183.0,1964.0L5133.0,1918.0L4955.0,1880.0L4825.0,1883.0L4613.0,2012.0L4610.0,2046.0L4681.0,2102.0L4584.0,2336.0Z"></path>
+<path class="prov-svg" id="prov-carchi" data-region="sierra" data-provincia="Carchi" tabindex="0" role="button" aria-label="Provincia Carchi" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M6084.0,416.0L6263.0,606.0L6336.0,652.0L6471.0,697.0L6692.0,863.0L6763.0,897.0L6884.0,902.0L7051.0,959.0L7060.0,1013.0L7153.0,1051.0L7222.0,1045.0L7357.0,994.0L7399.0,994.0L7450.0,1033.0L7461.0,1155.0L7497.0,1208.0L7608.0,1284.0L7670.0,1308.0L7720.0,1301.0L7653.0,1355.0L7462.0,1333.0L7448.0,1364.0L7487.0,1415.0L7471.0,1451.0L7394.0,1511.0L7253.0,1703.0L7256.0,1768.0L7211.0,1832.0L7141.0,1774.0L6895.0,1625.0L6771.0,1600.0L6674.0,1563.0L6646.0,1509.0L6645.0,1415.0L6610.0,1318.0L6499.0,1157.0L6406.0,1064.0L6265.0,973.0L6146.0,946.0L6008.0,851.0L5989.0,791.0L5996.0,695.0L6057.0,561.0L6055.0,442.0L6084.0,416.0Z"></path>
+<path class="prov-svg" id="prov-imbabura" data-region="sierra" data-provincia="Imbabura" tabindex="0" role="button" aria-label="Provincia Imbabura" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M6146.0,946.0L6265.0,973.0L6406.0,1064.0L6499.0,1157.0L6610.0,1318.0L6645.0,1415.0L6646.0,1509.0L6674.0,1563.0L6771.0,1600.0L6895.0,1625.0L7141.0,1774.0L7211.0,1832.0L7158.0,1900.0L7175.0,1961.0L7111.0,2041.0L7048.0,2080.0L6989.0,2143.0L6764.0,2082.0L6599.0,2178.0L6512.0,2190.0L6434.0,2161.0L6353.0,2097.0L6277.0,2134.0L6287.0,2068.0L6269.0,2017.0L6194.0,2001.0L5790.0,2052.0L5577.0,2012.0L5431.0,2028.0L5283.0,2059.0L5211.0,2029.0L5183.0,1964.0L5222.0,1964.0L5295.0,1859.0L5349.0,1811.0L5366.0,1764.0L5438.0,1703.0L5676.0,1737.0L5751.0,1788.0L5833.0,1730.0L5982.0,1547.0L6036.0,1509.0L6152.0,1496.0L6177.0,1427.0L6117.0,1344.0L6028.0,1125.0L6132.0,1086.0L6146.0,946.0Z"></path>
+<path class="prov-svg" id="prov-sucumbios" data-region="amazonia" data-provincia="Sucumbíos" tabindex="0" role="button" aria-label="Provincia Sucumbíos" fill="#10B981" stroke="#0B1938" stroke-width="18" d="M6989.0,2143.0L7048.0,2080.0L7111.0,2041.0L7175.0,1961.0L7158.0,1900.0L7211.0,1832.0L7256.0,1768.0L7253.0,1703.0L7394.0,1511.0L7471.0,1451.0L7487.0,1415.0L7448.0,1364.0L7462.0,1333.0L7653.0,1355.0L7720.0,1301.0L7798.0,1318.0L7821.0,1399.0L7832.0,1576.0L7872.0,1726.0L7977.0,1783.0L8158.0,1819.0L8241.0,1851.0L8393.0,1812.0L8452.0,1826.0L8517.0,1899.0L8685.0,1931.0L8768.0,2001.0L8818.0,2011.0L8936.0,1993.0L9044.0,2021.0L9061.0,1946.0L9202.0,1971.0L9299.0,2039.0L9568.0,2005.0L9598.0,1985.0L9581.0,1873.0L9584.0,1736.0L9671.0,1728.0L9762.0,1641.0L9798.0,1643.0L9911.0,1728.0L10046.0,1739.0L10088.0,1821.0L10201.0,1801.0L10224.0,1846.0L10338.0,1989.0L10355.0,2043.0L10416.0,2109.0L10649.0,2272.0L10787.0,2291.0L10893.0,2270.0L11023.0,2350.0L11103.0,2421.0L11276.0,2520.0L11371.0,2538.0L11511.0,2596.0L11407.0,2667.0L11308.0,2661.0L11218.0,2687.0L11098.0,2623.0L10908.0,2603.0L10907.0,2670.0L10939.0,2720.0L11008.0,2723.0L11168.0,2833.0L11222.0,3024.0L11254.0,3096.0L11353.0,3204.0L11392.0,3205.0L11530.0,3303.0L11555.0,3365.0L11558.0,3470.0L11539.0,3501.0L11499.0,3460.0L11456.0,3467.0L11341.0,3432.0L11315.0,3377.0L11227.0,3348.0L11124.0,3348.0L11039.0,3304.0L11015.0,3251.0L10879.0,3183.0L10782.0,3189.0L10719.0,3129.0L10578.0,3152.0L10515.0,3121.0L10429.0,3112.0L10381.0,3129.0L10375.0,3173.0L10398.0,3363.0L10301.0,3349.0L10149.0,3250.0L10117.0,3161.0L9956.0,3150.0L9825.0,3163.0L9703.0,3208.0L9594.0,3276.0L9565.0,3234.0L9470.0,3230.0L9349.0,3147.0L9313.0,3098.0L9235.0,3131.0L9193.0,3075.0L9078.0,2991.0L8935.0,2795.0L8733.0,2547.0L8641.0,2533.0L8546.0,2582.0L8468.0,2587.0L8343.0,2555.0L8277.0,2571.0L8111.0,2494.0L8085.0,2513.0L7977.0,2652.0L7835.0,2625.0L7839.0,2516.0L7804.0,2454.0L7659.0,2531.0L7593.0,2583.0L7505.0,2551.0L7337.0,2547.0L7283.0,2526.0L7261.0,2437.0L7271.0,2388.0L7180.0,2361.0L7102.0,2275.0L6946.0,2213.0L6989.0,2143.0Z"></path>
+<path class="prov-svg" id="prov-santa-elena" data-region="costa" data-provincia="Santa Elena" tabindex="0" role="button" aria-label="Provincia Santa Elena" fill="#F59E0B" stroke="#0B1938" stroke-width="18" d="M2587.0,6670.0L2534.0,6608.0L2394.0,6479.0L2290.0,6437.0L2235.0,6439.0L2114.0,6396.0L2043.0,6333.0L1959.0,6315.0L1896.0,6179.0L1810.0,6105.0L1791.0,6060.0L1899.0,6092.0L1929.0,6145.0L2032.0,6121.0L2118.0,6052.0L2184.0,6019.0L2245.0,5952.0L2257.0,5852.0L2215.0,5735.0L2265.0,5701.0L2265.0,5618.0L2218.0,5439.0L2182.0,5337.0L2121.0,5236.0L2234.0,5221.0L2356.0,5227.0L2448.0,5200.0L2528.0,5207.0L2561.0,5234.0L2592.0,5321.0L2553.0,5439.0L2570.0,5490.0L2632.0,5511.0L2648.0,5585.0L2696.0,5663.0L2784.0,5716.0L2918.0,5748.0L3017.0,5809.0L3078.0,5865.0L3144.0,5965.0L3140.0,6114.0L3113.0,6284.0L3037.0,6398.0L2955.0,6445.0L2810.0,6480.0L2709.0,6555.0L2587.0,6670.0Z"></path>
+<path class="prov-svg" id="prov-santo-domingo-de-los-tsachilas" data-region="costa" data-provincia="Sto. Domingo" tabindex="0" role="button" aria-label="Provincia Sto. Domingo" fill="#F59E0B" stroke="#0B1938" stroke-width="18" d="M4192.0,2438.0L4366.0,2458.0L4467.0,2499.0L4486.0,2481.0L4438.0,2416.0L4551.0,2377.0L4584.0,2336.0L4676.0,2403.0L5020.0,2414.0L5031.0,2553.0L5332.0,2542.0L5385.0,2596.0L5546.0,2681.0L5632.0,2777.0L5600.0,2894.0L5385.0,2916.0L5334.0,2996.0L5272.0,3032.0L5253.0,3080.0L5189.0,3129.0L5144.0,3223.0L5207.0,3274.0L5210.0,3315.0L5159.0,3342.0L5138.0,3392.0L5079.0,3383.0L5054.0,3344.0L4978.0,3350.0L4853.0,3474.0L4687.0,3585.0L4606.0,3563.0L4590.0,3518.0L4612.0,3462.0L4595.0,3386.0L4621.0,3347.0L4567.0,3333.0L4387.0,3330.0L4435.0,3244.0L4440.0,3193.0L4511.0,3060.0L4501.0,2759.0L4481.0,2711.0L4359.0,2687.0L4272.0,2594.0L4186.0,2535.0L4172.0,2483.0L4192.0,2438.0Z"></path>
+<path class="prov-svg" id="prov-azuay" data-region="sierra" data-provincia="Azuay" tabindex="0" role="button" aria-label="Provincia Azuay" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M3909.0,7571.0L3929.0,7502.0L4021.0,7391.0L4006.0,7252.0L4028.0,7169.0L4399.0,6785.0L4478.0,6715.0L4491.0,6679.0L4457.0,6617.0L4514.0,6620.0L4560.0,6657.0L4590.0,6723.0L4700.0,6770.0L4746.0,6842.0L4896.0,6997.0L4938.0,7018.0L4964.0,6965.0L5075.0,6875.0L5116.0,6896.0L5212.0,7005.0L5280.0,7064.0L5315.0,7157.0L5403.0,7172.0L5501.0,7169.0L5515.0,7101.0L5558.0,7039.0L5546.0,6992.0L5593.0,6939.0L5662.0,6945.0L5752.0,6881.0L5834.0,6848.0L5857.0,6788.0L5935.0,6728.0L5961.0,6730.0L5959.0,6814.0L5987.0,6833.0L6044.0,6753.0L6102.0,6744.0L6166.0,6795.0L6151.0,6869.0L5963.0,6964.0L5878.0,7094.0L5918.0,7163.0L5914.0,7219.0L5834.0,7351.0L5778.0,7480.0L5752.0,7618.0L5666.0,7699.0L5544.0,7751.0L5301.0,7949.0L5298.0,8008.0L5117.0,8136.0L5091.0,8190.0L5116.0,8263.0L5100.0,8334.0L5109.0,8394.0L5074.0,8520.0L5021.0,8535.0L4990.0,8492.0L4986.0,8402.0L4892.0,8218.0L4761.0,8239.0L4688.0,8177.0L4686.0,8090.0L4638.0,8037.0L4509.0,8039.0L4421.0,8015.0L4313.0,7989.0L4155.0,8018.0L4096.0,8016.0L4076.0,7980.0L4126.0,7952.0L4182.0,7829.0L4180.0,7735.0L4116.0,7680.0L3909.0,7571.0Z"></path>
+<path class="prov-svg" id="prov-el-oro" data-region="costa" data-provincia="El Oro" tabindex="0" role="button" aria-label="Provincia El Oro" fill="#F59E0B" stroke="#0B1938" stroke-width="18" d="M3909.0,7571.0L4116.0,7680.0L4180.0,7735.0L4182.0,7829.0L4126.0,7952.0L4076.0,7980.0L4096.0,8016.0L4155.0,8018.0L4313.0,7989.0L4421.0,8015.0L4423.0,8163.0L4473.0,8200.0L4472.0,8239.0L4414.0,8306.0L4372.0,8483.0L4380.0,8532.0L4444.0,8470.0L4489.0,8460.0L4552.0,8507.0L4575.0,8563.0L4564.0,8615.0L4511.0,8689.0L4524.0,8734.0L4491.0,8799.0L4439.0,8818.0L4333.0,8795.0L4227.0,8792.0L4154.0,8730.0L4062.0,8777.0L4001.0,8844.0L3940.0,8864.0L3830.0,8870.0L3742.0,8849.0L3580.0,8865.0L3480.0,8913.0L3373.0,8936.0L3224.0,8944.0L3184.0,8905.0L3177.0,8844.0L3128.0,8756.0L3123.0,8607.0L3138.0,8524.0L3123.0,8458.0L3081.0,8421.0L3097.0,8327.0L3044.0,8279.0L3054.0,8179.0L2928.0,8124.0L2927.0,8082.0L2993.0,8079.0L3019.0,8001.0L3066.0,8047.0L3211.0,8013.0L3275.0,8013.0L3321.0,7961.0L3403.0,7805.0L3441.0,7813.0L3436.0,7933.0L3489.0,7869.0L3583.0,7794.0L3617.0,7656.0L3680.0,7539.0L3823.0,7547.0L3909.0,7571.0Z"></path>
+<path class="prov-svg" id="prov-loja" data-region="sierra" data-provincia="Loja" tabindex="0" role="button" aria-label="Provincia Loja" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M4421.0,8015.0L4509.0,8039.0L4638.0,8037.0L4686.0,8090.0L4688.0,8177.0L4761.0,8239.0L4892.0,8218.0L4986.0,8402.0L4990.0,8492.0L5021.0,8535.0L4951.0,8603.0L4944.0,8649.0L4866.0,8694.0L4914.0,8808.0L4983.0,8907.0L4992.0,8951.0L4957.0,9059.0L4963.0,9201.0L4936.0,9321.0L4939.0,9402.0L5012.0,9467.0L5021.0,9589.0L4999.0,9834.0L4917.0,9948.0L4844.0,9994.0L4723.0,9947.0L4653.0,10011.0L4651.0,10109.0L4630.0,10170.0L4499.0,10358.0L4411.0,10443.0L4367.0,10358.0L4348.0,10258.0L4298.0,10186.0L4339.0,10081.0L4334.0,10041.0L4211.0,9991.0L4126.0,9907.0L4079.0,9884.0L3846.0,9961.0L3784.0,9951.0L3664.0,9816.0L3532.0,9799.0L3452.0,9750.0L3367.0,9665.0L3265.0,9621.0L3156.0,9646.0L3097.0,9766.0L2940.0,9894.0L2855.0,9945.0L2812.0,9947.0L2708.0,9894.0L2677.0,9810.0L2900.0,9515.0L2919.0,9478.0L2768.0,9509.0L2709.0,9503.0L2673.0,9428.0L2679.0,9365.0L2634.0,9284.0L2690.0,9142.0L2746.0,9115.0L2815.0,9115.0L2921.0,9164.0L2988.0,9153.0L3065.0,9050.0L3197.0,8989.0L3224.0,8944.0L3373.0,8936.0L3480.0,8913.0L3580.0,8865.0L3742.0,8849.0L3830.0,8870.0L3940.0,8864.0L4001.0,8844.0L4062.0,8777.0L4154.0,8730.0L4227.0,8792.0L4333.0,8795.0L4439.0,8818.0L4491.0,8799.0L4524.0,8734.0L4511.0,8689.0L4564.0,8615.0L4575.0,8563.0L4552.0,8507.0L4489.0,8460.0L4444.0,8470.0L4380.0,8532.0L4372.0,8483.0L4414.0,8306.0L4472.0,8239.0L4473.0,8200.0L4423.0,8163.0L4421.0,8015.0Z"></path>
+<path class="prov-svg" id="prov-zamora-chinchipe" data-region="amazonia" data-provincia="Zamora Ch." tabindex="0" role="button" aria-label="Provincia Zamora Ch." fill="#10B981" stroke="#0B1938" stroke-width="18" d="M5021.0,8535.0L5074.0,8520.0L5109.0,8394.0L5100.0,8334.0L5116.0,8263.0L5091.0,8190.0L5117.0,8136.0L5298.0,8008.0L5439.0,8108.0L5451.0,8153.0L5409.0,8222.0L5425.0,8302.0L5495.0,8386.0L5728.0,8441.0L5779.0,8378.0L5914.0,8378.0L6038.0,8357.0L6250.0,8358.0L6201.0,8500.0L6208.0,8611.0L6165.0,8628.0L6185.0,8766.0L6175.0,8799.0L6089.0,8864.0L6059.0,8929.0L6042.0,9065.0L5950.0,9098.0L5925.0,9143.0L5926.0,9244.0L5908.0,9318.0L5804.0,9532.0L5773.0,9639.0L5728.0,9700.0L5743.0,9825.0L5804.0,9882.0L5748.0,9980.0L5743.0,10077.0L5664.0,10146.0L5509.0,10207.0L5438.0,10247.0L5361.0,10317.0L5310.0,10406.0L5311.0,10453.0L5357.0,10569.0L5339.0,10602.0L5222.0,10619.0L5173.0,10764.0L5080.0,10850.0L5012.0,10797.0L4950.0,10802.0L4835.0,10771.0L4676.0,10765.0L4613.0,10668.0L4565.0,10646.0L4521.0,10573.0L4428.0,10510.0L4411.0,10443.0L4499.0,10358.0L4630.0,10170.0L4651.0,10109.0L4653.0,10011.0L4723.0,9947.0L4844.0,9994.0L4917.0,9948.0L4999.0,9834.0L5021.0,9589.0L5012.0,9467.0L4939.0,9402.0L4936.0,9321.0L4963.0,9201.0L4957.0,9059.0L4992.0,8951.0L4983.0,8907.0L4914.0,8808.0L4866.0,8694.0L4944.0,8649.0L4951.0,8603.0L5021.0,8535.0Z"></path>
+<path class="prov-svg" id="prov-cañar" data-region="sierra" data-provincia="Cañar" tabindex="0" role="button" aria-label="Provincia Cañar" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M5961.0,6730.0L5935.0,6728.0L5857.0,6788.0L5834.0,6848.0L5752.0,6881.0L5662.0,6945.0L5593.0,6939.0L5546.0,6992.0L5558.0,7039.0L5515.0,7101.0L5501.0,7169.0L5403.0,7172.0L5315.0,7157.0L5280.0,7064.0L5212.0,7005.0L5116.0,6896.0L5075.0,6875.0L4964.0,6965.0L4938.0,7018.0L4896.0,6997.0L4746.0,6842.0L4700.0,6770.0L4590.0,6723.0L4560.0,6657.0L4514.0,6620.0L4457.0,6617.0L4369.0,6652.0L4327.0,6614.0L4478.0,6490.0L4477.0,6387.0L4601.0,6291.0L4800.0,6255.0L4936.0,6190.0L4978.0,6124.0L4984.0,6168.0L5096.0,6287.0L5150.0,6362.0L5291.0,6450.0L5431.0,6438.0L5490.0,6408.0L5557.0,6345.0L5663.0,6316.0L5878.0,6292.0L5910.0,6307.0L5912.0,6326.0L6040.0,6386.0L6076.0,6423.0L6072.0,6553.0L6055.0,6647.0L5984.0,6737.0L5961.0,6730.0Z"></path>
+<path class="prov-svg" id="prov-bolivar" data-region="sierra" data-provincia="Bolívar" tabindex="0" role="button" aria-label="Provincia Bolívar" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M4978.0,6124.0L4983.0,6055.0L4946.0,6026.0L4908.0,6053.0L4800.0,6040.0L4851.0,5904.0L4840.0,5867.0L4728.0,5703.0L4761.0,5651.0L4811.0,5483.0L4778.0,5424.0L4775.0,5337.0L4693.0,5208.0L4622.0,5161.0L4704.0,5083.0L4748.0,5084.0L4776.0,5008.0L4660.0,4885.0L4656.0,4720.0L4705.0,4660.0L4619.0,4588.0L4560.0,4646.0L4546.0,4612.0L4645.0,4477.0L4725.0,4439.0L4803.0,4434.0L4927.0,4372.0L5061.0,4359.0L5142.0,4424.0L5216.0,4450.0L5283.0,4440.0L5378.0,4384.0L5427.0,4398.0L5390.0,4465.0L5383.0,4551.0L5342.0,4658.0L5329.0,4766.0L5402.0,4871.0L5414.0,4944.0L5449.0,5009.0L5437.0,5216.0L5384.0,5311.0L5325.0,5364.0L5241.0,5378.0L5191.0,5430.0L5184.0,5535.0L5200.0,5644.0L5155.0,5860.0L5174.0,5930.0L5130.0,6015.0L5069.0,6076.0L4978.0,6124.0Z"></path>
+<path class="prov-svg" id="prov-cotopaxi" data-region="sierra" data-provincia="Cotopaxi" tabindex="0" role="button" aria-label="Provincia Cotopaxi" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M5427.0,4398.0L5378.0,4384.0L5283.0,4440.0L5216.0,4450.0L5142.0,4424.0L5061.0,4359.0L4927.0,4372.0L4803.0,4434.0L4725.0,4439.0L4713.0,4385.0L4653.0,4301.0L4684.0,4101.0L4686.0,4012.0L4708.0,3953.0L4779.0,3879.0L4825.0,3795.0L4883.0,3750.0L4919.0,3692.0L5035.0,3419.0L5054.0,3344.0L5079.0,3383.0L5138.0,3392.0L5159.0,3342.0L5210.0,3315.0L5207.0,3274.0L5144.0,3223.0L5189.0,3129.0L5253.0,3080.0L5272.0,3032.0L5334.0,2996.0L5358.0,3049.0L5466.0,3208.0L5490.0,3283.0L5621.0,3378.0L5696.0,3519.0L5864.0,3434.0L5896.0,3461.0L5959.0,3431.0L6065.0,3432.0L6112.0,3451.0L6223.0,3567.0L6209.0,3628.0L6238.0,3785.0L6195.0,3878.0L6184.0,3942.0L6147.0,3994.0L6232.0,4037.0L6183.0,4079.0L6159.0,4173.0L6123.0,4224.0L6060.0,4237.0L5992.0,4198.0L5940.0,4216.0L5932.0,4262.0L5843.0,4286.0L5747.0,4338.0L5595.0,4320.0L5521.0,4340.0L5427.0,4398.0Z"></path>
+<path class="prov-svg" id="prov-los-rios" data-region="costa" data-provincia="Los Ríos" tabindex="0" role="button" aria-label="Provincia Los Ríos" fill="#F59E0B" stroke="#0B1938" stroke-width="18" d="M5054.0,3344.0L5035.0,3419.0L4919.0,3692.0L4883.0,3750.0L4825.0,3795.0L4779.0,3879.0L4708.0,3953.0L4686.0,4012.0L4684.0,4101.0L4653.0,4301.0L4713.0,4385.0L4725.0,4439.0L4645.0,4477.0L4546.0,4612.0L4560.0,4646.0L4619.0,4588.0L4705.0,4660.0L4656.0,4720.0L4660.0,4885.0L4776.0,5008.0L4748.0,5084.0L4704.0,5083.0L4622.0,5161.0L4693.0,5208.0L4775.0,5337.0L4778.0,5424.0L4811.0,5483.0L4761.0,5651.0L4728.0,5703.0L4840.0,5867.0L4851.0,5904.0L4800.0,6040.0L4714.0,5962.0L4588.0,5752.0L4517.0,5691.0L4349.0,5591.0L4282.0,5590.0L4196.0,5622.0L4099.0,5623.0L4003.0,5423.0L3890.0,5247.0L3751.0,5175.0L3750.0,5062.0L3725.0,4971.0L3737.0,4845.0L3765.0,4769.0L3838.0,4671.0L3933.0,4493.0L3950.0,4408.0L4037.0,4344.0L4059.0,4290.0L4097.0,4282.0L4159.0,4208.0L4225.0,4165.0L4249.0,4075.0L4298.0,4029.0L4289.0,3991.0L4324.0,3863.0L4293.0,3824.0L4151.0,3845.0L4184.0,3776.0L4207.0,3660.0L4237.0,3612.0L4287.0,3587.0L4365.0,3408.0L4387.0,3330.0L4567.0,3333.0L4621.0,3347.0L4595.0,3386.0L4612.0,3462.0L4590.0,3518.0L4606.0,3563.0L4687.0,3585.0L4853.0,3474.0L4978.0,3350.0L5054.0,3344.0Z"></path>
+<path class="prov-svg" id="prov-manabi" data-region="costa" data-provincia="Manabí" tabindex="0" role="button" aria-label="Provincia Manabí" fill="#F59E0B" stroke="#0B1938" stroke-width="18" d="M4387.0,3330.0L4365.0,3408.0L4287.0,3587.0L4237.0,3612.0L4207.0,3660.0L4184.0,3776.0L4151.0,3845.0L4042.0,3863.0L3977.0,3897.0L3854.0,4069.0L3847.0,4120.0L3755.0,4246.0L3668.0,4315.0L3612.0,4338.0L3518.0,4314.0L3433.0,4554.0L3296.0,4659.0L3275.0,4773.0L3191.0,4809.0L3165.0,4906.0L3195.0,4973.0L3130.0,5038.0L3026.0,5052.0L3052.0,5098.0L3119.0,5132.0L3140.0,5225.0L3108.0,5249.0L3041.0,5245.0L2998.0,5271.0L2963.0,5247.0L2848.0,5337.0L2785.0,5426.0L2751.0,5508.0L2632.0,5511.0L2570.0,5490.0L2553.0,5439.0L2592.0,5321.0L2561.0,5234.0L2528.0,5207.0L2448.0,5200.0L2356.0,5227.0L2234.0,5221.0L2121.0,5236.0L2068.0,5133.0L2064.0,5067.0L2124.0,5026.0L2117.0,4938.0L2201.0,4901.0L2219.0,4730.0L2246.0,4675.0L2095.0,4486.0L2013.0,4342.0L1955.0,4207.0L1966.0,4172.0L2124.0,4007.0L2217.0,3990.0L2336.0,4012.0L2401.0,3967.0L2463.0,3998.0L2505.0,3982.0L2580.0,3909.0L2633.0,3663.0L2723.0,3454.0L2792.0,3423.0L2819.0,3501.0L2865.0,3521.0L3000.0,3529.0L3000.0,3509.0L2843.0,3467.0L2803.0,3380.0L2766.0,3353.0L2741.0,3217.0L2686.0,3127.0L2666.0,3056.0L2774.0,2985.0L2844.0,2876.0L2878.0,2790.0L2914.0,2777.0L2958.0,2706.0L2989.0,2733.0L3114.0,2650.0L3215.0,2541.0L3324.0,2403.0L3339.0,2349.0L3394.0,2327.0L3434.0,2207.0L3444.0,2119.0L3425.0,1879.0L3445.0,1814.0L3485.0,1869.0L3507.0,1834.0L3572.0,1967.0L3632.0,1974.0L3690.0,1881.0L3821.0,1872.0L3945.0,1785.0L3985.0,1791.0L4020.0,1840.0L3989.0,1891.0L4084.0,1963.0L4090.0,1992.0L4011.0,2089.0L4083.0,2119.0L4108.0,2170.0L4137.0,2154.0L4239.0,2219.0L4153.0,2338.0L4192.0,2438.0L4172.0,2483.0L4186.0,2535.0L4272.0,2594.0L4359.0,2687.0L4481.0,2711.0L4501.0,2759.0L4511.0,3060.0L4440.0,3193.0L4435.0,3244.0L4387.0,3330.0Z"></path>
+<path class="prov-svg" id="prov-chimborazo" data-region="sierra" data-provincia="Chimborazo" tabindex="0" role="button" aria-label="Provincia Chimborazo" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M5910.0,6307.0L5878.0,6292.0L5663.0,6316.0L5557.0,6345.0L5490.0,6408.0L5431.0,6438.0L5291.0,6450.0L5150.0,6362.0L5096.0,6287.0L4984.0,6168.0L4978.0,6124.0L5069.0,6076.0L5130.0,6015.0L5174.0,5930.0L5155.0,5860.0L5200.0,5644.0L5184.0,5535.0L5191.0,5430.0L5241.0,5378.0L5325.0,5364.0L5384.0,5311.0L5437.0,5216.0L5449.0,5009.0L5414.0,4944.0L5402.0,4871.0L5539.0,4813.0L5669.0,4887.0L5800.0,4922.0L5946.0,4903.0L6021.0,4907.0L6062.0,4843.0L6269.0,4929.0L6295.0,4985.0L6275.0,5048.0L6285.0,5146.0L6201.0,5208.0L6131.0,5306.0L6140.0,5398.0L6172.0,5446.0L6184.0,5559.0L6116.0,5634.0L6064.0,5723.0L6108.0,5794.0L6137.0,5909.0L6044.0,5996.0L6040.0,6150.0L5994.0,6187.0L5969.0,6265.0L5910.0,6307.0Z"></path>
+<path class="prov-svg" id="prov-morona-santiago" data-region="amazonia" data-provincia="Morona S." tabindex="0" role="button" aria-label="Provincia Morona S." fill="#10B981" stroke="#0B1938" stroke-width="18" d="M5298.0,8008.0L5301.0,7949.0L5544.0,7751.0L5666.0,7699.0L5752.0,7618.0L5778.0,7480.0L5834.0,7351.0L5914.0,7219.0L5918.0,7163.0L5878.0,7094.0L5963.0,6964.0L6151.0,6869.0L6166.0,6795.0L6102.0,6744.0L6044.0,6753.0L5987.0,6833.0L5959.0,6814.0L5961.0,6730.0L5984.0,6737.0L6055.0,6647.0L6072.0,6553.0L6076.0,6423.0L6040.0,6386.0L5912.0,6326.0L5910.0,6307.0L5969.0,6265.0L5994.0,6187.0L6040.0,6150.0L6044.0,5996.0L6137.0,5909.0L6108.0,5794.0L6064.0,5723.0L6116.0,5634.0L6184.0,5559.0L6172.0,5446.0L6140.0,5398.0L6131.0,5306.0L6201.0,5208.0L6285.0,5146.0L6275.0,5048.0L6295.0,4985.0L6375.0,4915.0L6499.0,4918.0L6602.0,4852.0L6675.0,4867.0L6776.0,4976.0L6858.0,5204.0L6879.0,5225.0L6981.0,5204.0L7040.0,5225.0L7082.0,5373.0L7113.0,5422.0L7123.0,5497.0L7157.0,5563.0L7167.0,5637.0L7212.0,5674.0L7312.0,5702.0L7362.0,5803.0L7936.0,6046.0L8325.0,6298.0L8379.0,6316.0L8430.0,6396.0L8528.0,6512.0L8558.0,6592.0L8656.0,6678.0L8725.0,6699.0L8872.0,6682.0L8922.0,6715.0L9051.0,6762.0L9146.0,6741.0L9121.0,6757.0L7145.0,7436.0L6988.0,7561.0L6816.0,7788.0L6710.0,7881.0L6637.0,8011.0L6555.0,8080.0L6555.0,8117.0L6622.0,8191.0L6610.0,8271.0L6504.0,8321.0L6464.0,8182.0L6431.0,8140.0L6322.0,8115.0L6275.0,8155.0L6287.0,8199.0L6250.0,8358.0L6038.0,8357.0L5914.0,8378.0L5779.0,8378.0L5728.0,8441.0L5495.0,8386.0L5425.0,8302.0L5409.0,8222.0L5451.0,8153.0L5439.0,8108.0L5298.0,8008.0Z"></path>
+<path class="prov-svg" id="prov-pichincha" data-region="sierra" data-provincia="Pichincha" tabindex="0" role="button" aria-label="Provincia Pichincha" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M6223.0,3567.0L6112.0,3451.0L6065.0,3432.0L5959.0,3431.0L5896.0,3461.0L5864.0,3434.0L5696.0,3519.0L5621.0,3378.0L5490.0,3283.0L5466.0,3208.0L5358.0,3049.0L5334.0,2996.0L5385.0,2916.0L5600.0,2894.0L5632.0,2777.0L5546.0,2681.0L5385.0,2596.0L5332.0,2542.0L5031.0,2553.0L5020.0,2414.0L4676.0,2403.0L4584.0,2336.0L4681.0,2102.0L4610.0,2046.0L4613.0,2012.0L4825.0,1883.0L4955.0,1880.0L5133.0,1918.0L5183.0,1964.0L5211.0,2029.0L5283.0,2059.0L5431.0,2028.0L5577.0,2012.0L5790.0,2052.0L6194.0,2001.0L6269.0,2017.0L6287.0,2068.0L6277.0,2134.0L6353.0,2097.0L6434.0,2161.0L6512.0,2190.0L6599.0,2178.0L6764.0,2082.0L6989.0,2143.0L6946.0,2213.0L7102.0,2275.0L7180.0,2361.0L7159.0,2398.0L7018.0,2474.0L6956.0,2495.0L6929.0,2584.0L6883.0,2637.0L6800.0,2638.0L6735.0,2725.0L6668.0,2700.0L6595.0,2719.0L6578.0,2914.0L6545.0,2993.0L6471.0,3113.0L6496.0,3159.0L6435.0,3343.0L6359.0,3445.0L6323.0,3536.0L6223.0,3567.0Z"></path>
+<path class="prov-svg" id="prov-pastaza" data-region="amazonia" data-provincia="Pastaza" tabindex="0" role="button" aria-label="Provincia Pastaza" fill="#10B981" stroke="#0B1938" stroke-width="18" d="M11001.0,5028.0L10881.0,5146.0L10131.0,6009.0L9222.0,6696.0L9146.0,6741.0L9051.0,6762.0L8922.0,6715.0L8872.0,6682.0L8725.0,6699.0L8656.0,6678.0L8558.0,6592.0L8528.0,6512.0L8430.0,6396.0L8379.0,6316.0L8325.0,6298.0L7936.0,6046.0L7362.0,5803.0L7312.0,5702.0L7212.0,5674.0L7167.0,5637.0L7157.0,5563.0L7123.0,5497.0L7113.0,5422.0L7082.0,5373.0L7040.0,5225.0L6981.0,5204.0L6879.0,5225.0L6858.0,5204.0L6776.0,4976.0L6675.0,4867.0L6602.0,4852.0L6643.0,4814.0L6701.0,4676.0L6697.0,4492.0L6831.0,4495.0L6952.0,4476.0L7069.0,4499.0L7105.0,4459.0L7156.0,4478.0L7411.0,4355.0L7520.0,4352.0L7663.0,4329.0L7854.0,4241.0L7959.0,4234.0L8120.0,4184.0L8195.0,4142.0L8504.0,4118.0L8465.0,4168.0L8515.0,4268.0L8652.0,4300.0L8816.0,4367.0L8858.0,4352.0L8913.0,4253.0L8997.0,4267.0L9160.0,4233.0L9206.0,4198.0L9335.0,4180.0L9387.0,4200.0L9415.0,4244.0L9408.0,4358.0L9421.0,4419.0L9502.0,4526.0L9673.0,4546.0L9681.0,4580.0L9803.0,4614.0L9873.0,4579.0L10031.0,4597.0L10065.0,4565.0L10157.0,4580.0L10281.0,4627.0L10374.0,4685.0L10449.0,4692.0L10496.0,4658.0L10573.0,4752.0L10718.0,4789.0L10769.0,4874.0L10880.0,4903.0L10975.0,4958.0L11001.0,5028.0Z"></path>
+<path class="prov-svg" id="prov-tungurahua" data-region="sierra" data-provincia="Tungurahua" tabindex="0" role="button" aria-label="Provincia Tungurahua" fill="#8B5CF6" stroke="#0B1938" stroke-width="18" d="M6697.0,4492.0L6701.0,4676.0L6643.0,4814.0L6602.0,4852.0L6499.0,4918.0L6375.0,4915.0L6295.0,4985.0L6269.0,4929.0L6062.0,4843.0L6021.0,4907.0L5946.0,4903.0L5800.0,4922.0L5669.0,4887.0L5539.0,4813.0L5402.0,4871.0L5329.0,4766.0L5342.0,4658.0L5383.0,4551.0L5390.0,4465.0L5427.0,4398.0L5521.0,4340.0L5595.0,4320.0L5747.0,4338.0L5843.0,4286.0L5932.0,4262.0L5940.0,4216.0L5992.0,4198.0L6060.0,4237.0L6123.0,4224.0L6159.0,4173.0L6183.0,4079.0L6232.0,4037.0L6311.0,4145.0L6333.0,4199.0L6321.0,4376.0L6380.0,4340.0L6520.0,4335.0L6597.0,4409.0L6680.0,4426.0L6697.0,4492.0Z"></path>
+<path class="prov-svg" id="prov-orellana" data-region="amazonia" data-provincia="Orellana" tabindex="0" role="button" aria-label="Provincia Orellana" fill="#10B981" stroke="#0B1938" stroke-width="18" d="M8085.0,2513.0L8111.0,2494.0L8277.0,2571.0L8343.0,2555.0L8468.0,2587.0L8546.0,2582.0L8641.0,2533.0L8733.0,2547.0L8935.0,2795.0L9078.0,2991.0L9193.0,3075.0L9235.0,3131.0L9313.0,3098.0L9349.0,3147.0L9470.0,3230.0L9565.0,3234.0L9594.0,3276.0L9703.0,3208.0L9825.0,3163.0L9956.0,3150.0L10117.0,3161.0L10149.0,3250.0L10301.0,3349.0L10398.0,3363.0L10375.0,3173.0L10381.0,3129.0L10429.0,3112.0L10515.0,3121.0L10578.0,3152.0L10719.0,3129.0L10782.0,3189.0L10879.0,3183.0L11015.0,3251.0L11039.0,3304.0L11124.0,3348.0L11227.0,3348.0L11315.0,3377.0L11341.0,3432.0L11456.0,3467.0L11499.0,3460.0L11539.0,3501.0L11500.0,3524.0L11487.0,3678.0L11562.0,3933.0L11563.0,3993.0L11605.0,4054.0L11398.0,4063.0L11300.0,3962.0L11290.0,3976.0L11037.0,4954.0L11001.0,5028.0L10975.0,4958.0L10880.0,4903.0L10769.0,4874.0L10718.0,4789.0L10573.0,4752.0L10496.0,4658.0L10449.0,4692.0L10374.0,4685.0L10281.0,4627.0L10157.0,4580.0L10065.0,4565.0L10031.0,4597.0L9873.0,4579.0L9803.0,4614.0L9681.0,4580.0L9673.0,4546.0L9502.0,4526.0L9421.0,4419.0L9408.0,4358.0L9415.0,4244.0L9387.0,4200.0L9335.0,4180.0L9206.0,4198.0L9160.0,4233.0L8997.0,4267.0L8913.0,4253.0L8858.0,4352.0L8816.0,4367.0L8652.0,4300.0L8515.0,4268.0L8465.0,4168.0L8504.0,4118.0L8519.0,4081.0L8491.0,4029.0L8521.0,3967.0L8399.0,3939.0L8275.0,3865.0L8262.0,3797.0L8292.0,3741.0L8397.0,3626.0L8357.0,3607.0L8237.0,3704.0L8173.0,3813.0L8097.0,3842.0L7745.0,4008.0L7670.0,4018.0L7609.0,3999.0L7695.0,3832.0L7697.0,3699.0L7746.0,3618.0L7727.0,3520.0L7598.0,3371.0L7540.0,3319.0L7619.0,3261.0L7657.0,3187.0L7832.0,3271.0L7922.0,3252.0L7987.0,3132.0L8039.0,3119.0L8044.0,3068.0L8129.0,3022.0L8161.0,2912.0L8152.0,2830.0L8087.0,2735.0L8102.0,2632.0L8085.0,2513.0Z"></path>
+<path class="prov-svg" id="prov-napo" data-region="amazonia" data-provincia="Napo" tabindex="0" role="button" aria-label="Provincia Napo" fill="#10B981" stroke="#0B1938" stroke-width="18" d="M8085.0,2513.0L8102.0,2632.0L8087.0,2735.0L8152.0,2830.0L8161.0,2912.0L8129.0,3022.0L8044.0,3068.0L8039.0,3119.0L7987.0,3132.0L7922.0,3252.0L7832.0,3271.0L7657.0,3187.0L7619.0,3261.0L7540.0,3319.0L7598.0,3371.0L7727.0,3520.0L7746.0,3618.0L7697.0,3699.0L7695.0,3832.0L7609.0,3999.0L7670.0,4018.0L7745.0,4008.0L8097.0,3842.0L8173.0,3813.0L8237.0,3704.0L8357.0,3607.0L8397.0,3626.0L8292.0,3741.0L8262.0,3797.0L8275.0,3865.0L8399.0,3939.0L8521.0,3967.0L8491.0,4029.0L8519.0,4081.0L8504.0,4118.0L8195.0,4142.0L8120.0,4184.0L7959.0,4234.0L7854.0,4241.0L7663.0,4329.0L7520.0,4352.0L7411.0,4355.0L7156.0,4478.0L7105.0,4459.0L7069.0,4499.0L6952.0,4476.0L6831.0,4495.0L6697.0,4492.0L6680.0,4426.0L6597.0,4409.0L6520.0,4335.0L6380.0,4340.0L6321.0,4376.0L6333.0,4199.0L6311.0,4145.0L6232.0,4037.0L6147.0,3994.0L6184.0,3942.0L6195.0,3878.0L6238.0,3785.0L6209.0,3628.0L6223.0,3567.0L6323.0,3536.0L6359.0,3445.0L6435.0,3343.0L6496.0,3159.0L6471.0,3113.0L6545.0,2993.0L6578.0,2914.0L6595.0,2719.0L6668.0,2700.0L6735.0,2725.0L6800.0,2638.0L6883.0,2637.0L6929.0,2584.0L6956.0,2495.0L7018.0,2474.0L7159.0,2398.0L7180.0,2361.0L7271.0,2388.0L7261.0,2437.0L7283.0,2526.0L7337.0,2547.0L7505.0,2551.0L7593.0,2583.0L7659.0,2531.0L7804.0,2454.0L7839.0,2516.0L7835.0,2625.0L7977.0,2652.0L8085.0,2513.0Z"></path>
+<path class="prov-svg" id="prov-galapagos" data-region="galapagos" data-provincia="Galápagos" tabindex="0" role="button" aria-label="Provincia Galápagos" fill="#0EA5E9" stroke="#0B1938" stroke-width="18" d="M992.0,2508.0L1014.0,2515.0L1030.0,2532.0L1031.0,2549.0L1006.0,2557.0L980.0,2554.0L914.0,2524.0L931.0,2508.0L943.0,2510.0L982.0,2510.0L992.0,2508.0ZM332.0,2407.0L339.0,2419.0L355.0,2414.0L378.0,2419.0L397.0,2428.0L408.0,2440.0L415.0,2446.0L417.0,2457.0L410.0,2468.0L395.0,2473.0L395.0,2490.0L391.0,2495.0L364.0,2512.0L359.0,2513.0L329.0,2508.0L317.0,2500.0L306.0,2489.0L289.0,2479.0L304.0,2460.0L309.0,2449.0L314.0,2424.0L322.0,2412.0L332.0,2407.0ZM1280.0,1978.0L1290.0,1984.0L1301.0,1984.0L1322.0,1975.0L1324.0,2005.0L1309.0,2038.0L1285.0,2067.0L1261.0,2086.0L1232.0,2095.0L1216.0,2131.0L1200.0,2156.0L1189.0,2167.0L1177.0,2175.0L1164.0,2179.0L1152.0,2181.0L1124.0,2180.0L1116.0,2183.0L1099.0,2195.0L1087.0,2197.0L1079.0,2195.0L1054.0,2180.0L1025.0,2176.0L1018.0,2172.0L1017.0,2165.0L1022.0,2156.0L1038.0,2138.0L1071.0,2122.0L1082.0,2114.0L1090.0,2086.0L1099.0,2085.0L1133.0,2077.0L1142.0,2068.0L1155.0,2042.0L1162.0,2033.0L1184.0,2013.0L1195.0,2001.0L1224.0,1990.0L1233.0,1981.0L1245.0,1981.0L1270.0,1974.0L1280.0,1978.0ZM520.0,1833.0L520.0,1850.0L527.0,1853.0L560.0,1858.0L569.0,1867.0L567.0,1886.0L557.0,1920.0L557.0,1929.0L562.0,1941.0L563.0,1950.0L554.0,1970.0L554.0,1974.0L541.0,1980.0L531.0,1992.0L522.0,2007.0L512.0,2019.0L501.0,2026.0L461.0,2025.0L457.0,2027.0L453.0,2043.0L442.0,2051.0L427.0,2054.0L412.0,2053.0L385.0,2043.0L367.0,2040.0L347.0,2025.0L330.0,1999.0L323.0,1991.0L311.0,1993.0L296.0,1989.0L282.0,1982.0L273.0,1974.0L271.0,1964.0L273.0,1924.0L278.0,1903.0L287.0,1884.0L299.0,1867.0L311.0,1853.0L319.0,1848.0L341.0,1838.0L360.0,1836.0L384.0,1842.0L392.0,1839.0L406.0,1831.0L484.0,1822.0L501.0,1814.0L515.0,1821.0L520.0,1833.0ZM-469.0,1631.0L-440.0,1660.0L-423.0,1672.0L-421.0,1689.0L-424.0,1719.0L-424.0,1789.0L-432.0,1793.0L-489.0,1816.0L-511.0,1819.0L-519.0,1817.0L-536.0,1805.0L-551.0,1801.0L-575.0,1792.0L-592.0,1792.0L-596.0,1789.0L-597.0,1780.0L-611.0,1766.0L-622.0,1749.0L-629.0,1731.0L-634.0,1694.0L-644.0,1663.0L-642.0,1653.0L-571.0,1655.0L-541.0,1640.0L-503.0,1631.0L-484.0,1624.0L-469.0,1631.0ZM84.0,1542.0L100.0,1554.0L155.0,1572.0L175.0,1575.0L201.0,1586.0L244.0,1633.0L267.0,1648.0L256.0,1653.0L267.0,1660.0L262.0,1674.0L245.0,1700.0L239.0,1717.0L224.0,1722.0L205.0,1720.0L171.0,1709.0L114.0,1709.0L98.0,1704.0L84.0,1695.0L68.0,1690.0L50.0,1697.0L39.0,1684.0L34.0,1663.0L25.0,1646.0L5.0,1642.0L39.0,1595.0L41.0,1584.0L36.0,1570.0L43.0,1556.0L57.0,1545.0L72.0,1542.0L78.0,1547.0L84.0,1542.0ZM-374.0,1298.0L-361.0,1310.0L-355.0,1329.0L-352.0,1346.0L-349.0,1354.0L-338.0,1361.0L-329.0,1396.0L-316.0,1407.0L-305.0,1422.0L-299.0,1426.0L-282.0,1427.0L-268.0,1431.0L-262.0,1446.0L-261.0,1465.0L-263.0,1503.0L-248.0,1593.0L-239.0,1608.0L-202.0,1642.0L-202.0,1656.0L-199.0,1665.0L-185.0,1673.0L-102.0,1725.0L-89.0,1748.0L-75.0,1761.0L-62.0,1764.0L-67.0,1780.0L-60.0,1811.0L-57.0,1844.0L-61.0,1860.0L-83.0,1878.0L-90.0,1891.0L-72.0,1879.0L-66.0,1886.0L-66.0,1901.0L-62.0,1914.0L-28.0,1920.0L-11.0,1929.0L-12.0,1947.0L-1.0,1948.0L9.0,1953.0L16.0,1960.0L22.0,1970.0L16.0,1981.0L27.0,1985.0L56.0,2014.0L71.0,2020.0L72.0,2033.0L68.0,2037.0L41.0,2049.0L16.0,2129.0L19.0,2148.0L17.0,2163.0L-1.0,2158.0L-10.0,2171.0L-31.0,2194.0L-40.0,2207.0L-54.0,2201.0L-67.0,2200.0L-93.0,2202.0L-109.0,2206.0L-135.0,2225.0L-228.0,2256.0L-246.0,2251.0L-259.0,2255.0L-332.0,2245.0L-423.0,2246.0L-441.0,2241.0L-453.0,2229.0L-458.0,2212.0L-458.0,2193.0L-461.0,2184.0L-487.0,2179.0L-507.0,2147.0L-499.0,2111.0L-477.0,2076.0L-453.0,2052.0L-358.0,1991.0L-351.0,1975.0L-338.0,1974.0L-317.0,1965.0L-289.0,1958.0L-271.0,1960.0L-258.0,1969.0L-244.0,1974.0L-235.0,1975.0L-226.0,1972.0L-214.0,1955.0L-210.0,1952.0L-210.0,1944.0L-202.0,1927.0L-191.0,1914.0L-179.0,1919.0L-169.0,1906.0L-169.0,1894.0L-175.0,1883.0L-185.0,1875.0L-196.0,1869.0L-220.0,1862.0L-229.0,1858.0L-249.0,1840.0L-268.0,1815.0L-283.0,1786.0L-291.0,1759.0L-290.0,1735.0L-292.0,1727.0L-302.0,1719.0L-324.0,1714.0L-335.0,1697.0L-384.0,1671.0L-403.0,1651.0L-402.0,1625.0L-418.0,1616.0L-429.0,1598.0L-427.0,1581.0L-408.0,1575.0L-422.0,1554.0L-428.0,1542.0L-430.0,1529.0L-430.0,1501.0L-435.0,1473.0L-442.0,1446.0L-461.0,1433.0L-486.0,1432.0L-514.0,1442.0L-542.0,1462.0L-556.0,1465.0L-572.0,1456.0L-589.0,1434.0L-590.0,1422.0L-524.0,1385.0L-508.0,1369.0L-503.0,1337.0L-483.0,1343.0L-466.0,1339.0L-451.0,1331.0L-424.0,1324.0L-408.0,1304.0L-398.0,1301.0L-383.0,1302.0L-374.0,1298.0ZM346.0,1206.0L329.0,1210.0L319.0,1207.0L309.0,1196.0L290.0,1191.0L282.0,1184.0L273.0,1171.0L275.0,1153.0L288.0,1139.0L306.0,1131.0L323.0,1127.0L341.0,1133.0L361.0,1142.0L377.0,1155.0L384.0,1171.0L379.0,1183.0L365.0,1196.0L346.0,1206.0ZM110.0,949.0L97.0,975.0L61.0,961.0L66.0,943.0L61.0,909.0L67.0,894.0L100.0,913.0L110.0,949.0ZM-760.0,313.0L-768.0,315.0L-770.0,305.0L-761.0,303.0L-760.0,313.0ZM-912.0,88.0L-917.0,89.0L-922.0,82.0L-917.0,77.0L-912.0,81.0L-912.0,88.0Z"></path>
+  </g>
+  <g class="map-hotspots">
+    <g class="hotspot" tabindex="0" role="button" data-hotspot="quito" aria-label="Quito"><circle cx="6167.5599999999995" cy="2790.9799999999996" r="95" class="hotspot-dot"></circle><text x="6287.5599999999995" y="2802.9799999999996" class="hotspot-label" font-size="160">Quito</text></g>
+<g class="hotspot" tabindex="0" role="button" data-hotspot="guayaquil" aria-label="Guayaquil"><circle cx="3641.24" cy="5884.85" r="95" class="hotspot-dot"></circle><text x="3761.24" y="5896.85" class="hotspot-label" font-size="160">Guayaquil</text></g>
+<g class="hotspot" tabindex="0" role="button" data-hotspot="chimborazo" aria-label="Chimborazo"><polygon points="5556.01,5665.13 5676.01,5445.13 5796.01,5665.13" class="hotspot-peak"></polygon><text x="5746.01" y="5625.13" class="hotspot-label" font-size="160">Chimborazo</text></g>
+<g class="hotspot" tabindex="0" role="button" data-hotspot="yasuni" aria-label="Yasuní"><circle cx="9897.7" cy="3634.3" r="95" class="hotspot-dot hotspot-dot-green"></circle><text x="10017.7" y="3646.3" class="hotspot-label" font-size="160">Yasuní</text></g>
+<g class="hotspot" tabindex="0" role="button" data-hotspot="palanda" aria-label="Palanda"><circle cx="5422.45" cy="9372.16" r="95" class="hotspot-dot hotspot-dot-gold"></circle><text x="5542.45" y="9384.16" class="hotspot-label" font-size="160">Palanda</text></g>
+<g class="hotspot" tabindex="0" role="button" data-hotspot="cuenca" aria-label="Cuenca"><circle cx="4698.95" cy="7633.54" r="95" class="hotspot-dot"></circle><text x="4818.95" y="7645.54" class="hotspot-label" font-size="160">Cuenca</text></g>
+<g class="hotspot" tabindex="0" role="button" data-hotspot="galapagos" aria-label="Galápagos"><circle cx="-203.27999999999997" cy="548.2000000000007" r="95" class="hotspot-dot"></circle><text x="-83.27999999999997" y="560.2000000000007" class="hotspot-label" font-size="160">Galápagos</text></g>
+  </g>
+  <!-- Region selectors keep id hooks for JS -->
+  <g id="svg-costa" class="region-svg" opacity="0" pointer-events="none"></g>
+  <g id="svg-sierra" class="region-svg" opacity="0" pointer-events="none"></g>
+  <g id="svg-amazonia" class="region-svg" opacity="0" pointer-events="none"></g>
+  <g id="svg-galapagos" class="region-svg" opacity="0" pointer-events="none"></g>
+</svg>
+                    </div>
+
+                    <p class="text-xs text-slate-400 border-t border-slate-700/80 pt-3">Toca provincias o hitos · teclado: Tab + Enter</p>
+                </div>
+
+                <!-- Panel Dinámico de la Región Seleccionada -->
+                <div class="lg:col-span-5 panel-region reveal" data-reveal id="panel-region-detalle">
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                        <div>
+                            <span class="px-3 py-1 rounded-full text-xs font-extrabold border bg-amber-100 text-amber-900 border-amber-300">26,4% del territorio nacional (7 Provincias)</span>
+                            <h3 class="font-titulo text-2xl font-black text-slate-900 mt-2">1. Región Litoral o Costa</h3>
+                        </div>
+                        <span class="w-11 h-11 rounded-2xl bg-slate-900 text-yellow-400 flex items-center justify-center text-lg shadow">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </span>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs sm:text-sm">
+                        <strong class="text-slate-900 block mb-1"><i class="fa-solid fa-map-pin text-red-600 mr-1.5"></i>División Político-Administrativa:</strong>
+                        <p class="text-slate-700">Esmeraldas, Manabí, Santo Domingo de los Tsáchilas, Los Ríos, Guayas, Santa Elena y El Oro.</p>
+                    </div>
+
+                    <div class="space-y-3 text-xs sm:text-sm leading-relaxed text-slate-700">
+                        <div>
+                            <strong class="text-slate-900 block"><i class="fa-solid fa-mountain-city text-blue-700 mr-1.5"></i>Relieve, Clima e Hidrografía:</strong>
+                            <p>Llanuras aluviales fértiles (&lt;1.000 m s. n. m.) y cordilleras costeras bajas (Chongón-Colonche, Mache-Chindul). Clima tropical húmedo al norte y seco al sur, regulado por las corrientes de Humboldt (fría) y El Niño (cálida). Hidrografía dominada por la cuenca del río Guayas (34.500 km², la mayor de la vertiente pacífica sudamericana) y el río Esmeraldas.</p>
+                        </div>
+                        <div>
+                            <strong class="text-slate-900 block"><i class="fa-solid fa-industry text-emerald-700 mr-1.5"></i>Actividad Económica y Patrimonio Cultural:</strong>
+                            <p>Motor agroexportador, acuícola y portuario del país (Guayaquil, Posorja, Manta, Esmeraldas y Puerto Bolívar). Primer exportador mundial de camarón blanco, banano fresco y cacao fino de aroma (variedad Nacional Arriba). Cuna del pueblo Montubio, del pueblo Afroesmeraldeño (Marimba UNESCO 2015), del tejido del Sombrero de Paja Toquilla en Montecristi (UNESCO 2012) y de los Patacones de plátano Barraganete.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-blue-950 text-white p-4 rounded-xl border-l-4 border-yellow-400 text-xs sm:text-sm">
+                    <strong class="text-yellow-400 uppercase tracking-wider block text-[11px] mb-0.5"><i class="fa-solid fa-star mr-1"></i>Dato Estratégico para el Jurado:</strong>
+                    <p>Guayas y Pichincha generan conjuntamente más del 53% del Valor Agregado Bruto no petrolero nacional.</p>
+                </div>
+            </div>
+
+            </div>
+
+                        <div class="mt-12 reveal" data-reveal>
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5">
+                    <div>
+                        <p class="section-kicker">El país en cifras</p>
+                        <h3 class="font-titulo text-xl sm:text-2xl font-extrabold text-slate-900">Datos clave</h3>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" class="dato-nav" id="dato-prev" aria-label="Anterior"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                        <button type="button" class="dato-nav" id="dato-next" aria-label="Siguiente"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                        <button type="button" class="dato-toggle" id="dato-toggle" aria-expanded="false">Ver los 10</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="grid-10-datos"></div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             3. EXPLORADOR INTERACTIVO DE LAS 11 SECCIONES DEL INFORME ACADÉMICO
+             ====================================================================== -->
+        <section id="informe-11-secciones" class="scroll-mt-24">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-6 gap-4">
+                <div>
+                    <p class="section-kicker">Parada 2</p>
+                    <h2 class="section-title">Informe por temas</h2>
+                </div>
+
+                <!-- Buscador Instantáneo dentro del Informe -->
+                <div class="w-full lg:w-96">
+                    <label for="buscador-informe" class="block text-sm font-bold text-slate-800 mb-1">Buscar en el informe</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm" aria-hidden="true"></i>
+                        <input type="search" id="buscador-informe" oninput="filtrarContenidoInforme(this.value)" placeholder="Cacao, bandera, Galápagos, Alfaro" class="w-full min-h-[44px] pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-300 text-base focus:ring-2 focus:ring-blue-600 shadow-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestañas (Tabs) de las Secciones del Informe -->
+            <div class="flex overflow-x-auto gap-2 pb-3 mb-6 border-b border-slate-200" id="tabs-secciones">
+                    <button onclick="cambiarSeccionInforme('1A')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-slate-900 text-yellow-400 border-slate-900 shadow-md">
+                        <i class="fa-solid fa-flag"></i>
+                        <span>1-A. Identidad</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('2B')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-landmark-dome"></i>
+                        <span>2-B. Historia</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('3C')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-masks-theater"></i>
+                        <span>3-C. Cultura</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('4D')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-people-group"></i>
+                        <span>4-D. Sociedad</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('5E')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-gavel"></i>
+                        <span>5-E. Legislación (2024–2026)</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('6F')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-person-running"></i>
+                        <span>6-F. Deporte</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('7G')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-microscope"></i>
+                        <span>7-G. Ciencia y Tecnología</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('8H')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-chart-column"></i>
+                        <span>8-H. Economía</span>
+                    </button>
+                
+                    <button onclick="cambiarSeccionInforme('11K')" class="px-4 py-2.5 rounded-xl font-titulo font-bold text-xs whitespace-nowrap transition flex items-center gap-2 border bg-white text-slate-700 border-slate-200 hover:bg-slate-100">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>11-K. Conclusiones</span>
+                    </button>
+                </div>
+
+            <!-- Contenedor Dinámico de la Sección Activa -->
+            <div id="contenedor-seccion-activa" class="bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 transition-all">
+                <div class="mb-8 last:mb-0">
+                    <div class="border-b border-slate-200 pb-4 mb-6">
+                        <h3 class="font-titulo text-xl sm:text-2xl font-black text-slate-900">1.- A. Identidad y Configuración del Estado</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Constitución de Montecristi (2008), Bandera (NTE INEN 1990), Límites, Capital, Demografía, Lenguas y Símbolos</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-blue-400 transition flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <h4 class="font-titulo font-bold text-base text-slate-900">1. Nombre Oficial y Origen Geodésico</h4>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 font-bold text-[11px] shrink-0">Art. 1 Constitución 2008</span>
+                                    </div>
+                                    <ul class="space-y-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Denominación oficial:</strong> <em>República del Ecuador</em> (Constitución promulgada en el Registro Oficial N.º 449 del 20 de octubre de 2008). Se define como un Estado constitucional de derechos y justicia, social, democrático, soberano, independiente, unitario, intercultural, plurinacional y laico.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Origen histórico del nombre:</strong> En 1736 la Misión Geodésica Hispano-Francesa (La Condamine, Bouguer, Godin y el sabio riobambeño Pedro Vicente Maldonado) popularizó el nombre de «Tierras del Ecuador».</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Neutralidad regional (1830):</strong> Tras separarse de la Gran Colombia el 13 de mayo de 1830, el Congreso Constituyente de Riobamba (23 de septiembre de 1830) adoptó el nombre «Estado del Ecuador» para evitar recelos regionales de Guayaquil y Cuenca frente a Quito. En 1835 (Constitución de Ambato) se consagró «República del Ecuador».</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        
+                            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-blue-400 transition flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <h4 class="font-titulo font-bold text-base text-slate-900">2. Bandera Nacional y Wiphala Plurinacional</h4>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 font-bold text-[11px] shrink-0">Decreto 1900 • NTE INEN 1990</span>
+                                    </div>
+                                    <ul class="space-y-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Proporción y cromática:</strong> Regulada por el Decreto Legislativo del 31 de octubre de 1900 (Eloy Alfaro) y la norma técnica NTE INEN 1990. Relación 2:3 con tres franjas horizontales asimétricas: <strong>Amarillo primario (50% superior)</strong> por la riqueza aurífera, agrícola y el sol equinoccial; <strong>Azul cobalto (25% central)</strong> por el océano Pacífico y el cielo andino; y <strong>Rojo bermellón (25% inferior)</strong> por la sangre de los próceres emancipadores.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Estatus de la Wiphala:</strong> Conforme al Art. 57 numeral 1 de la Constitución, el Estado garantiza los símbolos de las 14 nacionalidades originarias, otorgando valor protocolar a la <em>Wiphala</em> y al bastón de mando.</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        
+                            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-blue-400 transition flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <h4 class="font-titulo font-bold text-base text-slate-900">3. Ubicación Geográfica y 4. Capital (Quito)</h4>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 font-bold text-[11px] shrink-0">IGM • CONVEMAR 2012</span>
+                                    </div>
+                                    <ul class="space-y-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Superficie y límites:</strong> 256.370 km² terrestres (248.360 km² continentales y 8.010 km² en Galápagos) + <strong>1.092.140 km² de espacios marítimos</strong> bajo la CONVEMAR (4,26 veces su área terrestre). Limita al norte con Colombia (586 km, Tratado Muñoz Vernaza-Suárez 1916), al sur y este con Perú (1.529 km, Protocolo de Río 1942 y Paz de Brasilia del 26 de octubre de 1998) y al noroeste marítimo con Costa Rica (Isla del Coco).</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Capital y 5 Funciones del Estado:</strong> San Francisco de Quito (Art. 2 Constitución) es sede de las 5 Funciones: 1) Ejecutiva (Palacio de Carondelet), 2) Legislativa (Asamblea Nacional unicameral), 3) Judicial y Corte Constitucional, 4) Electoral (CNE y TCE) y 5) Transparencia y Control Social (CPCCS, Contraloría, Defensoría).</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        
+                            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-blue-400 transition flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <h4 class="font-titulo font-bold text-base text-slate-900">5. Población, 6. Idiomas, 7. Moneda y 9. Símbolos</h4>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 font-bold text-[11px] shrink-0">Censo INEC 2022 • Proy. 2026</span>
+                                    </div>
+                                    <ul class="space-y-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Demografía y Etnicidad:</strong> 16.938.986 habitantes censados en 2022 y proyección de <strong>18,45 millones en 2026</strong>. Autoidentificación étnica: 77,5% mestizos, 7,7% pueblo montubio, 7,7% indígenas (14 nacionalidades y 18 pueblos), 4,8% afroecuatorianos y 2,3% blancos/otros.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Idiomas (Art. 2):</strong> El castellano es el idioma oficial; el <strong>castellano, el kichwa y el shuar</strong> son idiomas oficiales de relación intercultural, junto a 14 lenguas ancestrales (Kichwa, Shuar, Achuar, Shiwiar, Wao Terero, A'ingae, Paicoca, Záparo, Katsakati, Awapit, Cha'palaa, Tsa'fiki y Siapedee).</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Moneda (Art. 303):</strong> Dólar de los Estados Unidos (USD / $) desde enero/marzo de 2000 (Ley Trole I, canje a 25.000 sucres por dólar) tras el Sucre (1884–2000).</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-1 shrink-0 text-xs"></i><span><strong>Símbolos Patrios:</strong> Escudo de Armas (1900, con el volcán Chimborazo, río y vapor <em>Guayas</em>, signos de Aries a Cáncer y el Cóndor Andino), Himno Nacional (<em>¡Salve, oh Patria!</em> de Juan León Mera y Antonio Neumane, 1865–1866), el Cóndor Andino (<em>Vultur gryphus</em>) y el Árbol Nacional de la Quina (<em>Cinchona pubescens</em>, 1936).</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             4. SECCIÓN 10.- J: ARTE CULINARIO Y GALERÍA FLIP-CARDS 3D
+             ====================================================================== -->
+        <section id="gastronomia-3d" class="scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <p class="section-kicker">Parada 3</p>
+                    <h2 class="section-title">Tres sabores</h2>
+                </div>
+                <p class="text-sm text-slate-600 max-w-md">
+                    Toca una tarjeta para voltearla. El reverso explica cómo se prepara. Si quieres la ficha completa, ábrela desde el reverso.
+                </p>
+            </div>
+
+            <!-- Grilla de 3 Flip-Cards 3D -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="contenedor-flip-cards">
+                <div class="flip-card" onclick="this.classList.toggle('volteada')">
+                    <div class="flip-card-inner">
+                        <!-- CARA FRONTAL -->
+                        <div class="flip-card-front flex flex-col justify-between">
+                            <div>
+                                <div class="bg-gradient-to-r from-amber-500 to-yellow-600 p-6 text-white relative">
+                                    <span class="px-2.5 py-1 rounded-full bg-black/30 text-[11px] font-bold uppercase tracking-wider">Plato Gourmet Sólido</span>
+                                    <div class="my-3"><svg viewBox="0 0 120 90" class="w-28 h-24 mx-auto drop-shadow-md">
+                    <ellipse cx="45" cy="52" rx="28" ry="18" fill="#D97706" stroke="#FEF08A" stroke-width="2"></ellipse>
+                    <ellipse cx="45" cy="48" rx="25" ry="15" fill="#FBBF24"></ellipse>
+                    <ellipse cx="76" cy="44" rx="28" ry="18" fill="#B45309" stroke="#FEF08A" stroke-width="2"></ellipse>
+                    <ellipse cx="76" cy="40" rx="25" ry="15" fill="#F59E0B"></ellipse>
+                    <circle cx="42" cy="46" r="3" fill="#FFFBEB"></circle><circle cx="75" cy="38" r="3" fill="#FFFBEB"></circle>
+                </svg></div>
+                                    <h3 class="font-titulo font-black text-xl leading-snug">Patacones Crujientes de Plátano Verde</h3>
+                                    <p class="text-xs text-white/90 mt-1"><i class="fa-solid fa-location-dot mr-1"></i>Región Costa y Subtrópico (Patrimonio Manabita 2018)</p>
+                                </div>
+                                <div class="p-5">
+                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Obra de ingeniería culinaria popular del Pacífico ecuatorial basada en el plátano Barraganete (Musa AAB) en Grado 1 de maduración (&gt;22% almidón), transformado mediante doble fritura y majado mecánico en caliente.</p>
+                                </div>
+                            </div>
+                            <div class="px-5 pb-5 flex items-center justify-between text-xs font-bold text-blue-700 border-t border-slate-100 pt-3">
+                                <span><i class="fa-solid fa-rotate mr-1"></i> Pasa el ratón o toca para girar (3D)</span>
+                                <span class="px-2 py-0.5 rounded bg-yellow-100 text-amber-900">INPC / INIAP</span>
+                            </div>
+                        </div>
+
+                        <!-- CARA TRASERA (REVERSO CIENTÍFICO) -->
+                        <div class="flip-card-back">
+                            <div>
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-2.5 mb-3">
+                                    <span class="text-xs font-bold uppercase text-yellow-400">Ingeniería Culinaria</span>
+                                    <span class="text-[11px] text-slate-300">Sección 10.- J</span>
+                                </div>
+                                <h4 class="font-titulo font-bold text-base text-white mb-3">Patacones Crujientes de Plátano Verde</h4>
+                                <ul class="space-y-2 text-xs text-slate-200 leading-relaxed">
+                                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Etimología:</strong> Del árabe <em>batakká</em> e italiano <em>patacca</em> (monedas coloniales de plata de 8 reales).</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>1.ª Fritura (155 °C, 4–5 min):</strong> Gelatiniza los gránulos de almidón internos sin dorar la corteza.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Majado en caliente (&gt;65 °C):</strong> Golpe vertical en piedra o pataconera antes de que el almidón sufra retrogradación.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>2.ª Fritura (185 °C, 60–90 s):</strong> Choque térmico que evapora el agua y crea una corteza vítrea Maillard.</span></li>
+                                </ul>
+                            </div>
+                            <button onclick="event.stopPropagation(); abrirModalCulinario('patacones')" class="w-full py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-titulo font-extrabold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-lines"></i> Abrir Ficha Técnica Completa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="flip-card" onclick="this.classList.toggle('volteada')">
+                    <div class="flip-card-inner">
+                        <!-- CARA FRONTAL -->
+                        <div class="flip-card-front flex flex-col justify-between">
+                            <div>
+                                <div class="bg-gradient-to-r from-blue-700 to-indigo-900 p-6 text-white relative">
+                                    <span class="px-2.5 py-1 rounded-full bg-black/30 text-[11px] font-bold uppercase tracking-wider">Bebida-Alimento Ancestral</span>
+                                    <div class="my-3"><svg viewBox="0 0 120 90" class="w-28 h-24 mx-auto drop-shadow-md">
+                    <path d="M30,30 L90,30 L84,72 C82,80 38,80 36,72 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="3"></path>
+                    <path d="M90,38 C102,38 102,58 86,58" fill="none" stroke="#CBD5E1" stroke-width="5"></path>
+                    <ellipse cx="60" cy="30" rx="30" ry="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"></ellipse>
+                    <line x1="48" y1="26" x2="75" y2="14" stroke="#92400E" stroke-width="4" stroke-linecap="round"></line>
+                </svg></div>
+                                    <h3 class="font-titulo font-black text-xl leading-snug">El Morocho Ecuatoriano (Dulce de Leche y Especias)</h3>
+                                    <p class="text-xs text-white/90 mt-1"><i class="fa-solid fa-location-dot mr-1"></i>Región Sierra Interandina y Guayaquil</p>
+                                </div>
+                                <div class="p-5">
+                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Emulsión láctea y amilácea de origen prehispánico (maíz kichwa muruchu) mestizada en los conventos coloniales de Quito y Cuenca con leche entera andina, caña de azúcar y especias orientales y amazónicas.</p>
+                                </div>
+                            </div>
+                            <div class="px-5 pb-5 flex items-center justify-between text-xs font-bold text-blue-700 border-t border-slate-100 pt-3">
+                                <span><i class="fa-solid fa-rotate mr-1"></i> Pasa el ratón o toca para girar (3D)</span>
+                                <span class="px-2 py-0.5 rounded bg-yellow-100 text-amber-900">INPC / INIAP</span>
+                            </div>
+                        </div>
+
+                        <!-- CARA TRASERA (REVERSO CIENTÍFICO) -->
+                        <div class="flip-card-back">
+                            <div>
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-2.5 mb-3">
+                                    <span class="text-xs font-bold uppercase text-yellow-400">Ingeniería Culinaria</span>
+                                    <span class="text-[11px] text-slate-300">Sección 10.- J</span>
+                                </div>
+                                <h4 class="font-titulo font-bold text-base text-white mb-3">El Morocho Ecuatoriano (Dulce de Leche y Especias)</h4>
+                                <ul class="space-y-2 text-xs text-slate-200 leading-relaxed">
+                                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Maíz Muruchu:</strong> Grano andino duro partido (2–4 mm) que conserva su polvillo de almidón natural como espesante.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Remojo pasivo (12 horas):</strong> Hidrata por capilaridad la matriz proteica de zeína del maíz duro.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Secreto científico:</strong> Hervir primero 90–120 min <strong>solo en agua con especias</strong> (el calcio de la leche desde crudo impermeabiliza el grano e impide que ablande).</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Emulsión láctea (85–90 °C):</strong> Reducción lenta con leche entera, crema, azúcar o panela, pasas e <em>ishpingo</em>.</span></li>
+                                </ul>
+                            </div>
+                            <button onclick="event.stopPropagation(); abrirModalCulinario('morocho')" class="w-full py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-titulo font-extrabold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-lines"></i> Abrir Ficha Técnica Completa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="flip-card" onclick="this.classList.toggle('volteada')">
+                    <div class="flip-card-inner">
+                        <!-- CARA FRONTAL -->
+                        <div class="flip-card-front flex flex-col justify-between">
+                            <div>
+                                <div class="bg-gradient-to-r from-emerald-600 to-teal-800 p-6 text-white relative">
+                                    <span class="px-2.5 py-1 rounded-full bg-black/30 text-[11px] font-bold uppercase tracking-wider">Néctar Frutal Tropical</span>
+                                    <div class="my-3"><svg viewBox="0 0 120 90" class="w-28 h-24 mx-auto drop-shadow-md">
+                    <rect x="42" y="16" width="36" height="62" rx="6" fill="#FDE047" stroke="#FFFFFF" stroke-width="3"></rect>
+                    <rect x="45" y="24" width="30" height="51" rx="4" fill="#F59E0B"></rect>
+                    <circle cx="84" cy="64" r="14" fill="#FACC15" stroke="#B45309" stroke-width="2.5"></circle>
+                    <circle cx="84" cy="64" r="9" fill="#EA580C"></circle>
+                    <circle cx="82" cy="62" r="1.5" fill="#000"></circle><circle cx="87" cy="65" r="1.5" fill="#000"></circle>
+                </svg></div>
+                                    <h3 class="font-titulo font-black text-xl leading-snug">El Jugo de Maracuyá Fresco Ecuatoriano</h3>
+                                    <p class="text-xs text-white/90 mt-1"><i class="fa-solid fa-location-dot mr-1"></i>Litoral, Valles Subtropicales y Nacional</p>
+                                </div>
+                                <div class="p-5">
+                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">El refresco insignia de la comensalidad ecuatoriana elaborado con Passiflora edulis f. flavicarpa (clon INIAP-2009), reconocido mundialmente por su alta concentración de ésteres aromáticos y acidez cítrica brillante.</p>
+                                </div>
+                            </div>
+                            <div class="px-5 pb-5 flex items-center justify-between text-xs font-bold text-blue-700 border-t border-slate-100 pt-3">
+                                <span><i class="fa-solid fa-rotate mr-1"></i> Pasa el ratón o toca para girar (3D)</span>
+                                <span class="px-2 py-0.5 rounded bg-yellow-100 text-amber-900">INPC / INIAP</span>
+                            </div>
+                        </div>
+
+                        <!-- CARA TRASERA (REVERSO CIENTÍFICO) -->
+                        <div class="flip-card-back">
+                            <div>
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-2.5 mb-3">
+                                    <span class="text-xs font-bold uppercase text-yellow-400">Ingeniería Culinaria</span>
+                                    <span class="text-[11px] text-slate-300">Sección 10.- J</span>
+                                </div>
+                                <h4 class="font-titulo font-bold text-base text-white mb-3">El Jugo de Maracuyá Fresco Ecuatoriano</h4>
+                                <ul class="space-y-2 text-xs text-slate-200 leading-relaxed">
+                                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Selección Grado 5:</strong> Frutos amarillos pesados con cáscara ligeramente arrugada (14° a 16° Brix internos).</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Extracción sin raspar el albedo:</strong> Se retiran los arilos anaranjados sin raspar la capa blanca interna (rica en pectinas astringentes).</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Punto crítico (Pulsos de 2 s):</strong> Licuar en frío mediante 3–4 pulsos de 2 segundos para no triturar la semilla negra.</span></li><li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span><strong>Balance sensorial:</strong> Estandarizado a 11°–12° Brix y pH 3,0–3,3, servido entre 4 °C y 7 °C.</span></li>
+                                </ul>
+                            </div>
+                            <button onclick="event.stopPropagation(); abrirModalCulinario('maracuya')" class="w-full py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-titulo font-extrabold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-lines"></i> Abrir Ficha Técnica Completa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ======================================================================
+             5. ZONA ARCADE — EL RETO FINAL (4 MODALIDADES DE JUEGO EDUCATIVO)
+             ====================================================================== -->
+
+        <!-- ======================================================================
+             MULTIMEDIA: VIDEOS, AUDIOS Y GALERÍA
+             ====================================================================== -->
+        <section id="multimedia" class="scroll-mt-24">
+            <div class="reveal" data-reveal>
+                <p class="section-kicker">Parada 4</p>
+                <h2 class="section-title">Videos, audios y galería</h2>
+                <p class="section-lead max-w-2xl">Documentales, comida, himnos, pasillo y fotos de lugares y sabores del Ecuador.</p>
+            </div>
+
+            <div class="media-tabs" role="tablist" aria-label="Multimedia">
+                <button type="button" class="media-tab is-on" role="tab" aria-selected="true" data-media="videos" onclick="cambiarMediaTab('videos')">
+                    <i class="fa-solid fa-video" aria-hidden="true"></i> Videos
+                </button>
+                <button type="button" class="media-tab" role="tab" aria-selected="false" data-media="audios" onclick="cambiarMediaTab('audios')">
+                    <i class="fa-solid fa-headphones" aria-hidden="true"></i> Audios
+                </button>
+                <button type="button" class="media-tab" role="tab" aria-selected="false" data-media="galeria" onclick="cambiarMediaTab('galeria')">
+                    <i class="fa-solid fa-images" aria-hidden="true"></i> Galería
+                </button>
+            </div>
+
+            <div id="media-pane-videos" class="media-pane">
+                <p class="media-note">Toca <strong>Ver video</strong> para abrirlo. Si estás en GitHub Pages o un servidor local, también puedes reproducirlo aquí.</p>
+                <div class="video-grid" id="video-grid">
+                    <!-- rellenado por JS -->
+                </div>
+            </div>
+
+            <div id="media-pane-audios" class="media-pane oculto">
+                <div class="audio-grid">
+                    <article class="audio-card audio-card-wide">
+                        <div class="audio-icon"><i class="fa-solid fa-flag" aria-hidden="true"></i></div>
+                        <div class="audio-body">
+                            <h3>Himno Nacional · Salve, Oh Patria</h3>
+                            <p>Grabación pública del himno (Wikimedia Commons).</p>
+                            <audio controls preload="none" class="audio-player">
+                                <source src="media/audio/salve-oh-patria.oga" type="audio/ogg">
+                                <source src="media/audio/himno-anthem.ogg" type="audio/ogg">
+                            </audio>
+                        </div>
+                    </article>
+                    <article class="audio-card audio-card-wide">
+                        <div class="audio-icon"><i class="fa-solid fa-landmark" aria-hidden="true"></i></div>
+                        <div class="audio-body">
+                            <h3>Himno Nacional (versión abreviada)</h3>
+                            <p>Ideal para el stand si necesitas una versión más corta.</p>
+                            <audio controls preload="none" class="audio-player">
+                                <source src="media/audio/himno-abreviado.ogg" type="audio/ogg">
+                            </audio>
+                        </div>
+                    </article>
+                    <article class="audio-card">
+                        <div class="audio-icon"><i class="fa-solid fa-guitar" aria-hidden="true"></i></div>
+                        <div class="audio-body">
+                            <h3>Pasillo ecuatoriano</h3>
+                            <p>Documental sobre el pasillo (patrimonio cultural).</p>
+                            <a class="audio-play" href="https://www.youtube.com/watch?v=lhXc0HIuYls" target="_blank" rel="noopener noreferrer">Escuchar en YouTube</a>
+                        </div>
+                    </article>
+                    <article class="audio-card">
+                        <div class="audio-icon"><i class="fa-solid fa-music" aria-hidden="true"></i></div>
+                        <div class="audio-body">
+                            <h3>Himno cantado (oficial)</h3>
+                            <p>Versión cantada completa del himno nacional.</p>
+                            <a class="audio-play" href="https://www.youtube.com/watch?v=LzsdNotN8jg" target="_blank" rel="noopener noreferrer">Escuchar en YouTube</a>
+                        </div>
+                    </article>
+                    <article class="audio-card">
+                        <div class="audio-icon"><i class="fa-solid fa-headphones" aria-hidden="true"></i></div>
+                        <div class="audio-body">
+                            <h3>Himno instrumental</h3>
+                            <p>Otra interpretación disponible en video.</p>
+                            <a class="audio-play" href="https://www.youtube.com/watch?v=o2ERLN4tiJY" target="_blank" rel="noopener noreferrer">Escuchar en YouTube</a>
+                        </div>
+                    </article>
+                    <article class="audio-card audio-card-wide">
+                        <div class="audio-icon"><i class="fa-solid fa-podcast" aria-hidden="true"></i></div>
+                        <div class="audio-body">
+                            <h3>Mini-relato del stand</h3>
+                            <p>Resumen hablado generado en el navegador.</p>
+                            <button type="button" class="audio-play" onclick="narrarStand()">Narrar resumen</button>
+                            <button type="button" class="audio-play audio-play-ghost" onclick="detenerNarracion()">Detener</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <div id="media-pane-galeria" class="media-pane oculto">
+                <div class="gallery-grid" id="gallery-grid">
+                    <button type="button" class="gallery-item" data-full="media/quito.jpg" data-cap="Quito" onclick="abrirGaleria(this)">
+                        <img src="media/quito.jpg" alt="Quito" loading="lazy"><span>Quito</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/quito2.jpg" data-cap="Centro de Quito" onclick="abrirGaleria(this)">
+                        <img src="media/quito2.jpg" alt="Centro de Quito" loading="lazy"><span>Quito centro</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/mitad.jpg" data-cap="Mitad del Mundo" onclick="abrirGaleria(this)">
+                        <img src="media/mitad.jpg" alt="Mitad del Mundo" loading="lazy"><span>Mitad del Mundo</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/cotopaxi.jpg" data-cap="Volcán Cotopaxi" onclick="abrirGaleria(this)">
+                        <img src="media/cotopaxi.jpg" alt="Cotopaxi" loading="lazy"><span>Cotopaxi</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/chimborazo.jpg" data-cap="Volcán Chimborazo" onclick="abrirGaleria(this)">
+                        <img src="media/chimborazo.jpg" alt="Chimborazo" loading="lazy"><span>Chimborazo</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/cuenca.jpg" data-cap="Cuenca" onclick="abrirGaleria(this)">
+                        <img src="media/cuenca.jpg" alt="Cuenca" loading="lazy"><span>Cuenca</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/otavalo.jpg" data-cap="Mercado de Otavalo" onclick="abrirGaleria(this)">
+                        <img src="media/otavalo.jpg" alt="Otavalo" loading="lazy"><span>Otavalo</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/guayaquil.jpg" data-cap="Guayaquil" onclick="abrirGaleria(this)">
+                        <img src="media/guayaquil.jpg" alt="Guayaquil" loading="lazy"><span>Guayaquil</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/galapagos.jpg" data-cap="Islas Galápagos" onclick="abrirGaleria(this)">
+                        <img src="media/galapagos.jpg" alt="Galápagos" loading="lazy"><span>Galápagos</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/amazonia.jpg" data-cap="Amazonía ecuatoriana" onclick="abrirGaleria(this)">
+                        <img src="media/amazonia.jpg" alt="Amazonía" loading="lazy"><span>Amazonía</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/yasuni.jpg" data-cap="Yasuní" onclick="abrirGaleria(this)">
+                        <img src="media/yasuni.jpg" alt="Yasuní" loading="lazy"><span>Yasuní</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/bananos.jpg" data-cap="Banano ecuatoriano" onclick="abrirGaleria(this)">
+                        <img src="media/bananos.jpg" alt="Banano" loading="lazy"><span>Banano</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/patacones.jpg" data-cap="Patacones" onclick="abrirGaleria(this)">
+                        <img src="media/patacones.jpg" alt="Patacones" loading="lazy"><span>Patacones</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/ceviche.jpg" data-cap="Ceviche ecuatoriano" onclick="abrirGaleria(this)">
+                        <img src="media/ceviche.jpg" alt="Ceviche" loading="lazy"><span>Ceviche</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/hornado.jpg" data-cap="Hornado" onclick="abrirGaleria(this)">
+                        <img src="media/hornado.jpg" alt="Hornado" loading="lazy"><span>Hornado</span>
+                    </button>
+                    <button type="button" class="gallery-item" data-full="media/cuy.jpg" data-cap="Cuy asado" onclick="abrirGaleria(this)">
+                        <img src="media/cuy.jpg" alt="Cuy" loading="lazy"><span>Cuy</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="zona-arcade" class="scroll-mt-24">
+            <div class="arcade-shell text-white">
+                <header class="arcade-header">
+                    <p class="text-yellow-300 text-xs font-bold uppercase tracking-widest">Parada 5</p>
+                    <h2 class="font-titulo text-2xl sm:text-4xl font-extrabold text-white mt-1">Juegos del stand</h2>
+                    <p class="text-slate-300 mt-2 max-w-md">Elige un juego. Cada acierto suma puntos. Meta: <strong class="text-yellow-300">Gran Cóndor</strong> (600 pts).</p>
+                </header>
+
+                <div class="game-lobby" role="tablist" aria-label="Juegos">
+                    <button type="button" role="tab" aria-selected="true" onclick="cambiarJuegoArcade('trivia')" id="tab-juego-trivia" class="game-lobby-card is-active">
+                        <span class="game-lobby-num" aria-hidden="true">01</span>
+                        <i class="fa-solid fa-brain" aria-hidden="true"></i>
+                        <strong>Trivia</strong>
+                        <span>10 preguntas del informe</span>
+                    </button>
+                    <button type="button" role="tab" aria-selected="false" onclick="cambiarJuegoArcade('memorama')" id="tab-juego-memorama" class="game-lobby-card">
+                        <span class="game-lobby-num" aria-hidden="true">02</span>
+                        <i class="fa-solid fa-clone" aria-hidden="true"></i>
+                        <strong>Memorama</strong>
+                        <span>Encuentra 6 pares</span>
+                    </button>
+                    <button type="button" role="tab" aria-selected="false" onclick="cambiarJuegoArcade('ruta')" id="tab-juego-ruta" class="game-lobby-card">
+                        <span class="game-lobby-num" aria-hidden="true">03</span>
+                        <i class="fa-solid fa-route" aria-hidden="true"></i>
+                        <strong>Ruta</strong>
+                        <span>Ordena el viaje</span>
+                    </button>
+                    <button type="button" role="tab" aria-selected="false" onclick="cambiarJuegoArcade('regiones')" id="tab-juego-regiones" class="game-lobby-card">
+                        <span class="game-lobby-num" aria-hidden="true">04</span>
+                        <i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+                        <strong>Regiones</strong>
+                        <span>Clasifica el dato</span>
+                    </button>
+                </div>
+
+                <div class="game-stage" id="game-stage">
+
+                <!-- ==============================================================
+                     JUEGO 1: TRIVIA ACADÉMICA (HOOK #quiz-container)
+                     ============================================================== -->
+                <div id="juego-vista-trivia" class="space-y-6">
+                    <div id="quiz-container" class="bg-slate-900/90 rounded-2xl p-6 sm:p-8 border border-slate-700">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4 text-xs">
+                    <span class="font-bold text-yellow-400 uppercase tracking-wider">Pregunta 1 de 10</span>
+                    <div class="flex items-center gap-3">
+                        <span class="px-2.5 py-1 rounded bg-slate-800 text-emerald-400 font-bold">Racha: 🔥 0</span>
+                        <span class="px-2.5 py-1 rounded bg-slate-800 text-yellow-400 font-bold">Puntos Trivia: 0</span>
+                    </div>
+                </div>
+
+                <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-6">
+                    <div class="h-full bg-gradient-to-r from-yellow-400 via-blue-500 to-red-500 transition-all duration-300" style="width: 0%"></div>
+                </div>
+
+                <h3 class="font-titulo font-bold text-base sm:text-xl text-white mb-6 leading-snug">1. Según la arqueología oficial (INPC / IRD de Francia), ¿qué hito mundial ocurrió hace 5.500 años (ca. 3500 a. C.) en el sitio Santa Ana-La Florida (Palanda, Zamora Chinchipe)?</h3>
+
+                <div class="grid grid-cols-1 gap-3" id="opciones-trivia-box">
+                    
+                        <button onclick="verificarRespuestaTrivia(0)" id="btn-op-0" class="opcion-btn text-left p-4 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-600 text-xs sm:text-sm text-slate-100 font-medium flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-lg bg-slate-900 text-yellow-400 font-bold flex items-center justify-center shrink-0 text-xs">A</span>
+                            <span>La domesticación y uso social más antiguo del cacao (Theobroma cacao) en el planeta por la cultura Mayo-Chinchipe</span>
+                        </button>
+                    
+                        <button onclick="verificarRespuestaTrivia(1)" id="btn-op-1" class="opcion-btn text-left p-4 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-600 text-xs sm:text-sm text-slate-100 font-medium flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-lg bg-slate-900 text-yellow-400 font-bold flex items-center justify-center shrink-0 text-xs">B</span>
+                            <span>La construcción del primer observatorio incaico de piedra almohadillada</span>
+                        </button>
+                    
+                        <button onclick="verificarRespuestaTrivia(2)" id="btn-op-2" class="opcion-btn text-left p-4 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-600 text-xs sm:text-sm text-slate-100 font-medium flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-lg bg-slate-900 text-yellow-400 font-bold flex items-center justify-center shrink-0 text-xs">C</span>
+                            <span>La llegada de las primeras semillas de plátano Barraganete desde Asia</span>
+                        </button>
+                    
+                        <button onclick="verificarRespuestaTrivia(3)" id="btn-op-3" class="opcion-btn text-left p-4 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-600 text-xs sm:text-sm text-slate-100 font-medium flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-lg bg-slate-900 text-yellow-400 font-bold flex items-center justify-center shrink-0 text-xs">D</span>
+                            <span>La firma del primer tratado comercial con Mesoamérica</span>
+                        </button>
+                    
+                </div>
+
+                <div id="feedback-trivia" class="oculto mt-6 p-4 rounded-xl border text-xs sm:text-sm"></div>
+            </div>
+                </div>
+
+                <!-- ==============================================================
+                     JUEGO 2: MEMORAMA PATRIMONIAL Y OLÍMPICO
+                     ============================================================== -->
+                <div id="juego-vista-memorama" class="oculto space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                        <div>
+                            <h3 class="font-titulo font-bold text-lg text-yellow-400">Memorama de Pares Históricos, Científicos y Olímpicos</h3>
+                            <p class="text-xs text-slate-300">Encuentra los 6 pares que relacionan cada hito del Ecuador con su dato exacto del informe.</p>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm">
+                            <span class="bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">Intentos: <strong id="memo-intentos" class="text-yellow-400">0</strong></span>
+                            <span class="bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">Pares: <strong id="memo-pares" class="text-emerald-400">0/6</strong></span>
+                            <button onclick="iniciarMemorama()" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase transition">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> Reiniciar Tablero
+                            </button>
+                        </div>
+                    </div>
+                    <div id="tablero-memorama" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div onclick="voltearCartaMemorama(0)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🦄</span>
+                            <span class="text-xs font-bold leading-tight">Kushki (PayTech)</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(1)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">👟</span>
+                            <span class="text-xs font-bold leading-tight">Oro Olímpico 20 km Marcha París 2024</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(2)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🏔️</span>
+                            <span class="text-xs font-bold leading-tight">Volcán Chimborazo</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(3)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🥇</span>
+                            <span class="text-xs font-bold leading-tight">Brian Daniel Pintado</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(4)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🌍</span>
+                            <span class="text-xs font-bold leading-tight">6.384,4 km del centro terrestre</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(5)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🌱</span>
+                            <span class="text-xs font-bold leading-tight">Derechos de la Naturaleza (Pachamama)</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(6)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🌿</span>
+                            <span class="text-xs font-bold leading-tight">Árbol de la Quina (Loja)</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(7)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">💻</span>
+                            <span class="text-xs font-bold leading-tight">1.er Unicornio Tecnológico ($1.500 M)</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(8)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">⚕️</span>
+                            <span class="text-xs font-bold leading-tight">Cura mundial contra la Malaria (1936)</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(9)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🏺</span>
+                            <span class="text-xs font-bold leading-tight">Cultura Mayo-Chinchipe</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(10)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">🍫</span>
+                            <span class="text-xs font-bold leading-tight">Cacao hace 5.500 años (Palanda)</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="voltearCartaMemorama(11)" class="carta-memorama  ">
+                    <div class="carta-memorama-inner">
+                        <div class="carta-cara-frontal shadow-md">
+                            <i class="fa-solid fa-sun text-2xl"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest mt-1 text-white">ECUADOR</span>
+                        </div>
+                        <div class="carta-cara-trasera shadow-md">
+                            <span class="text-2xl mb-1">⚖️</span>
+                            <span class="text-xs font-bold leading-tight">Artículos 71 al 74 (2008)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                                <!-- JUEGO 3: RUTA EQUINOCCIAL -->
+                <div id="juego-vista-ruta" class="oculto space-y-6">
+                    <div id="contenedor-juego-ruta" class="game-board"></div>
+                </div>
+
+<!-- ==============================================================
+                     JUEGO 4: CLASIFICADOR RÁPIDO «RETO DE LAS 4 REGIONES»
+                     ============================================================== -->
+                <div id="juego-vista-regiones" class="oculto space-y-6">
+                    <div id="contenedor-juego-regiones" class="bg-slate-900/90 rounded-2xl p-6 sm:p-8 border border-slate-700">
+                <div class="text-center max-w-2xl mx-auto space-y-5">
+                    <span class="px-3 py-1 rounded-full bg-slate-800 text-yellow-400 text-xs font-bold">Elemento 1 de 6</span>
+                    <div class="bg-slate-800/90 p-6 rounded-2xl border-2 border-blue-500/40">
+                        <span class="text-xs text-slate-400 uppercase block mb-1">¿A qué Región Geográfica pertenece este activo nacional?</span>
+                        <h4 class="font-titulo font-black text-xl sm:text-2xl text-white">Primer exportador mundial de Camarón blanco y Banano</h4>
+                        <span class="text-xs text-blue-300 block mt-2"><i class="fa-solid fa-lightbulb mr-1"></i>Pista: Cuenca del Guayas, Manabí, El Oro y Esmeraldas</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="verificarClasificacionRegion('costa')" class="p-4 rounded-xl bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 border border-amber-400 font-titulo font-bold text-xs sm:text-sm transition">
+                            🌊 1. Región Costa
+                        </button>
+                        <button onclick="verificarClasificacionRegion('sierra')" class="p-4 rounded-xl bg-purple-500/20 hover:bg-purple-500 hover:text-white border border-purple-400 font-titulo font-bold text-xs sm:text-sm transition">
+                            🏔️ 2. Región Sierra
+                        </button>
+                        <button onclick="verificarClasificacionRegion('amazonia')" class="p-4 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-400 font-titulo font-bold text-xs sm:text-sm transition">
+                            🌿 3. Amazonía
+                        </button>
+                        <button onclick="verificarClasificacionRegion('galapagos')" class="p-4 rounded-xl bg-sky-500/20 hover:bg-sky-500 hover:text-slate-950 border border-sky-400 font-titulo font-bold text-xs sm:text-sm transition">
+                            🐢 4. Galápagos
+                        </button>
+                    </div>
+                    <div id="feedback-clasificador" class="text-xs font-bold min-h-[24px]"></div>
+                </div>
+            </div>
+                </div>
+
+                </div><!-- /.game-stage -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================================================
+         PIE DE PÁGINA INSTITUCIONAL (<FOOTER>)
+         ========================================================================== -->
+    <footer class="bg-slate-950 text-slate-400 border-t-4 border-yellow-400 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-6 rounded overflow-hidden flex flex-col border border-yellow-400">
+                        <div class="h-1/2 bg-[#FFDD00]"></div>
+                        <div class="h-1/4 bg-[#0033A0]"></div>
+                        <div class="h-1/4 bg-[#EF3340]"></div>
+                    </div>
+                    <div>
+                        <span class="font-titulo font-bold text-white text-sm block">República del Ecuador · Feria COBOLJA 2026</span>
+                        <span class="text-xs text-slate-400">Stand digital: mapa, informe, sabores y juegos.</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="abrirModalQR()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-yellow-400 text-xs font-bold border border-slate-800 transition">
+                        <i class="fa-solid fa-qrcode mr-1"></i> Mostrar QR del Stand
+                    </button>
+                    <button type="button" onclick="abrirModalVSCode()" class="min-h-[44px] px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold border border-slate-800 transition">
+                        <i class="fa-solid fa-file-code mr-1" aria-hidden="true"></i> Ver código del proyecto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================================================
+         MODAL 1: FICHA TÉCNICA COMPLETA DE ARTE CULINARIO
+         ========================================================================== -->
+    <div id="modal-ficha-culinaria" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm oculto flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="contenido-modal-culinario">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-yellow-400 p-6 sm:p-8 relative">
+            <button type="button" onclick="cerrarModalCulinario()" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-slate-100 hover:bg-red-100 text-slate-700 hover:text-red-600 flex items-center justify-center transition" aria-label="Cerrar ficha">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="contenido-modal-culinario"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL 2: CÓDIGO QR EN PANTALLA COMPLETA PARA EL STAND FÍSICO
+         ========================================================================== -->
+    <div id="modal-qr" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-md oculto flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-qr">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center shadow-2xl border-4 border-yellow-400 relative">
+            <button type="button" onclick="cerrarModalQR()" class="absolute top-4 right-4 w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center" aria-label="Cerrar código QR">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-bold text-xs uppercase">COBOLJA • Stand República del Ecuador</span>
+            <h3 id="titulo-modal-qr" class="font-titulo font-black text-2xl text-slate-900 mt-2">Escanea nuestro portal</h3>
+            <label for="input-url-qr" class="text-sm text-slate-600 mt-2 block">Si el enlace público es otro, escríbelo aquí y el QR se actualiza.</label>
+            <input type="url" id="input-url-qr" oninput="actualizarQRPersonalizado(this.value)" placeholder="https://tu-usuario.github.io/ecuador/" class="mt-2 w-full min-h-[44px] px-3 py-2 rounded-xl border border-slate-300 text-sm text-center focus:ring-2 focus:ring-blue-600">
+            <div id="qr-modal-box" data-qr class="w-64 h-64 mx-auto my-5 p-3 bg-white rounded-2xl shadow-md border-2 border-slate-200 flex items-center justify-center">
+                <canvas class="qr-lienzo" width="168" height="168" aria-label="Código QR del portal"></canvas>
+            </div>
+            <p class="text-xs font-semibold text-slate-700">Compatible con cualquier cámara de iOS y Android</p>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL 3: EXPORTADOR DE LOS 3 ARCHIVOS PARA VS CODE (index.html, style.css, codigo.js)
+         ========================================================================== -->
+    <div id="modal-vscode" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-md oculto flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-vscode">
+        <div class="bg-slate-900 text-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border-2 border-emerald-500 overflow-hidden">
+            <div class="p-5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-laptop-code text-emerald-400 text-xl"></i>
+                    <div>
+                        <h3 id="titulo-modal-vscode" class="font-titulo font-bold text-lg">Código del proyecto</h3>
+                        <p class="text-xs text-slate-400">Úsalo solo si vas a publicar o revisar los archivos. El visitante de la feria no lo necesita.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="cerrarModalVSCode()" class="w-11 h-11 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center shrink-0" aria-label="Cerrar código">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-4 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex gap-2">
+                    <button onclick="mostrarCodigoArchivo('html')" id="btn-tab-html" class="px-4 py-2 rounded-xl bg-yellow-400 text-slate-950 font-bold text-xs">1. index.html</button>
+                    <button onclick="mostrarCodigoArchivo('css')" id="btn-tab-css" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700">2. style.css</button>
+                    <button onclick="mostrarCodigoArchivo('js')" id="btn-tab-js" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700">3. codigo.js</button>
+                </div>
+                <button onclick="copiarCodigoVSCode()" id="btn-copiar-vscode" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 transition">
+                    <i class="fa-solid fa-copy"></i> Copiar este Archivo al Portapapeles
+                </button>
+            </div>
+
+            <div class="p-4 overflow-y-auto flex-1 bg-slate-950 font-mono text-xs text-slate-300">
+                <pre id="visor-codigo-vscode" class="whitespace-pre-wrap break-words">Elige un archivo para cargarlo.</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         3. CODIGO.JS — LÓGICA, BASE DE DATOS DEL INFORME, MAPA Y 4 JUEGOS (ES6+)
+         ========================================================================== -->
+    <!-- Enlace a tu script interactivo en VS Code -->
+    <div id="qr-hero-box" data-qr class="oculto" aria-hidden="true"></div>
+    <button type="button" id="btn-subir" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="codigo.js"></script>
+
+    <div id="modal-galeria" class="fixed inset-0 z-[70] bg-slate-950/90 backdrop-blur-sm oculto flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="galeria-caption">
+        <button type="button" class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20" onclick="cerrarGaleria()" aria-label="Cerrar galería"><i class="fa-solid fa-xmark"></i></button>
+        <figure class="max-w-5xl w-full text-center">
+            <img id="galeria-img" src="" alt="" class="max-h-[78vh] w-auto mx-auto rounded-2xl shadow-2xl object-contain">
+            <figcaption id="galeria-caption" class="text-white mt-4 text-sm sm:text-base"></figcaption>
+        </figure>
+    </div>
+
+</body>
+</html>
