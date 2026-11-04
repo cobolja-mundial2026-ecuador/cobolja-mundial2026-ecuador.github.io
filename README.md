@@ -1,0 +1,1 @@
+# cobolja-mundial2026-ecuador.github.io
