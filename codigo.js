@@ -1713,8 +1713,10 @@
             if (focoPrevio && typeof focoPrevio.focus === 'function') focoPrevio.focus();
         }
 
+        const URL_INSTAGRAM = 'https://www.instagram.com/ecuavita_fresh?vrfl=eWlkdGN5cW9ocHl5';
+
         function capaAbierta() {
-            return ['modal-qr', 'modal-vscode', 'modal-ficha-culinaria'].some((id) => {
+            return ['modal-qr', 'modal-qr-instagram', 'modal-vscode', 'modal-ficha-culinaria'].some((id) => {
                 const nodo = document.getElementById(id);
                 return nodo && !nodo.classList.contains('oculto');
             });
@@ -1736,6 +1738,51 @@
 
         function cerrarModalQR() {
             const modal = document.getElementById('modal-qr');
+            if (!modal || modal.classList.contains('oculto')) return;
+            modal.classList.add('oculto');
+            sincronizarScrollModal();
+            restaurarFoco();
+        }
+
+        function generarQRInstagram() {
+            const caja = document.getElementById('qr-instagram-box');
+            if (!caja) return;
+            caja.replaceChildren();
+            if (typeof QRCode === 'undefined') {
+                const aviso = document.createElement('p');
+                aviso.className = 'text-xs text-slate-600 text-center px-2';
+                aviso.textContent = 'No se pudo generar el QR. Usa el botón Abrir perfil.';
+                caja.appendChild(aviso);
+                return;
+            }
+            const holder = document.createElement('div');
+            caja.appendChild(holder);
+            new QRCode(holder, {
+                text: URL_INSTAGRAM,
+                width: 200,
+                height: 200,
+                colorDark: '#831843',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+            const imagen = holder.querySelector('img');
+            if (imagen) imagen.alt = 'Código QR de Instagram @ecuavita_fresh';
+        }
+
+        function abrirModalQRInstagram() {
+            reproducirSonido('clic');
+            recordarFoco();
+            const modal = document.getElementById('modal-qr-instagram');
+            if (!modal) return;
+            generarQRInstagram();
+            modal.classList.remove('oculto');
+            sincronizarScrollModal();
+            const cierre = modal.querySelector('button');
+            if (cierre) cierre.focus();
+        }
+
+        function cerrarModalQRInstagram() {
+            const modal = document.getElementById('modal-qr-instagram');
             if (!modal || modal.classList.contains('oculto')) return;
             modal.classList.add('oculto');
             sincronizarScrollModal();
@@ -1855,6 +1902,7 @@
             document.addEventListener('keydown', (evento) => {
                 if (evento.key !== 'Escape') return;
                 cerrarModalQR();
+                cerrarModalQRInstagram();
                 cerrarModalCulinario();
                 cerrarModalVSCode();
                 cerrarGaleria();
@@ -1862,12 +1910,13 @@
                 detenerNarracion();
                 detenerAmbiente();
             });
-            ['modal-qr', 'modal-vscode', 'modal-ficha-culinaria', 'modal-galeria'].forEach((id) => {
+            ['modal-qr', 'modal-qr-instagram', 'modal-vscode', 'modal-ficha-culinaria', 'modal-galeria'].forEach((id) => {
                 const modal = document.getElementById(id);
                 if (!modal) return;
                 modal.addEventListener('click', (evento) => {
                     if (evento.target !== modal) return;
                     if (id === 'modal-qr') cerrarModalQR();
+                    if (id === 'modal-qr-instagram') cerrarModalQRInstagram();
                     if (id === 'modal-vscode') cerrarModalVSCode();
                     if (id === 'modal-ficha-culinaria') cerrarModalCulinario();
                     if (id === 'modal-galeria') cerrarGaleria();
