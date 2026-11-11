@@ -71,33 +71,48 @@
             audioHabilitado = !audioHabilitado;
             const icono = document.getElementById('icono-audio');
             const btn = document.getElementById('btn-audio');
-            icono.className = audioHabilitado ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-slate-400';
-            if (btn) {
-                btn.setAttribute('aria-pressed', audioHabilitado ? 'true' : 'false');
-                btn.setAttribute('aria-label', audioHabilitado ? 'Silenciar efectos de sonido' : 'Activar efectos de sonido');
+            const btnMovil = document.getElementById('btn-audio-movil');
+            if (icono) icono.className = audioHabilitado ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-slate-400';
+            [btn, btnMovil].forEach((b) => {
+                if (!b) return;
+                b.setAttribute('aria-pressed', audioHabilitado ? 'true' : 'false');
+                b.setAttribute('aria-label', audioHabilitado ? 'Silenciar efectos de sonido' : 'Activar efectos de sonido');
+                const ic = b.querySelector('i');
+                if (ic && b === btnMovil) ic.className = audioHabilitado ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+            });
+            if (typeof est !== 'undefined') {
+                est.sonido = audioHabilitado;
+                if (typeof guardarEstado === 'function') guardarEstado();
             }
             if (audioHabilitado) reproducirSonido('clic');
+            else if (typeof pararPaisaje === 'function') pararPaisaje();
         }
 
-        function sumarPuntosGlobales(cantidad) {
+        function sumarPuntosGlobales(cantidad, categoria) {
+            const cat = categoria || 'trivia';
+            if (typeof sumarCategoria === 'function') {
+                const ok = sumarCategoria(cat, cantidad);
+                if (typeof totalPuntos === 'function') puntajeGlobal = totalPuntos();
+                return ok;
+            }
             puntajeGlobal += cantidad;
             const scoreEl = document.getElementById('score');
             const rangoEl = document.getElementById('rango-visitante');
-            scoreEl.textContent = puntajeGlobal;
-            scoreEl.classList.remove('score-bump');
-            void scoreEl.offsetWidth;
-            scoreEl.classList.add('score-bump');
-
-            if (puntajeGlobal >= 600) {
-                rangoEl.textContent = 'Gran Cóndor 🇪🇨';
-                rangoEl.className = 'text-[10px] text-yellow-400 font-bold uppercase block leading-none';
-            } else if (puntajeGlobal >= 300) {
-                rangoEl.textContent = 'Sabio Geodésico';
-                rangoEl.className = 'text-[10px] text-emerald-400 font-bold uppercase block leading-none';
-            } else if (puntajeGlobal >= 100) {
-                rangoEl.textContent = 'Investigador Andino';
-                rangoEl.className = 'text-[10px] text-blue-400 font-bold uppercase block leading-none';
+            if (scoreEl) {
+                scoreEl.textContent = puntajeGlobal;
+                scoreEl.classList.remove('score-bump');
+                void scoreEl.offsetWidth;
+                scoreEl.classList.add('score-bump');
             }
+            if (!rangoEl) return cantidad;
+            if (puntajeGlobal >= 600) rangoEl.textContent = 'Gran Cóndor';
+            else if (puntajeGlobal >= 300) rangoEl.textContent = 'Sabio Geodésico';
+            else if (puntajeGlobal >= 100) rangoEl.textContent = 'Investigador Andino';
+            return cantidad;
+        }
+
+        function pintarProgresoMapaLocal() {
+            actualizarProgresoMapa();
         }
 
         /* ========================================================================
@@ -159,18 +174,142 @@
         const regionesVisitadas = new Set();
         let pestanaRegion = 'resumen';
         let regionActual = 'costa';
+        let provinciaActual = null;
+        let hotspotActual = null;
         let datosExpandido = false;
         let indiceDatoCarrusel = 0;
+        const VIEWBOX_MAPA_FULL = [-1202, -280, 13087, 11410];
+        let mapaViewBoxActual = VIEWBOX_MAPA_FULL.slice();
+        let mapaZoomAnim = null;
+        let capaMapaActiva = 'provincias';
 
+        /* Pines del mapa: ciudades e hitos (coords SVG + Google Maps) */
         const hotspotsMapa = {
-            quito: { region: 'sierra', titulo: 'Quito', texto: 'Capital constitucional y sede de los 5 poderes del Estado.' },
-            chimborazo: { region: 'sierra', titulo: 'Chimborazo', texto: 'Punto más alejado del centro de la Tierra: 6.384,416 km.' },
-            guayaquil: { region: 'costa', titulo: 'Guayaquil', texto: 'Principal puerto y motor agroexportador del litoral.' },
-            yasuni: { region: 'amazonia', titulo: 'Yasuní', texto: 'Parque Nacional: megabiodiversidad y pueblos originarios.' },
-            palanda: { region: 'amazonia', titulo: 'Palanda', texto: 'Santa Ana-La Florida: cacao domesticado hace 5.500 años.' },
-            cuenca: { region: 'sierra', titulo: 'Cuenca', texto: 'Centro histórico Patrimonio de la Humanidad (UNESCO 1999).' },
-            galapagos: { region: 'galapagos', titulo: 'Galápagos', texto: 'Archipiélago volcánico y laboratorio vivo de la evolución.' }
+            quito: {
+                region: 'sierra', tipo: 'ciudad', tipoLabel: 'Ciudad capital', sub: 'capital',
+                titulo: 'Quito', provincia: 'Pichincha',
+                texto: 'Capital del Ecuador y sede de las cinco funciones del Estado.',
+                dato: 'Su centro histórico es Patrimonio de la Humanidad (UNESCO, 1978).',
+                lat: -0.1807, lon: -78.4678, x: 6168, y: 2791
+            },
+            guayaquil: {
+                region: 'costa', tipo: 'ciudad', tipoLabel: 'Ciudad principal', sub: 'puerto',
+                titulo: 'Guayaquil', provincia: 'Guayas',
+                texto: 'Principal puerto del país y motor comercial del litoral.',
+                dato: 'Conecta las exportaciones de camarón, banano y cacao con el mundo.',
+                lat: -2.1709, lon: -79.9224, x: 3641, y: 5885
+            },
+            cuenca: {
+                region: 'sierra', tipo: 'ciudad', tipoLabel: 'Ciudad', sub: 'ciudad',
+                titulo: 'Cuenca', provincia: 'Azuay',
+                texto: 'Tercera ciudad del país, conocida por su centro colonial y su vida cultural.',
+                dato: 'Centro histórico Patrimonio de la Humanidad (UNESCO, 1999).',
+                lat: -2.9001, lon: -79.0059, x: 4699, y: 7634
+            },
+            ambato: {
+                region: 'sierra', tipo: 'ciudad', tipoLabel: 'Ciudad', sub: 'ciudad',
+                titulo: 'Ambato', provincia: 'Tungurahua',
+                texto: 'Capital de Tungurahua, centro agrícola y de ferias de la sierra central.',
+                dato: 'Sede de la Fiesta de la Fruta y de las Flores.',
+                lat: -1.2491, lon: -78.6168, x: 6100, y: 4620
+            },
+            manta: {
+                region: 'costa', tipo: 'ciudad', tipoLabel: 'Ciudad portuaria', sub: 'puerto',
+                titulo: 'Manta', provincia: 'Manabí',
+                texto: 'Puerto pesquero y turístico del Pacífico ecuatoriano.',
+                dato: 'Uno de los principales puertos atuneros de la región.',
+                lat: -0.9677, lon: -80.7089, x: 2480, y: 4120
+            },
+            machala: {
+                region: 'costa', tipo: 'ciudad', tipoLabel: 'Ciudad', sub: 'ciudad',
+                titulo: 'Machala', provincia: 'El Oro',
+                texto: 'Capital de El Oro y centro de la producción bananera del sur.',
+                dato: 'Conocida como la “capital bananera del mundo”.',
+                lat: -3.2581, lon: -79.9554, x: 3720, y: 8480
+            },
+            loja: {
+                region: 'sierra', tipo: 'ciudad', tipoLabel: 'Ciudad', sub: 'ciudad',
+                titulo: 'Loja', provincia: 'Loja',
+                texto: 'Ciudad del sur andino, reconocida por su música y su tradición universitaria.',
+                dato: 'Cuna de músicos y punto de partida hacia el sur del Ecuador.',
+                lat: -3.9931, lon: -79.2042, x: 4050, y: 9180
+            },
+            chimborazo: {
+                region: 'sierra', tipo: 'volcan', tipoLabel: 'Volcán', sub: 'volcán',
+                titulo: 'Chimborazo', provincia: 'Chimborazo',
+                texto: 'Volcán inactivo de la cordillera Occidental, símbolo de la sierra central.',
+                dato: 'Su cima es el punto más alejado del centro de la Tierra: 6.384,416 km.',
+                lat: -1.4693, lon: -78.8167, x: 5676, y: 5555
+            },
+            cotopaxi: {
+                region: 'sierra', tipo: 'volcan', tipoLabel: 'Volcán', sub: 'volcán',
+                titulo: 'Cotopaxi', provincia: 'Cotopaxi',
+                texto: 'Uno de los volcanes activos más altos del mundo, dentro de un parque nacional.',
+                dato: 'Parque Nacional Cotopaxi: reserva andina de páramo y biodiversidad.',
+                lat: -0.6832, lon: -78.4378, x: 5750, y: 3580
+            },
+            yasuni: {
+                region: 'amazonia', tipo: 'sitio', tipoLabel: 'Parque nacional', sub: 'parque',
+                titulo: 'Yasuní', provincia: 'Orellana y Pastaza',
+                texto: 'Parque Nacional en la Amazonía, entre las zonas más biodiversas del planeta.',
+                dato: 'Territorio de pueblos en aislamiento voluntario y megabiodiversidad.',
+                lat: -0.6500, lon: -76.4000, x: 9898, y: 3634
+            },
+            palanda: {
+                region: 'amazonia', tipo: 'sitio', tipoLabel: 'Sitio arqueológico', sub: 'sitio',
+                titulo: 'Palanda', provincia: 'Zamora Chinchipe',
+                texto: 'Zona del sitio Santa Ana-La Florida, en el extremo sur amazónico.',
+                dato: 'Aquí se documentó el uso más antiguo conocido del cacao (aprox. 3500 a. C.).',
+                lat: -4.6500, lon: -79.1333, x: 5422, y: 9372
+            },
+            ingapirca: {
+                region: 'sierra', tipo: 'sitio', tipoLabel: 'Sitio arqueológico', sub: 'inca',
+                titulo: 'Ingapirca', provincia: 'Cañar',
+                texto: 'Principal complejo arqueológico inca-cañari conservado en el Ecuador.',
+                dato: 'Destaca el Templo del Sol, de planta elíptica en piedra.',
+                lat: -2.5408, lon: -78.8756, x: 5480, y: 6920
+            },
+            galapagos: {
+                region: 'galapagos', tipo: 'sitio', tipoLabel: 'Archipiélago', sub: 'islas',
+                titulo: 'Galápagos', provincia: 'Galápagos',
+                texto: 'Archipiélago volcánico en el Pacífico, laboratorio vivo de la evolución.',
+                dato: 'Patrimonio Natural de la Humanidad (UNESCO) y Parque Nacional.',
+                lat: -0.9538, lon: -90.9656, x: -203, y: 548
+            }
         };
+
+        /* Capitales / centros para Google Maps y ficha de provincia */
+        const datosProvincias = {
+            'prov-guayas': { nombre: 'Guayas', capital: 'Guayaquil', lat: -2.1709, lon: -79.9224, tip: 'Provincia del principal puerto del país y del mayor flujo agroexportador.' },
+            'prov-esmeraldas': { nombre: 'Esmeraldas', capital: 'Esmeraldas', lat: 0.9592, lon: -79.6540, tip: 'Costa norte afroecuatoriana; la marimba fue declarada patrimonio cultural por la UNESCO.' },
+            'prov-carchi': { nombre: 'Carchi', capital: 'Tulcán', lat: 0.8118, lon: -77.7173, tip: 'Frontera norte con Colombia; paisajes andinos y comercio binacional.' },
+            'prov-imbabura': { nombre: 'Imbabura', capital: 'Ibarra', lat: 0.3517, lon: -78.1223, tip: 'Lagos, turismo y la tradición textil del pueblo otavaleño.' },
+            'prov-sucumbios': { nombre: 'Sucumbíos', capital: 'Nueva Loja', lat: 0.0847, lon: -76.8828, tip: 'Amazonía norte; actividad petrolera y biodiversidad fronteriza.' },
+            'prov-santa-elena': { nombre: 'Santa Elena', capital: 'Santa Elena', lat: -2.2267, lon: -80.8583, tip: 'Península costera con playas, turismo y pesca artesanal.' },
+            'prov-santo-domingo-de-los-tsachilas': { nombre: 'Sto. Domingo', capital: 'Santo Domingo', lat: -0.2530, lon: -79.1754, tip: 'Corredor entre costa y sierra; territorio del pueblo Tsáchila.' },
+            'prov-azuay': { nombre: 'Azuay', capital: 'Cuenca', lat: -2.9001, lon: -79.0059, tip: 'Su capital, Cuenca, tiene centro histórico Patrimonio UNESCO (1999).' },
+            'prov-el-oro': { nombre: 'El Oro', capital: 'Machala', lat: -3.2581, lon: -79.9554, tip: 'Corazón bananero del sur; Machala concentra producción y exportación.' },
+            'prov-loja': { nombre: 'Loja', capital: 'Loja', lat: -3.9931, lon: -79.2042, tip: 'Sur andino: música, universidad y puerta hacia la frontera con Perú.' },
+            'prov-zamora-chinchipe': { nombre: 'Zamora Ch.', capital: 'Zamora', lat: -4.0692, lon: -78.9567, tip: 'Amazonía sur; cuna ancestral del cacao Mayo-Chinchipe en Palanda.' },
+            'prov-cañar': { nombre: 'Cañar', capital: 'Azogues', lat: -2.7397, lon: -78.8486, tip: 'Herencia cañari-inca; aquí está el complejo arqueológico de Ingapirca.' },
+            'prov-bolivar': { nombre: 'Bolívar', capital: 'Guaranda', lat: -1.5905, lon: -79.0010, tip: 'Hoyas andinas, agricultura de altura y tradiciones montubias-andinas.' },
+            'prov-cotopaxi': { nombre: 'Cotopaxi', capital: 'Latacunga', lat: -0.9333, lon: -78.6155, tip: 'Alberga el volcán y el Parque Nacional Cotopaxi.' },
+            'prov-los-rios': { nombre: 'Los Ríos', capital: 'Babahoyo', lat: -1.8022, lon: -79.5344, tip: 'Cuenca del Guayas: cacao fino, arroz y producción agrícola intensiva.' },
+            'prov-manabi': { nombre: 'Manabí', capital: 'Portoviejo', lat: -1.0547, lon: -80.4545, tip: 'Costa central: Manta, gastronomía manabita y artesanía de paja toquilla.' },
+            'prov-chimborazo': { nombre: 'Chimborazo', capital: 'Riobamba', lat: -1.6635, lon: -78.6546, tip: 'Hogar del volcán Chimborazo, el punto más alejado del centro terrestre.' },
+            'prov-morona-santiago': { nombre: 'Morona S.', capital: 'Macas', lat: -2.3087, lon: -78.1114, tip: 'Amazonía shuar y zona de la cordillera del Cóndor.' },
+            'prov-pichincha': { nombre: 'Pichincha', capital: 'Quito', lat: -0.1807, lon: -78.4678, tip: 'Provincia de la capital constitucional del Ecuador.' },
+            'prov-pastaza': { nombre: 'Pastaza', capital: 'Puyo', lat: -1.4925, lon: -78.0010, tip: 'Una de las provincias amazónicas más extensas y culturalmente diversas.' },
+            'prov-tungurahua': { nombre: 'Tungurahua', capital: 'Ambato', lat: -1.2491, lon: -78.6168, tip: 'Ambato, floricultura y el volcán Tungurahua en la sierra central.' },
+            'prov-orellana': { nombre: 'Orellana', capital: 'El Coca', lat: -0.4622, lon: -76.9867, tip: 'Cuenca del Napo y acceso principal al Parque Nacional Yasuní.' },
+            'prov-napo': { nombre: 'Napo', capital: 'Tena', lat: -0.9930, lon: -77.8143, tip: 'Puerta de la Amazonía; ríos, turismo de naturaleza y deportes acuáticos.' },
+            'prov-galapagos': { nombre: 'Galápagos', capital: 'Pto. Baquerizo Moreno', lat: -0.9075, lon: -89.6131, tip: 'Provincia insular: Parque Nacional y Patrimonio Natural UNESCO.' }
+        };
+
+        function urlMapsCoords(lat, lon, etiqueta) {
+            const label = encodeURIComponent(etiqueta || 'Ecuador');
+            return `https://www.google.com/maps?q=${lat},${lon}(${label})&ll=${lat},${lon}&z=10`;
+        }
 
         function resumenCorto(texto, max = 160) {
             if (!texto) return '';
@@ -187,12 +326,362 @@
             if (label) label.textContent = n + ' / ' + total + ' regiones exploradas';
         }
 
+        function svgMapaEl() {
+            return document.getElementById('svg-mapa-ecuador') || document.querySelector('.mapa-ecuador-svg');
+        }
+
+        function aplicarViewBox(svg, vb) {
+            if (!svg || !vb) return;
+            svg.setAttribute('viewBox', vb.map((n) => Number(n).toFixed(1)).join(' '));
+            mapaViewBoxActual = vb.slice();
+        }
+
+        function animarViewBoxMapa(vbDestino, dur = 620) {
+            const svg = svgMapaEl();
+            if (!svg || !vbDestino) return;
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                aplicarViewBox(svg, vbDestino);
+                return;
+            }
+            const desde = mapaViewBoxActual.slice();
+            const t0 = performance.now();
+            if (mapaZoomAnim) cancelAnimationFrame(mapaZoomAnim);
+            const ease = (t) => 1 - Math.pow(1 - t, 3);
+            const tick = (now) => {
+                const p = Math.min(1, (now - t0) / dur);
+                const e = ease(p);
+                const vb = desde.map((v, i) => v + (vbDestino[i] - v) * e);
+                aplicarViewBox(svg, vb);
+                if (p < 1) mapaZoomAnim = requestAnimationFrame(tick);
+                else mapaZoomAnim = null;
+            };
+            mapaZoomAnim = requestAnimationFrame(tick);
+        }
+
+        function marcarMapaZoom(activo) {
+            const canvas = document.getElementById('map-canvas');
+            const svg = svgMapaEl();
+            if (canvas) canvas.classList.toggle('mapa-zoomed', !!activo);
+            if (svg) svg.classList.toggle('mapa-en-zoom', !!activo);
+        }
+
+        function ratioVistaMapa() {
+            const svg = svgMapaEl();
+            const canvas = document.getElementById('map-canvas');
+            const cw = (svg && svg.clientWidth) || (canvas && canvas.clientWidth) || 640;
+            const ch = (svg && svg.clientHeight) || (canvas && canvas.clientHeight) || Math.max(260, cw * 0.72);
+            return cw / Math.max(ch, 1);
+        }
+
+        function zoomABbox(bb, opts = {}) {
+            if (!bb || !bb.width || !bb.height) return;
+            const svg = svgMapaEl();
+            const ratio = ratioVistaMapa();
+            const padFactor = opts.padFactor != null ? opts.padFactor : 0.35;
+            const minW = opts.minW != null ? opts.minW : 1600;
+            const minH = opts.minH != null ? opts.minH : 1300;
+            const pad = Math.max(bb.width, bb.height) * padFactor + (opts.padExtra != null ? opts.padExtra : 160);
+            let w = Math.max(bb.width + pad * 2, minW);
+            let h = Math.max(bb.height + pad * 2, minH);
+            if (w / h < ratio) w = h * ratio;
+            else h = w / ratio;
+            // Limitar zoom excesivo (sobre todo en móvil / provincias chicas)
+            const minVista = Math.max(2200, Math.min(VIEWBOX_MAPA_FULL[2] * 0.18, 3800));
+            if (w < minVista) {
+                const s = minVista / w;
+                w *= s;
+                h *= s;
+            }
+            const maxVista = Math.min(VIEWBOX_MAPA_FULL[2] * 0.62, 8200);
+            if (w > maxVista) {
+                const s = maxVista / w;
+                w *= s;
+                h *= s;
+            }
+            const cx = bb.x + bb.width / 2;
+            const cy = bb.y + bb.height / 2;
+            marcarMapaZoom(true);
+            animarViewBoxMapa([cx - w / 2, cy - h / 2, w, h], opts.dur != null ? opts.dur : 700);
+        }
+
+        function limpiarSeleccionMapa() {
+            provinciaActual = null;
+            hotspotActual = null;
+            document.querySelectorAll('.prov-svg.prov-seleccionada').forEach((p) => p.classList.remove('prov-seleccionada'));
+            document.querySelectorAll('.prov-label').forEach((t) => t.classList.remove('prov-label-activa'));
+            document.querySelectorAll('.hotspot.is-on').forEach((h) => h.classList.remove('is-on'));
+        }
+
+        function resetZoomMapa(opts = {}) {
+            limpiarSeleccionMapa();
+            marcarMapaZoom(false);
+            animarViewBoxMapa(VIEWBOX_MAPA_FULL, opts.dur != null ? opts.dur : 620);
+            if (!opts.sinPanel) renderizarPanelRegion();
+        }
+
+        function crearMarcadoresMapa() {
+            const svg = svgMapaEl();
+            if (!svg) return;
+            let capa = svg.querySelector('.map-hotspots');
+            if (!capa) {
+                capa = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                capa.setAttribute('class', 'map-hotspots');
+                capa.setAttribute('aria-label', 'Ciudades e hitos del mapa');
+                svg.appendChild(capa);
+            }
+            capa.innerHTML = '';
+            Object.keys(hotspotsMapa).forEach((id) => {
+                const h = hotspotsMapa[id];
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.setAttribute('class', 'hotspot');
+                g.setAttribute('tabindex', '0');
+                g.setAttribute('role', 'button');
+                g.setAttribute('data-hotspot', id);
+                g.setAttribute('data-tipo', h.tipo);
+                const tipoNombre = h.tipo === 'ciudad' ? 'Ciudad' : (h.tipo === 'volcan' ? 'Volcán' : 'Hito');
+                g.setAttribute('aria-label', tipoNombre + ': ' + h.titulo);
+
+                if (h.tipo === 'volcan') {
+                    const peak = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    peak.setAttribute('points', `${h.x - 120},${h.y + 110} ${h.x},${h.y - 110} ${h.x + 120},${h.y + 110}`);
+                    peak.setAttribute('class', 'hotspot-peak');
+                    g.appendChild(peak);
+                } else {
+                    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    c.setAttribute('cx', String(h.x));
+                    c.setAttribute('cy', String(h.y));
+                    c.setAttribute('r', '95');
+                    let cls = 'hotspot-dot';
+                    if (h.tipo === 'sitio' && id === 'yasuni') cls += ' hotspot-dot-green';
+                    else if (h.tipo === 'sitio' && (id === 'palanda' || id === 'ingapirca')) cls += ' hotspot-dot-gold';
+                    c.setAttribute('class', cls);
+                    g.appendChild(c);
+                }
+
+                const labelX = h.x + 120;
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', String(labelX));
+                label.setAttribute('y', String(h.y - 70));
+                label.setAttribute('class', 'hotspot-label');
+                label.setAttribute('font-size', '150');
+                label.textContent = h.titulo;
+                g.appendChild(label);
+
+                const sub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                sub.setAttribute('x', String(labelX));
+                sub.setAttribute('y', String(h.y + 95));
+                sub.setAttribute('class', 'hotspot-sub');
+                sub.setAttribute('font-size', '95');
+                sub.textContent = h.sub || h.tipo;
+                g.appendChild(sub);
+
+                capa.appendChild(g);
+            });
+        }
+
+        function etiquetaTipoHotspot(h) {
+            if (!h) return 'Lugar';
+            if (h.tipo === 'ciudad') return 'Ciudad';
+            if (h.tipo === 'volcan') return 'Volcán';
+            if (h.tipoLabel) return h.tipoLabel;
+            return 'Hito';
+        }
+
+        function hintPanelMapa() {
+            if (capaMapaActiva === 'ciudades') {
+                return 'Capa <strong>Ciudades</strong>: toca un punto amarillo para abrir su ficha y Google Maps.';
+            }
+            if (capaMapaActiva === 'hitos') {
+                return 'Capa <strong>Hitos</strong>: toca un volcán o sitio marcado para leer su dato clave.';
+            }
+            return 'Capa <strong>Provincias</strong>: toca un territorio de color para acercarte y ver capital, dato y mapa.';
+        }
+
+        function htmlFichaSeleccion() {
+            const prov = provinciaActual ? datosProvincias[provinciaActual] : null;
+            if (prov) {
+                const mapsUrl = urlMapsCoords(prov.lat, prov.lon, `${prov.nombre}, Ecuador`);
+                const regNom = (datosRegiones[regionActual] && datosRegiones[regionActual].nombre)
+                    ? datosRegiones[regionActual].nombre.replace(/^\d+\.\s*/, '').replace(/^Región\s+/i, '')
+                    : regionActual;
+                return `
+                <article class="prov-ficha" aria-label="Ficha de provincia ${prov.nombre}">
+                    <div class="prov-ficha-top">
+                        <span class="prov-ficha-badge">Provincia · ${regNom}</span>
+                        <h4>${prov.nombre}</h4>
+                        <p class="prov-ficha-cap"><i class="fa-solid fa-city" aria-hidden="true"></i> Capital: <strong>${prov.capital}</strong></p>
+                        <p class="prov-ficha-tip">${prov.tip}</p>
+                    </div>
+                    <a class="btn-maps" href="${mapsUrl}" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+                        Abrir en Google Maps
+                    </a>
+                    <button type="button" class="btn-maps-sec" id="btn-cerrar-prov">Volver al mapa completo</button>
+                </article>`;
+            }
+            const h = hotspotActual ? hotspotsMapa[hotspotActual] : null;
+            if (h) {
+                const mapsUrl = urlMapsCoords(h.lat, h.lon, `${h.titulo}, Ecuador`);
+                const tipo = etiquetaTipoHotspot(h);
+                return `
+                <article class="hito-ficha" aria-label="Ficha de ${tipo} ${h.titulo}">
+                    <span class="hito-ficha-tipo">${tipo}</span>
+                    <h4>${h.titulo}</h4>
+                    <p class="hito-ficha-meta">Provincia: <strong>${h.provincia}</strong> · ${(datosRegiones[h.region] && datosRegiones[h.region].nombre) ? datosRegiones[h.region].nombre.replace(/^\d+\.\s*/, '') : h.region}</p>
+                    <p class="hito-ficha-texto">${h.texto}</p>
+                    <p class="hito-ficha-dato"><strong>Dato clave:</strong> ${h.dato}</p>
+                    <a class="btn-maps btn-maps-claro" href="${mapsUrl}" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+                        Abrir en Google Maps
+                    </a>
+                    <button type="button" class="btn-maps-sec btn-maps-sec-oscuro" id="btn-cerrar-hito">Volver al mapa completo</button>
+                </article>`;
+            }
+            return `<p class="mapa-hint-panel">${hintPanelMapa()}</p>`;
+        }
+
+        function zoomAProvincia(el) {
+            if (!el || typeof el.getBBox !== 'function') return;
+            let bb;
+            try { bb = el.getBBox(); } catch (e) { return; }
+            zoomABbox(bb, { padFactor: 0.28, padExtra: 120, minW: 1400, minH: 1200 });
+        }
+
+        function zoomAHotspot(el) {
+            if (!el || typeof el.getBBox !== 'function') return;
+            let bb;
+            try { bb = el.getBBox(); } catch (e) { return; }
+            // Área artificial alrededor del pin para no acercar de más
+            const lado = Math.max(bb.width, bb.height, 420) * 3.2;
+            zoomABbox({
+                x: bb.x + bb.width / 2 - lado / 2,
+                y: bb.y + bb.height / 2 - lado / 2,
+                width: lado,
+                height: lado
+            }, { padFactor: 0.2, padExtra: 80, minW: 2800, minH: 2400, dur: 650 });
+        }
+
+        function aplicarCapaMapa(capa) {
+            capaMapaActiva = capa;
+            const svg = svgMapaEl();
+            if (svg) {
+                svg.classList.toggle('capa-provincias', capa === 'provincias');
+                svg.classList.toggle('capa-ciudades', capa === 'ciudades');
+                svg.classList.toggle('capa-hitos', capa === 'hitos');
+            }
+            document.querySelectorAll('.map-capa-btn').forEach((btn) => {
+                const on = btn.getAttribute('data-capa') === capa;
+                btn.classList.toggle('is-on', on);
+                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            const ayuda = document.getElementById('map-capa-ayuda');
+            if (ayuda) {
+                if (capa === 'provincias') {
+                    ayuda.innerHTML = 'Nombres de <strong>provincias</strong>. Toca un territorio de color para acercarte.';
+                } else if (capa === 'ciudades') {
+                    ayuda.innerHTML = 'Puntos de <strong>ciudades</strong> principales. Toca uno para ver su ficha.';
+                } else {
+                    ayuda.innerHTML = 'Puntos de <strong>hitos</strong>: volcanes, parques y sitios clave. Toca uno para leer el dato.';
+                }
+            }
+        }
+
+        function activarCapaMapa(capa) {
+            if (typeof reproducirSonido === 'function') reproducirSonido('clic');
+            const cambiando = capa !== capaMapaActiva;
+            aplicarCapaMapa(capa);
+            // Al cambiar de capa, vuelve al mapa completo para ver todos los pines sin choques
+            if (cambiando) {
+                limpiarSeleccionMapa();
+                marcarMapaZoom(false);
+                animarViewBoxMapa(VIEWBOX_MAPA_FULL, 480);
+                renderizarPanelRegion();
+            }
+        }
+        window.activarCapaMapa = activarCapaMapa;
+
+        function crearEtiquetasProvincias() {
+            const svg = svgMapaEl();
+            if (!svg) return;
+            let capa = document.getElementById('prov-labels');
+            if (capa) capa.remove();
+            capa = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            capa.id = 'prov-labels';
+            capa.setAttribute('class', 'prov-labels');
+            capa.setAttribute('pointer-events', 'none');
+            document.querySelectorAll('.prov-svg').forEach((p) => {
+                let bb;
+                try { bb = p.getBBox(); } catch (e) { return; }
+                if (!bb || bb.width < 1) return;
+                const id = p.id || '';
+                const info = datosProvincias[id];
+                const nombre = (info && info.nombre) || p.getAttribute('data-provincia') || '';
+                if (!nombre) return;
+                const nudges = {
+                    'prov-tungurahua': [0, -40],
+                    'prov-cotopaxi': [0, 50],
+                    'prov-canar': [40, -20],
+                    'prov-azuay': [-30, 60],
+                    'prov-bolivar': [-40, 0],
+                    'prov-chimborazo': [50, 20],
+                    'prov-santo-domingo-de-los-tsachilas': [0, -30],
+                    'prov-pichincha': [-20, 40],
+                    'prov-imbabura': [0, 30],
+                    'prov-carchi': [20, -20],
+                    'prov-santa-elena': [0, 40],
+                    'prov-el-oro': [-40, 20],
+                    'prov-guayas': [60, 80]
+                };
+                const nudge = nudges[id] || [0, 0];
+                const cx = bb.x + bb.width / 2 + nudge[0];
+                const cy = bb.y + bb.height / 2 + nudge[1];
+                const area = bb.width * bb.height;
+                let size = 145;
+                if (area < 800000) size = 110;
+                if (area < 350000) size = 95;
+                if (id === 'prov-galapagos') size = 170;
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', String(cx));
+                text.setAttribute('y', String(cy));
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dominant-baseline', 'middle');
+                text.setAttribute('class', 'prov-label');
+                text.setAttribute('data-for', id);
+                text.setAttribute('font-size', String(size));
+                text.textContent = nombre;
+                capa.appendChild(text);
+            });
+            const hotspots = svg.querySelector('.map-hotspots');
+            if (hotspots) svg.insertBefore(capa, hotspots);
+            else svg.appendChild(capa);
+        }
+
         function seleccionarRegionMapa(claveRegion, opts = {}) {
             if (!opts.silencio) reproducirSonido('clic');
             const info = datosRegiones[claveRegion];
             if (!info) return;
             regionActual = claveRegion;
+            if (!opts.mantenerProvincia) {
+                provinciaActual = null;
+                hotspotActual = null;
+                document.querySelectorAll('.prov-svg.prov-seleccionada').forEach((p) => p.classList.remove('prov-seleccionada'));
+                document.querySelectorAll('.prov-label').forEach((t) => t.classList.remove('prov-label-activa'));
+                document.querySelectorAll('.hotspot.is-on').forEach((h) => h.classList.remove('is-on'));
+                if (!opts.sinResetZoom) {
+                    marcarMapaZoom(false);
+                    animarViewBoxMapa(VIEWBOX_MAPA_FULL, 480);
+                }
+            }
+            const primeraVez = !regionesVisitadas.has(claveRegion);
             regionesVisitadas.add(claveRegion);
+            if (primeraVez && !opts.silencio && typeof sumarCategoria === 'function' && typeof est !== 'undefined') {
+                if (!est.regs.includes(claveRegion)) {
+                    est.regs.push(claveRegion);
+                    if (typeof guardarEstado === 'function') guardarEstado();
+                    const g = sumarCategoria('mapa', 15);
+                    if (g && typeof toastMsg === 'function') toastMsg('+15 puntos por explorar ' + (info.nombre || claveRegion));
+                }
+            }
             actualizarProgresoMapa();
 
             ['costa', 'sierra', 'amazonia', 'galapagos'].forEach(reg => {
@@ -233,6 +722,7 @@
                 { id: 'clima', label: 'Clima' },
                 { id: 'economia', label: 'Economía' }
             ];
+            const fichaSeleccion = htmlFichaSeleccion();
             panel.innerHTML = `
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -241,15 +731,16 @@
                     </div>
                     <span class="w-10 h-10 rounded-xl bg-slate-900 text-yellow-400 grid place-items-center"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span>
                 </div>
+                ${fichaSeleccion}
                 <div class="panel-tabs" role="tablist">
                     ${tabs.map(t => `<button type="button" role="tab" class="panel-tab ${pestanaRegion === t.id ? 'is-on' : ''}" aria-selected="${pestanaRegion === t.id}" onclick="cambiarPestanaRegion('${t.id}')">${t.label}</button>`).join('')}
                 </div>
                 <div class="panel-pane" ${pestanaRegion !== 'resumen' ? 'hidden' : ''}>
                     <p>${resumenCorto(info.hitoClave, 220)}</p>
-                    <p class="mt-3 text-sm text-slate-500">Cambia de pestaña para ver provincias, clima o economía.</p>
+                    <p class="mt-3 text-sm text-slate-500">Usa las pestañas para ver provincias, clima o economía de la región.</p>
                 </div>
                 <div class="panel-pane" ${pestanaRegion !== 'provincias' ? 'hidden' : ''}>
-                    <p><strong class="text-slate-900">Provincias:</strong> ${info.provincias}</p>
+                    <p><strong class="text-slate-900">Provincias de la región:</strong> ${info.provincias}</p>
                 </div>
                 <div class="panel-pane" ${pestanaRegion !== 'clima' ? 'hidden' : ''}>
                     <p>${info.relieveClima}</p>
@@ -262,6 +753,10 @@
                     <p>${info.hitoClave}</p>
                 </div>
             `;
+            const btnCerrar = document.getElementById('btn-cerrar-prov');
+            if (btnCerrar) btnCerrar.onclick = () => resetZoomMapa();
+            const btnCerrarHito = document.getElementById('btn-cerrar-hito');
+            if (btnCerrarHito) btnCerrarHito.onclick = () => resetZoomMapa();
         }
 
         function mostrarTooltipMapa(texto, evt) {
@@ -285,37 +780,62 @@
         function abrirHotspot(id) {
             const h = hotspotsMapa[id];
             if (!h) return;
-            seleccionarRegionMapa(h.region);
-            pestanaRegion = 'resumen';
-            const panel = document.getElementById('panel-region-detalle');
-            if (panel) {
-                const nota = document.createElement('div');
-                nota.className = 'mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-950';
-                nota.innerHTML = `<strong>${h.titulo}:</strong> ${h.texto}`;
-                const vieja = panel.querySelector('[data-hotspot-note]');
-                if (vieja) vieja.remove();
-                nota.setAttribute('data-hotspot-note', '1');
-                panel.appendChild(nota);
+            if (h.tipo === 'ciudad') aplicarCapaMapa('ciudades');
+            else aplicarCapaMapa('hitos');
+            provinciaActual = null;
+            hotspotActual = id;
+            document.querySelectorAll('.prov-svg.prov-seleccionada').forEach((p) => p.classList.remove('prov-seleccionada'));
+            document.querySelectorAll('.prov-label').forEach((t) => t.classList.remove('prov-label-activa'));
+            document.querySelectorAll('.hotspot.is-on').forEach((el) => el.classList.remove('is-on'));
+            const pin = document.querySelector(`.hotspot[data-hotspot="${id}"]`);
+            if (pin) pin.classList.add('is-on');
+            seleccionarRegionMapa(h.region, { sinResetZoom: true, mantenerProvincia: true, silencio: true });
+            if (pin) zoomAHotspot(pin);
+            else {
+                marcarMapaZoom(false);
+                animarViewBoxMapa(VIEWBOX_MAPA_FULL, 480);
             }
+            pestanaRegion = 'resumen';
+            renderizarPanelRegion();
+            if (typeof toastMsg === 'function') toastMsg(etiquetaTipoHotspot(h) + ': ' + h.titulo);
         }
 
         function seleccionarProvinciaMapa(el) {
             const reg = el.getAttribute('data-region');
-            const nombre = el.getAttribute('data-provincia') || 'Provincia';
             if (!reg) return;
-            seleccionarRegionMapa(reg);
-            const panel = document.getElementById('panel-region-detalle');
-            if (!panel) return;
-            const vieja = panel.querySelector('[data-hotspot-note]');
-            if (vieja) vieja.remove();
-            const nota = document.createElement('div');
-            nota.className = 'mt-3 p-3 rounded-xl bg-sky-50 border border-sky-200 text-sm text-sky-950';
-            nota.setAttribute('data-hotspot-note', '1');
-            nota.innerHTML = `<strong>Provincia:</strong> ${nombre}`;
-            panel.appendChild(nota);
+            if (capaMapaActiva !== 'provincias') aplicarCapaMapa('provincias');
+            hotspotActual = null;
+            document.querySelectorAll('.hotspot.is-on').forEach((h) => h.classList.remove('is-on'));
+            document.querySelectorAll('.prov-svg.prov-seleccionada').forEach((p) => p.classList.remove('prov-seleccionada'));
+            document.querySelectorAll('.prov-label').forEach((t) => t.classList.remove('prov-label-activa'));
+            el.classList.add('prov-seleccionada');
+            provinciaActual = el.id || null;
+            const label = document.querySelector(`.prov-label[data-for="${el.id}"]`);
+            if (label) label.classList.add('prov-label-activa');
+            seleccionarRegionMapa(reg, { mantenerProvincia: true, sinResetZoom: true });
+            zoomAProvincia(el);
+            ocultarTooltipMapa();
+            if (typeof toastMsg === 'function') {
+                const nom = (datosProvincias[el.id] && datosProvincias[el.id].nombre) || el.getAttribute('data-provincia');
+                toastMsg('Provincia ' + nom);
+            }
         }
 
         function iniciarMapaInteractivo() {
+            crearMarcadoresMapa();
+            crearEtiquetasProvincias();
+            aplicarCapaMapa('provincias');
+            const btnReset = document.getElementById('btn-mapa-reset');
+            if (btnReset) btnReset.addEventListener('click', () => {
+                reproducirSonido('clic');
+                resetZoomMapa();
+            });
+            document.querySelectorAll('.map-capa-btn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const capa = btn.getAttribute('data-capa');
+                    if (capa) activarCapaMapa(capa);
+                });
+            });
             document.querySelectorAll('.prov-svg').forEach(el => {
                 const activar = () => seleccionarProvinciaMapa(el);
                 el.addEventListener('click', activar);
@@ -326,10 +846,10 @@
                     }
                 });
                 el.addEventListener('mouseenter', (e) => {
-                    mostrarTooltipMapa(el.getAttribute('data-provincia') || 'Provincia', e);
+                    mostrarTooltipMapa('Provincia: ' + (el.getAttribute('data-provincia') || ''), e);
                 });
                 el.addEventListener('mousemove', (e) => {
-                    mostrarTooltipMapa(el.getAttribute('data-provincia') || 'Provincia', e);
+                    mostrarTooltipMapa('Provincia: ' + (el.getAttribute('data-provincia') || ''), e);
                 });
                 el.addEventListener('mouseleave', ocultarTooltipMapa);
             });
@@ -344,12 +864,34 @@
             });
             document.querySelectorAll('.hotspot').forEach(el => {
                 const id = el.getAttribute('data-hotspot');
-                const open = () => abrirHotspot(id);
+                const open = (e) => {
+                    if (e) e.stopPropagation();
+                    abrirHotspot(id);
+                };
                 el.addEventListener('click', open);
                 el.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); }
                 });
             });
+            requestAnimationFrame(() => {
+                crearEtiquetasProvincias();
+                aplicarCapaMapa(capaMapaActiva || 'provincias');
+            });
+            let resizeZoomT;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeZoomT);
+                resizeZoomT = setTimeout(() => {
+                    const canvas = document.getElementById('map-canvas');
+                    if (!canvas || !canvas.classList.contains('mapa-zoomed')) return;
+                    if (provinciaActual) {
+                        const el = document.getElementById(provinciaActual);
+                        if (el) zoomAProvincia(el);
+                    } else if (hotspotActual) {
+                        const pin = document.querySelector(`.hotspot[data-hotspot="${hotspotActual}"]`);
+                        if (pin) zoomAHotspot(pin);
+                    }
+                }, 180);
+            }, { passive: true });
         }
 
         const catalogoVideos = [
@@ -845,10 +1387,18 @@
         function cambiarSeccionInforme(id) {
             reproducirSonido('clic');
             seccionActivaId = id;
-            document.getElementById('buscador-informe').value = '';
+            const buscador = document.getElementById('buscador-informe');
+            if (buscador) buscador.value = '';
             renderizarTabsInforme();
             const sec = seccionesInforme.find(s => s.id === id);
             renderizarTarjetasSeccion([sec]);
+            if (typeof est !== 'undefined' && typeof sumarCategoria === 'function' && !est.tabs.includes(id)) {
+                est.tabs.push(id);
+                if (typeof guardarEstado === 'function') guardarEstado();
+                if (sumarCategoria('explorar', 5) && typeof toastMsg === 'function') {
+                    toastMsg('+5 puntos por leer un capítulo');
+                }
+            }
         }
 
         function renderizarTarjetasSeccion(listaSecciones) {
@@ -1099,116 +1649,82 @@
         /* ------------------------------------------------------------------------
            JUEGO 1: TRIVIA ACADÉMICA «DESAFÍO EQUINOCCIAL» (10 PREGUNTAS)
            ------------------------------------------------------------------------ */
+        /* Trivia del informe: 4 opciones de longitud parecida; se mezclan al mostrar. */
         const bancoPreguntasTrivia = [
             {
-                pregunta: "1. Según la arqueología oficial (INPC / IRD de Francia), ¿qué hito mundial ocurrió hace 5.500 años (ca. 3500 a. C.) en el sitio Santa Ana-La Florida (Palanda, Zamora Chinchipe)?",
-                opciones: [
-                    "La domesticación y uso social más antiguo del cacao (Theobroma cacao) en el planeta por la cultura Mayo-Chinchipe",
-                    "La construcción del primer observatorio incaico de piedra almohadillada",
-                    "La llegada de las primeras semillas de plátano Barraganete desde Asia",
-                    "La firma del primer tratado comercial con Mesoamérica"
-                ],
-                correcta: 0,
-                explicacion: "En Santa Ana-La Florida (Palanda), estudios publicados en Nature Ecology & Evolution (Zarrillo, Valdez et al., 2018) demostraron la domesticación del cacao hace 5.500 años."
+                pregunta: "Según el informe, ¿qué domesticó la cultura Mayo-Chinchipe en Palanda hace unos 5.500 años?",
+                opciones: ["El maíz muruchu", "El cacao", "La quina", "El banano"],
+                correcta: 1,
+                explicacion: "En Santa Ana-La Florida (Palanda) se halló el uso más antiguo conocido de Theobroma cacao (ca. 3500 a. C.)."
             },
             {
-                pregunta: "2. ¿Por qué la cumbre del volcán ecuatoriano Chimborazo (6.263,47 m s. n. m.) ostenta un récord geodésico mundial frente al monte Everest?",
+                pregunta: "¿Qué batalla del 24 de mayo de 1822 selló la independencia del territorio quiteño?",
+                opciones: ["Batalla de Tarqui", "Batalla de Pichincha", "Batalla de Ayacucho", "Batalla de Junín"],
+                correcta: 1,
+                explicacion: "Bajo el mando de Sucre, la Batalla de Pichincha consolidó la emancipación del antiguo Quito."
+            },
+            {
+                pregunta: "¿Cuándo se decretó la dolarización en el Ecuador?",
+                opciones: ["9 de enero de 1999", "9 de enero de 2000", "20 de octubre de 2008", "26 de octubre de 1998"],
+                correcta: 1,
+                explicacion: "El 9 de enero de 2000 se decretó la dolarización a 25.000 sucres por dólar."
+            },
+            {
+                pregunta: "La Constitución de Montecristi (2008) fue la primera del mundo en reconocer…",
+                opciones: ["El voto femenino", "Derechos de la Naturaleza", "La dolarización", "El ferrocarril"],
+                correcta: 1,
+                explicacion: "Los Arts. 71–74 reconocen los Derechos de la Naturaleza (Pachamama)."
+            },
+            {
+                pregunta: "¿Qué récord geodésico tiene el Chimborazo según el IGM/IRD?",
                 opciones: [
-                    "Porque tiene el cráter activo de mayor diámetro del continente",
-                    "Porque debido al abultamiento ecuatorial es el punto más alejado del centro de la Tierra (6.384,416 km, superando por 2.168 m al Everest)",
-                    "Porque es el único glaciar ubicado exactamente en el nivel del mar",
-                    "Porque fue medido utilizando radares submarinos"
+                    "Mayor altura sobre el nivel del mar",
+                    "Mayor distancia al centro de la Tierra",
+                    "Mayor cráter activo del continente",
+                    "Mayor glaciar tropical medido"
                 ],
                 correcta: 1,
-                explicacion: "La Misión Geodésica franco-ecuatoriana (IGM/IRD, 2016) certificó que la cumbre del Chimborazo se encuentra a 6.384,416 km del centro terrestre, superando por 2.168 metros al Everest."
+                explicacion: "Por el abultamiento ecuatorial, su cumbre está a 6.384,416 km del centro terrestre."
             },
             {
-                pregunta: "3. Conforme al Artículo 2 de la Constitución de la República del Ecuador (2008), ¿cuáles son los idiomas oficiales de relación intercultural en todo el país?",
+                pregunta: "Según el Art. 2 de la Constitución, idiomas de relación intercultural son…",
                 opciones: [
-                    "Únicamente el castellano y el inglés comercial",
-                    "El castellano, el kichwa y el shuar (además del uso oficial de las demás lenguas ancestrales en sus territorios)",
-                    "El quechua cuzqueño, el guaraní y el aimara",
-                    "El castellano y el latín protocolar"
+                    "Castellano e inglés",
+                    "Kichwa y shuar con el castellano",
+                    "Quechua y aimara solamente",
+                    "Castellano y latín protocolar"
                 ],
                 correcta: 1,
-                explicacion: "El Art. 2 de la Constitución establece que el castellano es el idioma oficial, y el castellano, el kichwa y el shuar son idiomas oficiales de relación intercultural."
+                explicacion: "Castellano, kichwa y shuar son idiomas oficiales de relación intercultural."
             },
             {
-                pregunta: "4. En la ingeniería culinaria de los Patacones Crujientes de plátano verde Barraganete, ¿cuál es el fundamento técnico de la doble fritura?",
-                opciones: [
-                    "Freír dos veces a 90 °C en agua con azúcar",
-                    "1.ª fritura a 155 °C para gelatinizar el almidón interno, majado en caliente (>65 °C) y 2.ª fritura a 185 °C para crear la corteza crujiente",
-                    "Hornear el plátano maduro y luego congelarlo",
-                    "Licuar el plátano verde crudo antes de freír"
-                ],
-                correcta: 1,
-                explicacion: "La 1.ª fritura (155 °C) gelatiniza el almidón para permitir el aplastado en caliente sin quebrarse, y la 2.ª fritura (185 °C) deshidrata la corteza por reacción de Maillard."
-            },
-            {
-                pregunta: "5. Al preparar El Morocho dulce ecuatoriano, ¿por qué el grano partido debe hervir primero únicamente en agua con especias antes de incorporar la leche?",
-                opciones: [
-                    "Porque el calcio y las proteínas de la leche desde crudo impermeabilizan la pared celular del grano e impiden su ablandamiento",
-                    "Para que el maíz cambie su color blanco a morado oscuro",
-                    "Porque la leche se evapora por completo a los 40 °C",
-                    "Para evitar añadir canela o clavo de olor"
-                ],
-                correcta: 0,
-                explicacion: "El endospermo córneo del maíz muruchu requiere gelatinizarse primero en medio acuoso; si se hierve desde crudo en leche, el calcio impermeabiliza el pericarpio."
-            },
-            {
-                pregunta: "6. En la preparación técnica del Jugo de Maracuyá fresco (INIAP-2009), ¿por qué se licúa en frío mediante pulsos breves de apenas 2 segundos?",
-                opciones: [
-                    "Para ahorrar energía eléctrica en la cocina",
-                    "Para calentar el jugo hasta los 85 °C mediante fricción",
-                    "Para desprender el arilo jugoso sin triturar las semillas negras, evitando liberar polifenoles amargos y lípidos oxidables",
-                    "Para pulverizar por completo la cáscara amarilla externa"
-                ],
+                pregunta: "Hasta París 2024, ¿cuántas medallas olímpicas suma Ecuador?",
+                opciones: ["6 medallas", "8 medallas", "10 medallas", "12 medallas"],
                 correcta: 2,
-                explicacion: "Licuar por pulsos de 2 segundos separa la membrana jugosa sin romper la testa negra de la semilla, preservando el aroma limpio y evitando el amargor."
+                explicacion: "El informe registra 10 medallas: 4 oros, 4 platas y 2 bronces."
             },
             {
-                pregunta: "7. ¿Qué estableció la Ley Orgánica para Enfrentar el Conflicto Armado Interno (promulgada en marzo de 2024 y vigente en 2026) en materia tributaria?",
-                opciones: [
-                    "La eliminación total de los impuestos aduaneros y el retorno al Sucre",
-                    "El incremento del IVA del 12% al 13% base y hasta el 15% mediante decreto ejecutivo, más contribuciones de seguridad a bancos y grandes empresas",
-                    "La prohibición de exportar petróleo y camarón",
-                    "Un impuesto único del 50% a los alimentos agrícolas de la canasta básica"
-                ],
+                pregunta: "¿Quién obtuvo el primer oro olímpico del Ecuador (Atlanta 1996)?",
+                opciones: ["Richard Carapaz", "Jefferson Pérez", "Neisi Dajomes", "Brian Pintado"],
                 correcta: 1,
-                explicacion: "La ley publicada en el R.O. 516 fijó la subida del IVA al 15% y creó contribuciones temporales sobre utilidades corporativas y bancarias para financiar la seguridad."
+                explicacion: "Jefferson Pérez ganó el oro en 20 km marcha en Atlanta 1996."
             },
             {
-                pregunta: "8. ¿Cuántas medallas olímpicas suma el Ecuador en su historia hasta París 2024 y quiénes ganaron sus 4 medallas de ORO?",
-                opciones: [
-                    "5 medallas en total, todas en natación",
-                    "10 medallas olímpicas en total (4 de Oro: Jefferson Pérez en 1996, Richard Carapaz en 2021, Neisi Dajomes en 2021 y Brian Pintado en 2024)",
-                    "2 medallas de bronce en fútbol masculino",
-                    "15 medallas en deportes de invierno"
-                ],
-                correcta: 1,
-                explicacion: "Ecuador registra 10 preseas olímpicas (4 oros, 4 platas y 2 bronces), con oros de Jefferson Pérez, Richard Carapaz, Neisi Dajomes y Brian Daniel Pintado."
+                pregunta: "¿Qué porcentaje del territorio nacional ocupa la Amazonía?",
+                opciones: ["24,8 %", "26,4 %", "45,7 %", "3,1 %"],
+                correcta: 2,
+                explicacion: "La Amazonía concentra el 45,7 % del territorio (unas 116.588 km²)."
             },
             {
-                pregunta: "9. ¿Qué descubrimiento biomédico de alcance mundial lideró el Dr. Jaime Guevara Aguirre en poblaciones de las provincias ecuatorianas de Loja y El Oro?",
+                pregunta: "El «Bono Azul» de 2023 se relacionó principalmente con…",
                 opciones: [
-                    "Que los pacientes con Síndrome de Laron presentan resistencia genética casi absoluta al cáncer y a la diabetes tipo 2",
-                    "La primera vacuna sintética contra la fiebre amarilla",
-                    "El aislamiento de la penicilina en líquenes del volcán Cotopaxi",
-                    "El reemplazo de la corteza de la Quina por agua termal"
+                    "Deuda por conservación en Galápagos",
+                    "Subida del IVA al 15 %",
+                    "Exportación de camarón",
+                    "Construcción del SOTE"
                 ],
                 correcta: 0,
-                explicacion: "El estudio de la cohorte ecuatoriana con deficiencia del receptor de la hormona del crecimiento (Síndrome de Laron) revolucionó la ciencia mundial sobre longevidad y cáncer."
-            },
-            {
-                pregunta: "10. En el plano jurídico-ambiental y financiero, ¿por qué la Constitución de 2008 y el «Bono Azul de Galápagos» (2023) son referentes mundiales?",
-                opciones: [
-                    "Porque privatizaron todos los parques nacionales del país",
-                    "Porque Ecuador fue el 1.er país del mundo en reconocer Derechos a la Naturaleza (Arts. 71–74) y ejecutó el mayor Canje de Deuda por Conservación Marina de la historia",
-                    "Porque autorizaron la pesca industrial dentro de las islas Galápagos",
-                    "Porque eliminaron el Ministerio del Ambiente"
-                ],
-                correcta: 1,
-                explicacion: "Ecuador inauguró en 2008 el constitucionalismo biocéntrico (Derechos de la Naturaleza) y en 2023 ahorró más de USD 1.100 millones en deuda externa con el Bono Azul de Galápagos."
+                explicacion: "Fue el mayor canje de deuda por conservación marina vinculado a Galápagos."
             }
         ];
 
@@ -1216,6 +1732,8 @@
         let puntajeTrivia = 0;
         let rachaTrivia = 0;
         let triviaRespondida = false;
+        let opcionesTriviaMezcladas = [];
+        let indiceCorrectoMezclado = 0;
 
         function iniciarTrivia() {
             indiceTrivia = 0;
@@ -1248,33 +1766,33 @@
 
             const item = bancoPreguntasTrivia[indiceTrivia];
             const progreso = Math.round((indiceTrivia / bancoPreguntasTrivia.length) * 100);
+            const mezcladas = item.opciones.map((texto, i) => ({ texto, ok: i === item.correcta }));
+            for (let i = mezcladas.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [mezcladas[i], mezcladas[j]] = [mezcladas[j], mezcladas[i]];
+            }
+            opcionesTriviaMezcladas = mezcladas;
+            indiceCorrectoMezclado = mezcladas.findIndex((o) => o.ok);
 
             contenedor.innerHTML = `
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-4 text-xs">
-                    <span class="font-bold text-yellow-400 uppercase tracking-wider">Pregunta ${indiceTrivia + 1} de ${bancoPreguntasTrivia.length}</span>
-                    <div class="flex items-center gap-3">
-                        <span class="px-2.5 py-1 rounded bg-slate-800 text-emerald-400 font-bold"><i class="fa-solid fa-fire mr-1" aria-hidden="true"></i>Racha: ${rachaTrivia}</span>
-                        <span class="px-2.5 py-1 rounded bg-slate-800 text-yellow-400 font-bold">Puntos Trivia: ${puntajeTrivia}</span>
+                <div class="trivia-meta">
+                    <span>Pregunta ${indiceTrivia + 1} de ${bancoPreguntasTrivia.length}</span>
+                    <div class="trivia-chips">
+                        <span class="chip-game chip-racha">Racha ${rachaTrivia}</span>
+                        <span class="chip-game chip-pts">${puntajeTrivia} pts</span>
                     </div>
                 </div>
-
-                <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-6">
-                    <div class="h-full bg-gradient-to-r from-yellow-400 via-blue-500 to-red-500 transition-all duration-300" style="width: ${progreso}%"></div>
-                </div>
-
-                <h3 class="font-titulo font-bold text-base sm:text-xl text-white mb-6 leading-snug">${item.pregunta}</h3>
-
-                <div class="grid grid-cols-1 gap-3" id="opciones-trivia-box">
-                    ${item.opciones.map((op, idx) => `
-                        <button onclick="verificarRespuestaTrivia(${idx})" id="btn-op-${idx}"
-                                class="opcion-btn text-left p-4 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-600 text-xs sm:text-sm text-slate-100 font-medium flex items-start gap-3">
-                            <span class="w-6 h-6 rounded-lg bg-slate-900 text-yellow-400 font-bold flex items-center justify-center shrink-0 text-xs">${String.fromCharCode(65 + idx)}</span>
-                            <span>${op}</span>
+                <div class="trivia-barra"><i style="width:${progreso}%"></i></div>
+                <h3 class="trivia-pregunta">${item.pregunta}</h3>
+                <div class="trivia-ops" id="opciones-trivia-box">
+                    ${mezcladas.map((op, idx) => `
+                        <button type="button" onclick="verificarRespuestaTrivia(${idx})" id="btn-op-${idx}" class="opcion-btn">
+                            <span class="op-letra">${String.fromCharCode(65 + idx)}</span>
+                            <span>${op.texto}</span>
                         </button>
                     `).join('')}
                 </div>
-
-                <div id="feedback-trivia" class="oculto mt-6 p-4 rounded-xl border text-xs sm:text-sm"></div>
+                <div id="feedback-trivia" class="oculto feedback-juego"></div>
             `;
             triviaRespondida = false;
         }
@@ -1285,40 +1803,35 @@
 
             const item = bancoPreguntasTrivia[indiceTrivia];
             const btnElegido = document.getElementById(`btn-op-${idxElegido}`);
-            const btnCorrecto = document.getElementById(`btn-op-${item.correcta}`);
+            const btnCorrecto = document.getElementById(`btn-op-${indiceCorrectoMezclado}`);
             const feedback = document.getElementById('feedback-trivia');
 
-            if (idxElegido === item.correcta) {
+            if (idxElegido === indiceCorrectoMezclado) {
                 reproducirSonido('acierto');
                 btnElegido.classList.add('correcto');
                 rachaTrivia++;
-                const ganados = 50 + (rachaTrivia * 10);
+                const ganados = 30 + Math.min(rachaTrivia, 5) * 3;
                 puntajeTrivia += ganados;
-                sumarPuntosGlobales(ganados);
-                feedback.className = 'mt-6 p-4 rounded-xl border bg-emerald-950/80 border-emerald-500 text-emerald-200 text-xs sm:text-sm';
+                sumarPuntosGlobales(ganados, 'trivia');
+                feedback.className = 'feedback-juego ok';
                 feedback.innerHTML = `
-                    <div class="flex items-center justify-between mb-1">
-                        <strong class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i> ¡Respuesta Correcta! (+${ganados} pts)</strong>
-                    </div>
+                    <strong>¡Correcto! (+${ganados} pts)</strong>
                     <p>${item.explicacion}</p>
-                    <button onclick="siguientePreguntaTrivia()" class="mt-3 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase transition">
-                        Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
+                    <button type="button" onclick="siguientePreguntaTrivia()" class="btn-juego-sol">Siguiente</button>
                 `;
             } else {
                 reproducirSonido('error');
                 btnElegido.classList.add('incorrecto');
-                btnCorrecto.classList.add('correcto');
+                if (btnCorrecto) btnCorrecto.classList.add('correcto');
                 rachaTrivia = 0;
-                feedback.className = 'mt-6 p-4 rounded-xl border bg-red-950/80 border-red-500 text-red-200 text-xs sm:text-sm';
+                feedback.className = 'feedback-juego mal';
                 feedback.innerHTML = `
-                    <strong class="text-red-400 block mb-1"><i class="fa-solid fa-circle-xmark mr-1"></i> Respuesta Incorrecta</strong>
+                    <strong>Incorrecto</strong>
                     <p>${item.explicacion}</p>
-                    <button onclick="siguientePreguntaTrivia()" class="mt-3 px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs uppercase transition">
-                        Continuar <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
+                    <button type="button" onclick="siguientePreguntaTrivia()" class="btn-juego-sol">Continuar</button>
                 `;
             }
+            document.querySelectorAll('#opciones-trivia-box .opcion-btn').forEach((b) => { b.disabled = true; });
         }
 
         function siguientePreguntaTrivia() {
@@ -1408,12 +1921,15 @@
                         c1.emparejada = true;
                         c2.emparejada = true;
                         paresEncontrados++;
-                        sumarPuntosGlobales(40);
+                        sumarPuntosGlobales(15, 'memorama');
                         cartasVolteadas = [];
                         bloqueoMemorama = false;
                         actualizarCabeceraMemorama();
                         renderizarTableroMemorama();
-                        if (paresEncontrados === 6) reproducirSonido('victoria');
+                        if (paresEncontrados === 6) {
+                            if (intentosMemorama <= 9) sumarPuntosGlobales(20, 'memorama');
+                            reproducirSonido('victoria');
+                        }
                     }, 350);
                 } else {
                     setTimeout(() => {
@@ -1431,13 +1947,13 @@
 
 
         /* ------------------------------------------------------------------------
-           JUEGO 3: RUTA EQUINOCCIAL — ordena el viaje
+           JUEGO 3: RUTA EQUINOCCIAL — ordena hechos del informe (antiguo → reciente)
            ------------------------------------------------------------------------ */
         const pasosRutaBase = [
-            { id: 'a', texto: 'Llegar a Quito y visitar la Mitad del Mundo' },
-            { id: 'b', texto: 'Bajar a Guayaquil y probar patacones en la Costa' },
-            { id: 'c', texto: 'Entrar a la Amazonía y conocer el Yasuní' },
-            { id: 'd', texto: 'Volar a Galápagos para el cierre ecológico' }
+            { id: 'a', anio: 'ca. 3500 a. C.', texto: 'Domesticación del cacao en Santa Ana-La Florida (Palanda)' },
+            { id: 'b', anio: '1736', texto: 'Misión Geodésica y difusión del nombre «Ecuador»' },
+            { id: 'c', anio: '1822', texto: 'Batalla de Pichincha y libertad del territorio quiteño' },
+            { id: 'd', anio: '2008', texto: 'Constitución de Montecristi y Derechos de la Naturaleza' }
         ];
         let ordenRuta = [];
         let rutaBloqueada = false;
@@ -1452,10 +1968,23 @@
             return a;
         }
 
+        let intentosRuta = 0;
         function iniciarJuegoRuta() {
             ordenRuta = barajar(pasosRutaBase);
             rutaBloqueada = false;
             rutaSeleccionIdx = null;
+            intentosRuta = 0;
+            renderizarJuegoRuta();
+        }
+
+        function moverRuta(idx, dir) {
+            if (rutaBloqueada) return;
+            const nuevo = idx + dir;
+            if (nuevo < 0 || nuevo >= ordenRuta.length) return;
+            const tmp = ordenRuta[idx];
+            ordenRuta[idx] = ordenRuta[nuevo];
+            ordenRuta[nuevo] = tmp;
+            reproducirSonido('clic');
             renderizarJuegoRuta();
         }
 
@@ -1463,60 +1992,59 @@
             const cont = document.getElementById('contenedor-juego-ruta');
             if (!cont) return;
             cont.innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-titulo text-xl font-extrabold text-white">Ruta Equinoccial</h3>
-                        <p class="text-sm text-slate-300 mt-1">Ordena el viaje de norte a sur / costa–oriente–islas. Toca dos pasos para intercambiarlos.</p>
-                    </div>
-                    <div id="lista-ruta">
+                <div class="juego-panel">
+                    <header class="juego-cab">
+                        <h3>Línea del tiempo</h3>
+                        <p>Ordena estos hechos del informe <strong>del más antiguo al más reciente</strong>. Usa las flechas ↑ ↓. Las fechas no se muestran hasta acertar.</p>
+                    </header>
+                    <ol class="ruta-lista" id="lista-ruta">
                         ${ordenRuta.map((p, i) => `
-                            <button type="button" class="ruta-step ${rutaSeleccionIdx === i ? 'is-picked' : ''}" onclick="intercambiarRuta(${i})">
-                                <span class="ruta-ord">${i + 1}</span>
-                                <span class="text-left text-sm">${p.texto}</span>
-                            </button>
+                            <li class="ruta-it ${rutaBloqueada ? 'bien' : ''}">
+                                <span class="ruta-n">${i + 1}</span>
+                                <span class="ruta-tx">
+                                    ${rutaBloqueada ? `<small class="ruta-anio">${p.anio}</small>` : ''}
+                                    ${p.texto}
+                                </span>
+                                <span class="ruta-ar">
+                                    <button type="button" aria-label="Subir" onclick="moverRuta(${i}, -1)" ${rutaBloqueada || i === 0 ? 'disabled' : ''}>↑</button>
+                                    <button type="button" aria-label="Bajar" onclick="moverRuta(${i}, 1)" ${rutaBloqueada || i === ordenRuta.length - 1 ? 'disabled' : ''}>↓</button>
+                                </span>
+                            </li>
                         `).join('')}
+                    </ol>
+                    <div class="juego-acciones">
+                        <button type="button" onclick="verificarRuta()" class="btn-juego-sol" ${rutaBloqueada ? 'disabled' : ''}>Comprobar orden</button>
+                        <button type="button" onclick="iniciarJuegoRuta()" class="btn-juego">Mezclar de nuevo</button>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="verificarRuta()" class="min-h-[44px] px-4 rounded-xl bg-yellow-400 text-slate-950 font-bold text-sm" ${rutaBloqueada ? 'disabled' : ''}>Comprobar orden</button>
-                        <button type="button" onclick="iniciarJuegoRuta()" class="min-h-[44px] px-4 rounded-xl bg-slate-800 text-slate-200 font-bold text-sm border border-slate-600">Mezclar de nuevo</button>
-                    </div>
-                    <div id="feedback-ruta" class="text-sm font-bold min-h-[24px]"></div>
+                    <div id="feedback-ruta" class="feedback-juego" aria-live="polite"></div>
                 </div>
             `;
-        }
-
-        function intercambiarRuta(idx) {
-            if (rutaBloqueada) return;
-            if (rutaSeleccionIdx === null) {
-                rutaSeleccionIdx = idx;
-                renderizarJuegoRuta();
-                return;
-            }
-            if (rutaSeleccionIdx === idx) {
-                rutaSeleccionIdx = null;
-                renderizarJuegoRuta();
-                return;
-            }
-            const tmp = ordenRuta[rutaSeleccionIdx];
-            ordenRuta[rutaSeleccionIdx] = ordenRuta[idx];
-            ordenRuta[idx] = tmp;
-            rutaSeleccionIdx = null;
-            reproducirSonido('clic');
-            renderizarJuegoRuta();
         }
 
         function verificarRuta() {
             const ok = ordenRuta.map(p => p.id).join('') === 'abcd';
             const fb = document.getElementById('feedback-ruta');
+            intentosRuta++;
             if (ok) {
                 rutaBloqueada = true;
                 reproducirSonido('victoria');
-                sumarPuntosGlobales(120);
-                fb.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-check-circle mr-1"></i> ¡Ruta perfecta! +120 pts</span>';
+                const ganados = Math.max(20, 60 - (intentosRuta - 1) * 10);
+                sumarPuntosGlobales(ganados, 'ruta');
                 renderizarJuegoRuta();
+                const fb2 = document.getElementById('feedback-ruta');
+                if (fb2) {
+                    fb2.className = 'feedback-juego ok';
+                    fb2.innerHTML = `<strong>¡Orden correcto! +${ganados} pts</strong><p>Ahora puedes ver las fechas de cada hecho del informe.</p>`;
+                }
             } else {
                 reproducirSonido('error');
-                fb.innerHTML = '<span class="text-red-400"><i class="fa-solid fa-xmark-circle mr-1"></i> Aún no. Pista: Quito → Costa → Amazonía → Galápagos.</span>';
+                if (fb) {
+                    fb.className = 'feedback-juego mal';
+                    const pista = intentosRuta >= 2
+                        ? '<p>Pista suave: el cacao de Palanda es el hecho más antiguo; Montecristi, el más reciente.</p>'
+                        : '<p>Revisa cuál ocurrió primero y cuál después. No te revelamos el orden completo.</p>';
+                    fb.innerHTML = `<strong>Todavía no</strong>${pista}`;
+                }
             }
         }
 
@@ -1524,12 +2052,12 @@
            JUEGO 4: CLASIFICADOR RÁPIDO «RETO DE LAS 4 REGIONES»
            ------------------------------------------------------------------------ */
         const itemsClasificadorRegiones = [
-            { nombre: "Primer exportador mundial de Camarón blanco y Banano", region: "costa", pista: "Cuenca del Guayas, Manabí, El Oro y Esmeraldas" },
-            { nombre: "Volcán Chimborazo (6.263,47 m s. n. m.) y Centro Histórico de Quito", region: "sierra", pista: "Callejón Interandino de los Andes" },
-            { nombre: "Parque Nacional Yasuní y Cuna del Cacao en Palanda (3500 a. C.)", region: "amazonia", pista: "45,7% del territorio nacional al este de los Andes" },
-            { nombre: "Bono Azul de Conservación (2023) y Volcán Wolf en la Isla Isabela", region: "galapagos", pista: "Archipiélago volcánico a 972 km del continente" },
-            { nombre: "Tejido del Sombrero de Paja Toquilla en Montecristi y Marimba Esmeraldeña", region: "costa", pista: "Patrimonios Culturales Inmateriales del Litoral" },
-            { nombre: "Árbol Nacional de la Quina (Loja) y Complejo Inca-Cañari de Ingapirca", region: "sierra", pista: "Andes australes del Ecuador" }
+            { nombre: "Primer exportador mundial de camarón y banano", region: "costa", pista: "Puertos y llanuras agroexportadoras" },
+            { nombre: "Volcán Chimborazo y Centro Histórico de Quito", region: "sierra", pista: "Hoyas andinas y Avenida de los Volcanes" },
+            { nombre: "Parque Nacional Yasuní y cacao ancestral de Palanda", region: "amazonia", pista: "Oriente y cuenca del Mayo-Chinchipe" },
+            { nombre: "Bono Azul (2023) y volcán Wolf", region: "galapagos", pista: "Islas a casi mil kilómetros del continente" },
+            { nombre: "Sombrero de paja toquilla y marimba", region: "costa", pista: "Patrimonios del litoral y Montecristi" },
+            { nombre: "Árbol de la Quina e Ingapirca", region: "sierra", pista: "Loja y el Austro cañari-inca" }
         ];
 
         let indiceClasificador = 0;
@@ -1557,46 +2085,52 @@
 
             const actual = itemsClasificadorRegiones[indiceClasificador];
             cont.innerHTML = `
-                <div class="text-center max-w-2xl mx-auto space-y-5">
-                    <span class="px-3 py-1 rounded-full bg-slate-800 text-yellow-400 text-xs font-bold">Elemento ${indiceClasificador + 1} de ${itemsClasificadorRegiones.length}</span>
-                    <div class="bg-slate-800/90 p-6 rounded-2xl border-2 border-blue-500/40">
-                        <span class="text-xs text-slate-400 uppercase block mb-1">¿A qué Región Geográfica pertenece este activo nacional?</span>
-                        <h4 class="font-titulo font-black text-xl sm:text-2xl text-white">${actual.nombre}</h4>
-                        <span class="text-xs text-blue-300 block mt-2"><i class="fa-solid fa-lightbulb mr-1"></i>Pista: ${actual.pista}</span>
+                <div class="juego-panel regiones-panel">
+                    <header class="juego-cab">
+                        <p class="regiones-paso">Elemento ${indiceClasificador + 1} de ${itemsClasificadorRegiones.length}</p>
+                        <h3>¿A qué región pertenece?</h3>
+                    </header>
+                    <div class="regiones-tarjeta">
+                        <h4>${actual.nombre}</h4>
+                        <p>Pista: ${actual.pista}</p>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <button type="button" onclick="verificarClasificacionRegion('costa')" class="min-h-[44px] p-4 rounded-xl bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 border border-amber-400 font-titulo font-bold text-xs sm:text-sm transition">
-                            <i class="fa-solid fa-water mr-1" aria-hidden="true"></i> Costa
-                        </button>
-                        <button type="button" onclick="verificarClasificacionRegion('sierra')" class="min-h-[44px] p-4 rounded-xl bg-purple-500/20 hover:bg-purple-500 hover:text-white border border-purple-400 font-titulo font-bold text-xs sm:text-sm transition">
-                            <i class="fa-solid fa-mountain mr-1" aria-hidden="true"></i> Sierra
-                        </button>
-                        <button type="button" onclick="verificarClasificacionRegion('amazonia')" class="min-h-[44px] p-4 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-400 font-titulo font-bold text-xs sm:text-sm transition">
-                            <i class="fa-solid fa-leaf mr-1" aria-hidden="true"></i> Amazonía
-                        </button>
-                        <button type="button" onclick="verificarClasificacionRegion('galapagos')" class="min-h-[44px] p-4 rounded-xl bg-sky-500/20 hover:bg-sky-500 hover:text-slate-950 border border-sky-400 font-titulo font-bold text-xs sm:text-sm transition">
-                            <i class="fa-solid fa-anchor mr-1" aria-hidden="true"></i> Galápagos
-                        </button>
+                    <div class="regiones-btns">
+                        <button type="button" class="reg-btn costa" onclick="verificarClasificacionRegion('costa')">Costa</button>
+                        <button type="button" class="reg-btn sierra" onclick="verificarClasificacionRegion('sierra')">Sierra</button>
+                        <button type="button" class="reg-btn amazonia" onclick="verificarClasificacionRegion('amazonia')">Amazonía</button>
+                        <button type="button" class="reg-btn galapagos" onclick="verificarClasificacionRegion('galapagos')">Galápagos</button>
                     </div>
-                    <div id="feedback-clasificador" class="text-xs font-bold min-h-[24px]"></div>
+                    <div id="feedback-clasificador" class="feedback-juego" aria-live="polite"></div>
                 </div>
             `;
         }
 
+        const regionesIntentadas = new Set();
         function verificarClasificacionRegion(regElegida) {
             const actual = itemsClasificadorRegiones[indiceClasificador];
             const fb = document.getElementById('feedback-clasificador');
+            const claveItem = indiceClasificador + ':' + actual.nombre;
             if (regElegida === actual.region) {
                 reproducirSonido('acierto');
-                sumarPuntosGlobales(45);
-                fb.innerHTML = `<span class="text-emerald-400"><i class="fa-solid fa-check-circle mr-1"></i> ¡Correcto! (+45 pts)</span>`;
+                const primera = !regionesIntentadas.has(claveItem + ':fail');
+                if (fb) {
+                    fb.className = 'feedback-juego ok';
+                    fb.innerHTML = primera
+                        ? '<strong>¡Correcto! (+10 pts)</strong>'
+                        : '<strong>Correcto</strong><p>Sin puntos extra: ya habías fallado este ítem.</p>';
+                }
+                if (primera) sumarPuntosGlobales(10, 'regiones');
                 setTimeout(() => {
                     indiceClasificador++;
                     renderizarJuegoRegiones();
-                }, 650);
+                }, 700);
             } else {
                 reproducirSonido('error');
-                fb.innerHTML = `<span class="text-red-400"><i class="fa-solid fa-xmark-circle mr-1"></i> Región incorrecta. Revisa la pista geográfica e intenta de nuevo.</span>`;
+                regionesIntentadas.add(claveItem + ':fail');
+                if (fb) {
+                    fb.className = 'feedback-juego mal';
+                    fb.innerHTML = '<strong>Región incorrecta</strong><p>Revisa la pista e intenta de nuevo.</p>';
+                }
             }
         }
 
@@ -1880,7 +2414,7 @@
             document.querySelectorAll('#nav-links a').forEach((enlace) => {
                 enlace.addEventListener('click', cerrarMenu);
             });
-            const secciones = ['mapa-datos', 'informe-11-secciones', 'gastronomia-3d', 'multimedia', 'zona-arcade'];
+            const secciones = ['mapa-datos', 'historia', 'informe-11-secciones', 'gastronomia-3d', 'multimedia', 'zona-arcade'];
             const observador = new IntersectionObserver((entradas) => {
                 entradas.forEach((entrada) => {
                     if (!entrada.isIntersecting) return;

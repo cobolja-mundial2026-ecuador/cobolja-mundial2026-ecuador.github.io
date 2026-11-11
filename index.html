@@ -7,9 +7,10 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2'%3E%3Crect width='3' height='1' fill='%23FFDD00'/%3E%3Crect y='1' width='3' height='.5' fill='%230033A0'/%3E%3Crect y='1.5' width='3' height='.5' fill='%23EF3340'/%3E%3C/svg%3E">
     <title>República del Ecuador | COBOLJA — Feria Educativa & Mundial 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Enlace a tu hoja de estilos en VS Code -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="antialiased selection:bg-yellow-400 selection:text-slate-950">
@@ -17,57 +18,68 @@
 <!-- Franja Constitucional Superior -->
     <div class="franja-tricolor sticky top-0 z-50" aria-hidden="true"></div>
 
-    <nav class="portal-nav sticky top-2 z-40 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 text-white shadow-xl" aria-label="Recorrido del stand">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div class="flex items-center justify-between min-h-16 gap-3 py-2">
-                <a href="#inicio" class="flex items-center gap-3 group min-w-0">
-                    <div class="w-10 h-7 rounded overflow-hidden shadow-md border border-yellow-400/60 flex flex-col shrink-0" aria-hidden="true">
-                        <div class="h-1/2 bg-[#FFDD00]"></div>
-                        <div class="h-1/4 bg-[#0033A0]"></div>
-                        <div class="h-1/4 bg-[#EF3340]"></div>
-                    </div>
-                    <div class="min-w-0">
-                        <span class="text-xs font-bold tracking-widest uppercase text-yellow-400 block leading-none">COBOLJA · Feria 2026</span>
-                        <span class="font-titulo font-extrabold text-base sm:text-lg tracking-tight text-white group-hover:text-yellow-300 transition">Ecuador</span>
-                    </div>
-                </a>
-
-                <div id="nav-links" class="nav-links">
-                    <a href="#mapa-datos"><i class="fa-solid fa-map-location-dot text-yellow-400" aria-hidden="true"></i> Mapa</a>
-                    <a href="#informe-11-secciones"><i class="fa-solid fa-book-open text-blue-400" aria-hidden="true"></i> Informe</a>
-                    <a href="#gastronomia-3d"><i class="fa-solid fa-utensils text-red-400" aria-hidden="true"></i> Sabores</a>
-                    <a href="#multimedia"><i class="fa-solid fa-photo-film text-sky-300" aria-hidden="true"></i> Media</a>
-                    <a href="#zona-arcade"><i class="fa-solid fa-gamepad text-yellow-300" aria-hidden="true"></i> Juegos</a>
+    <nav class="portal-nav sticky top-2 z-40 text-white shadow-xl" aria-label="Recorrido del stand">
+        <div class="nav-shell">
+            <a href="#inicio" class="nav-brand group">
+                <div class="nav-flag" aria-hidden="true">
+                    <i></i><i></i><i></i>
                 </div>
+                <div class="nav-brand-txt">
+                    <span>COBOLJA · Feria 2026</span>
+                    <strong>Ecuador</strong>
+                </div>
+            </a>
 
-                <div class="flex items-center gap-2 shrink-0">
-                    <div class="bg-slate-900 border border-yellow-500/40 rounded-xl px-3 py-1.5 flex items-center gap-2 min-h-[44px]" title="Puntaje del visitante">
-                        <i class="fa-solid fa-trophy text-yellow-400 text-sm" aria-hidden="true"></i>
-                        <div class="text-left">
-                            <span id="score" class="font-titulo font-extrabold text-yellow-400 text-sm leading-none" aria-live="polite">0</span>
-                            <span class="text-xs text-slate-400 uppercase block leading-none" id="rango-visitante">Visitante</span>
-                        </div>
-                    </div>
-                    <button type="button" id="btn-audio" onclick="alternarAudio()" class="min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" aria-pressed="true" aria-label="Silenciar efectos de sonido">
-                        <i class="fa-solid fa-volume-high" id="icono-audio" aria-hidden="true"></i>
+            <div id="nav-links" class="nav-links">
+                <a href="#mapa-datos"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> Mapa</a>
+                <a href="#historia"><i class="fa-solid fa-timeline" aria-hidden="true"></i> Historia</a>
+                <a href="#informe-11-secciones"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Informe</a>
+                <a href="#gastronomia-3d"><i class="fa-solid fa-utensils" aria-hidden="true"></i> Sabores</a>
+                <a href="#multimedia"><i class="fa-solid fa-photo-film" aria-hidden="true"></i> Media</a>
+                <a href="#zona-arcade"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> Juegos</a>
+                <div class="nav-drawer-tools">
+                    <button type="button" id="btn-audio-movil" onclick="alternarAudio()" class="nav-tool-btn" aria-pressed="true" aria-label="Silenciar efectos de sonido">
+                        <i class="fa-solid fa-volume-high" aria-hidden="true"></i> Sonido
                     </button>
-                    <a href="https://www.instagram.com/ecuavita_fresh?vrfl=eWlkdGN5cW9ocHl5" target="_blank" rel="noopener noreferrer" class="btn-ig-nav" aria-label="Abrir Instagram @ecuavita_fresh">
-                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-                        <span class="hidden sm:inline">IG</span>
+                    <a href="https://www.instagram.com/ecuavita_fresh?vrfl=eWlkdGN5cW9ocHl5" target="_blank" rel="noopener noreferrer" class="nav-tool-btn" aria-label="Abrir Instagram @ecuavita_fresh">
+                        <i class="fa-brands fa-instagram" aria-hidden="true"></i> Instagram
                     </a>
-                    <button type="button" onclick="abrirModalQRInstagram()" class="min-h-[44px] px-3 rounded-xl bg-gradient-to-r from-fuchsia-600 to-amber-500 hover:brightness-110 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg transition" aria-label="Mostrar QR de Instagram">
-                        <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
-                        <span class="hidden md:inline">QR IG</span>
+                    <button type="button" onclick="abrirModalQRInstagram(); cerrarMenu();" class="nav-tool-btn" aria-label="Mostrar QR de Instagram">
+                        <i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR Instagram
                     </button>
-                    <button type="button" onclick="abrirModalQR()" class="min-h-[44px] px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg transition">
-                        <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
-                        <span class="hidden sm:inline">QR</span>
-                    </button>
-                    <button type="button" id="btn-menu" class="menu-toggle" aria-expanded="false" aria-controls="nav-links">
-                        <i class="fa-solid fa-bars" id="icono-menu" aria-hidden="true"></i>
-                        <span class="sr-only" id="texto-menu">Abrir menú</span>
+                    <button type="button" onclick="abrirModalQR(); cerrarMenu();" class="nav-tool-btn" aria-label="Mostrar QR del stand">
+                        <i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR del stand
                     </button>
                 </div>
+            </div>
+
+            <div class="nav-tools">
+                <div class="pts-chip-btn pts-chip-solo" title="Puntaje del visitante" aria-live="polite">
+                    <span id="pasaporte-emoji" aria-hidden="true">🧭</span>
+                    <span class="pts-chip-meta">
+                        <em id="pasaporte-nombre-chip" class="pasaporte-nombre-chip oculto">Visitante</em>
+                        <b id="score">0</b>
+                        <small id="rango-visitante">Visitante</small>
+                    </span>
+                </div>
+                <button type="button" id="btn-pasaporte" class="btn-ver-pasaporte" aria-label="Ver pasaporte">
+                    <i class="fa-solid fa-passport" aria-hidden="true"></i>
+                    <span>Pasaporte</span>
+                </button>
+                <button type="button" id="btn-audio" onclick="alternarAudio()" class="nav-icon-btn nav-desktop-only" aria-pressed="true" aria-label="Silenciar efectos de sonido">
+                    <i class="fa-solid fa-volume-high" id="icono-audio" aria-hidden="true"></i>
+                </button>
+                <a href="https://www.instagram.com/ecuavita_fresh?vrfl=eWlkdGN5cW9ocHl5" target="_blank" rel="noopener noreferrer" class="btn-ig-nav nav-desktop-only" aria-label="Abrir Instagram @ecuavita_fresh">
+                    <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                </a>
+                <button type="button" onclick="abrirModalQR()" class="nav-qr-btn nav-desktop-only" aria-label="Mostrar QR del stand">
+                    <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+                    <span>QR</span>
+                </button>
+                <button type="button" id="btn-menu" class="menu-toggle" aria-expanded="false" aria-controls="nav-links">
+                    <i class="fa-solid fa-bars" id="icono-menu" aria-hidden="true"></i>
+                    <span class="sr-only" id="texto-menu">Abrir menú</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -149,7 +161,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-2 z-10 mb-2">
                         <div>
                             <h3 class="font-titulo font-bold text-lg text-yellow-300">Mapa interactivo</h3>
-                            <p class="text-xs text-slate-400">24 provincias · 4 regiones · línea equinoccial</p>
+                            <p class="text-xs text-slate-400">Elige qué nombres ver · toca una provincia para zoom</p>
                         </div>
                         <div class="flex flex-wrap gap-2" role="group" aria-label="Regiones">
                             <button type="button" onclick="seleccionarRegionMapa('costa')" id="btn-reg-costa" class="region-chip region-chip-activa" aria-pressed="true">Costa</button>
@@ -158,11 +170,28 @@
                             <button type="button" onclick="seleccionarRegionMapa('galapagos')" id="btn-reg-galapagos" class="region-chip" aria-pressed="false">Galápagos</button>
                         </div>
                     </div>
+                    <div class="map-capas" role="group" aria-label="Capas del mapa">
+                        <button type="button" class="map-capa-btn is-on" id="btn-capa-provincias" data-capa="provincias" aria-pressed="true">
+                            <i class="fa-solid fa-map" aria-hidden="true"></i> Provincias
+                        </button>
+                        <button type="button" class="map-capa-btn" id="btn-capa-ciudades" data-capa="ciudades" aria-pressed="false">
+                            <i class="fa-solid fa-city" aria-hidden="true"></i> Ciudades
+                        </button>
+                        <button type="button" class="map-capa-btn" id="btn-capa-hitos" data-capa="hitos" aria-pressed="false">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i> Hitos
+                        </button>
+                    </div>
 
                     <!-- Lienzo SVG del Mapa de Ecuador -->
-                    <div class="relative flex items-center justify-center my-2 map-canvas">
+                    <div class="relative flex items-center justify-center my-2 map-canvas" id="map-canvas">
+                        <div class="map-zoom-bar" role="toolbar" aria-label="Controles del mapa">
+                            <button type="button" id="btn-mapa-reset" class="map-zoom-btn" title="Ver mapa completo">
+                                <i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+                                <span>Ver todo</span>
+                            </button>
+                        </div>
                         <div id="map-tooltip" class="map-tooltip" role="tooltip" hidden></div>
-                        <svg viewBox="-1202.0 -280.0 13087.0 11410.0" class="mapa-ecuador-svg w-full h-auto max-h-[560px] select-none" role="img" aria-label="Mapa interactivo del Ecuador por provincias y regiones">
+                        <svg id="svg-mapa-ecuador" viewBox="-1202.0 -280.0 13087.0 11410.0" class="mapa-ecuador-svg capa-provincias w-full h-auto max-h-[560px] select-none" role="img" aria-label="Mapa interactivo del Ecuador por provincias y regiones">
   <defs>
     <linearGradient id="oceano" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#071126"/>
@@ -202,15 +231,7 @@
 <path class="prov-svg" id="prov-napo" data-region="amazonia" data-provincia="Napo" tabindex="0" role="button" aria-label="Provincia Napo" fill="#10B981" stroke="#0B1938" stroke-width="18" d="M8085.0,2513.0L8102.0,2632.0L8087.0,2735.0L8152.0,2830.0L8161.0,2912.0L8129.0,3022.0L8044.0,3068.0L8039.0,3119.0L7987.0,3132.0L7922.0,3252.0L7832.0,3271.0L7657.0,3187.0L7619.0,3261.0L7540.0,3319.0L7598.0,3371.0L7727.0,3520.0L7746.0,3618.0L7697.0,3699.0L7695.0,3832.0L7609.0,3999.0L7670.0,4018.0L7745.0,4008.0L8097.0,3842.0L8173.0,3813.0L8237.0,3704.0L8357.0,3607.0L8397.0,3626.0L8292.0,3741.0L8262.0,3797.0L8275.0,3865.0L8399.0,3939.0L8521.0,3967.0L8491.0,4029.0L8519.0,4081.0L8504.0,4118.0L8195.0,4142.0L8120.0,4184.0L7959.0,4234.0L7854.0,4241.0L7663.0,4329.0L7520.0,4352.0L7411.0,4355.0L7156.0,4478.0L7105.0,4459.0L7069.0,4499.0L6952.0,4476.0L6831.0,4495.0L6697.0,4492.0L6680.0,4426.0L6597.0,4409.0L6520.0,4335.0L6380.0,4340.0L6321.0,4376.0L6333.0,4199.0L6311.0,4145.0L6232.0,4037.0L6147.0,3994.0L6184.0,3942.0L6195.0,3878.0L6238.0,3785.0L6209.0,3628.0L6223.0,3567.0L6323.0,3536.0L6359.0,3445.0L6435.0,3343.0L6496.0,3159.0L6471.0,3113.0L6545.0,2993.0L6578.0,2914.0L6595.0,2719.0L6668.0,2700.0L6735.0,2725.0L6800.0,2638.0L6883.0,2637.0L6929.0,2584.0L6956.0,2495.0L7018.0,2474.0L7159.0,2398.0L7180.0,2361.0L7271.0,2388.0L7261.0,2437.0L7283.0,2526.0L7337.0,2547.0L7505.0,2551.0L7593.0,2583.0L7659.0,2531.0L7804.0,2454.0L7839.0,2516.0L7835.0,2625.0L7977.0,2652.0L8085.0,2513.0Z"></path>
 <path class="prov-svg" id="prov-galapagos" data-region="galapagos" data-provincia="Galápagos" tabindex="0" role="button" aria-label="Provincia Galápagos" fill="#0EA5E9" stroke="#0B1938" stroke-width="18" d="M992.0,2508.0L1014.0,2515.0L1030.0,2532.0L1031.0,2549.0L1006.0,2557.0L980.0,2554.0L914.0,2524.0L931.0,2508.0L943.0,2510.0L982.0,2510.0L992.0,2508.0ZM332.0,2407.0L339.0,2419.0L355.0,2414.0L378.0,2419.0L397.0,2428.0L408.0,2440.0L415.0,2446.0L417.0,2457.0L410.0,2468.0L395.0,2473.0L395.0,2490.0L391.0,2495.0L364.0,2512.0L359.0,2513.0L329.0,2508.0L317.0,2500.0L306.0,2489.0L289.0,2479.0L304.0,2460.0L309.0,2449.0L314.0,2424.0L322.0,2412.0L332.0,2407.0ZM1280.0,1978.0L1290.0,1984.0L1301.0,1984.0L1322.0,1975.0L1324.0,2005.0L1309.0,2038.0L1285.0,2067.0L1261.0,2086.0L1232.0,2095.0L1216.0,2131.0L1200.0,2156.0L1189.0,2167.0L1177.0,2175.0L1164.0,2179.0L1152.0,2181.0L1124.0,2180.0L1116.0,2183.0L1099.0,2195.0L1087.0,2197.0L1079.0,2195.0L1054.0,2180.0L1025.0,2176.0L1018.0,2172.0L1017.0,2165.0L1022.0,2156.0L1038.0,2138.0L1071.0,2122.0L1082.0,2114.0L1090.0,2086.0L1099.0,2085.0L1133.0,2077.0L1142.0,2068.0L1155.0,2042.0L1162.0,2033.0L1184.0,2013.0L1195.0,2001.0L1224.0,1990.0L1233.0,1981.0L1245.0,1981.0L1270.0,1974.0L1280.0,1978.0ZM520.0,1833.0L520.0,1850.0L527.0,1853.0L560.0,1858.0L569.0,1867.0L567.0,1886.0L557.0,1920.0L557.0,1929.0L562.0,1941.0L563.0,1950.0L554.0,1970.0L554.0,1974.0L541.0,1980.0L531.0,1992.0L522.0,2007.0L512.0,2019.0L501.0,2026.0L461.0,2025.0L457.0,2027.0L453.0,2043.0L442.0,2051.0L427.0,2054.0L412.0,2053.0L385.0,2043.0L367.0,2040.0L347.0,2025.0L330.0,1999.0L323.0,1991.0L311.0,1993.0L296.0,1989.0L282.0,1982.0L273.0,1974.0L271.0,1964.0L273.0,1924.0L278.0,1903.0L287.0,1884.0L299.0,1867.0L311.0,1853.0L319.0,1848.0L341.0,1838.0L360.0,1836.0L384.0,1842.0L392.0,1839.0L406.0,1831.0L484.0,1822.0L501.0,1814.0L515.0,1821.0L520.0,1833.0ZM-469.0,1631.0L-440.0,1660.0L-423.0,1672.0L-421.0,1689.0L-424.0,1719.0L-424.0,1789.0L-432.0,1793.0L-489.0,1816.0L-511.0,1819.0L-519.0,1817.0L-536.0,1805.0L-551.0,1801.0L-575.0,1792.0L-592.0,1792.0L-596.0,1789.0L-597.0,1780.0L-611.0,1766.0L-622.0,1749.0L-629.0,1731.0L-634.0,1694.0L-644.0,1663.0L-642.0,1653.0L-571.0,1655.0L-541.0,1640.0L-503.0,1631.0L-484.0,1624.0L-469.0,1631.0ZM84.0,1542.0L100.0,1554.0L155.0,1572.0L175.0,1575.0L201.0,1586.0L244.0,1633.0L267.0,1648.0L256.0,1653.0L267.0,1660.0L262.0,1674.0L245.0,1700.0L239.0,1717.0L224.0,1722.0L205.0,1720.0L171.0,1709.0L114.0,1709.0L98.0,1704.0L84.0,1695.0L68.0,1690.0L50.0,1697.0L39.0,1684.0L34.0,1663.0L25.0,1646.0L5.0,1642.0L39.0,1595.0L41.0,1584.0L36.0,1570.0L43.0,1556.0L57.0,1545.0L72.0,1542.0L78.0,1547.0L84.0,1542.0ZM-374.0,1298.0L-361.0,1310.0L-355.0,1329.0L-352.0,1346.0L-349.0,1354.0L-338.0,1361.0L-329.0,1396.0L-316.0,1407.0L-305.0,1422.0L-299.0,1426.0L-282.0,1427.0L-268.0,1431.0L-262.0,1446.0L-261.0,1465.0L-263.0,1503.0L-248.0,1593.0L-239.0,1608.0L-202.0,1642.0L-202.0,1656.0L-199.0,1665.0L-185.0,1673.0L-102.0,1725.0L-89.0,1748.0L-75.0,1761.0L-62.0,1764.0L-67.0,1780.0L-60.0,1811.0L-57.0,1844.0L-61.0,1860.0L-83.0,1878.0L-90.0,1891.0L-72.0,1879.0L-66.0,1886.0L-66.0,1901.0L-62.0,1914.0L-28.0,1920.0L-11.0,1929.0L-12.0,1947.0L-1.0,1948.0L9.0,1953.0L16.0,1960.0L22.0,1970.0L16.0,1981.0L27.0,1985.0L56.0,2014.0L71.0,2020.0L72.0,2033.0L68.0,2037.0L41.0,2049.0L16.0,2129.0L19.0,2148.0L17.0,2163.0L-1.0,2158.0L-10.0,2171.0L-31.0,2194.0L-40.0,2207.0L-54.0,2201.0L-67.0,2200.0L-93.0,2202.0L-109.0,2206.0L-135.0,2225.0L-228.0,2256.0L-246.0,2251.0L-259.0,2255.0L-332.0,2245.0L-423.0,2246.0L-441.0,2241.0L-453.0,2229.0L-458.0,2212.0L-458.0,2193.0L-461.0,2184.0L-487.0,2179.0L-507.0,2147.0L-499.0,2111.0L-477.0,2076.0L-453.0,2052.0L-358.0,1991.0L-351.0,1975.0L-338.0,1974.0L-317.0,1965.0L-289.0,1958.0L-271.0,1960.0L-258.0,1969.0L-244.0,1974.0L-235.0,1975.0L-226.0,1972.0L-214.0,1955.0L-210.0,1952.0L-210.0,1944.0L-202.0,1927.0L-191.0,1914.0L-179.0,1919.0L-169.0,1906.0L-169.0,1894.0L-175.0,1883.0L-185.0,1875.0L-196.0,1869.0L-220.0,1862.0L-229.0,1858.0L-249.0,1840.0L-268.0,1815.0L-283.0,1786.0L-291.0,1759.0L-290.0,1735.0L-292.0,1727.0L-302.0,1719.0L-324.0,1714.0L-335.0,1697.0L-384.0,1671.0L-403.0,1651.0L-402.0,1625.0L-418.0,1616.0L-429.0,1598.0L-427.0,1581.0L-408.0,1575.0L-422.0,1554.0L-428.0,1542.0L-430.0,1529.0L-430.0,1501.0L-435.0,1473.0L-442.0,1446.0L-461.0,1433.0L-486.0,1432.0L-514.0,1442.0L-542.0,1462.0L-556.0,1465.0L-572.0,1456.0L-589.0,1434.0L-590.0,1422.0L-524.0,1385.0L-508.0,1369.0L-503.0,1337.0L-483.0,1343.0L-466.0,1339.0L-451.0,1331.0L-424.0,1324.0L-408.0,1304.0L-398.0,1301.0L-383.0,1302.0L-374.0,1298.0ZM346.0,1206.0L329.0,1210.0L319.0,1207.0L309.0,1196.0L290.0,1191.0L282.0,1184.0L273.0,1171.0L275.0,1153.0L288.0,1139.0L306.0,1131.0L323.0,1127.0L341.0,1133.0L361.0,1142.0L377.0,1155.0L384.0,1171.0L379.0,1183.0L365.0,1196.0L346.0,1206.0ZM110.0,949.0L97.0,975.0L61.0,961.0L66.0,943.0L61.0,909.0L67.0,894.0L100.0,913.0L110.0,949.0ZM-760.0,313.0L-768.0,315.0L-770.0,305.0L-761.0,303.0L-760.0,313.0ZM-912.0,88.0L-917.0,89.0L-922.0,82.0L-917.0,77.0L-912.0,81.0L-912.0,88.0Z"></path>
   </g>
-  <g class="map-hotspots">
-    <g class="hotspot" tabindex="0" role="button" data-hotspot="quito" aria-label="Quito"><circle cx="6167.5599999999995" cy="2790.9799999999996" r="95" class="hotspot-dot"></circle><text x="6287.5599999999995" y="2802.9799999999996" class="hotspot-label" font-size="160">Quito</text></g>
-<g class="hotspot" tabindex="0" role="button" data-hotspot="guayaquil" aria-label="Guayaquil"><circle cx="3641.24" cy="5884.85" r="95" class="hotspot-dot"></circle><text x="3761.24" y="5896.85" class="hotspot-label" font-size="160">Guayaquil</text></g>
-<g class="hotspot" tabindex="0" role="button" data-hotspot="chimborazo" aria-label="Chimborazo"><polygon points="5556.01,5665.13 5676.01,5445.13 5796.01,5665.13" class="hotspot-peak"></polygon><text x="5746.01" y="5625.13" class="hotspot-label" font-size="160">Chimborazo</text></g>
-<g class="hotspot" tabindex="0" role="button" data-hotspot="yasuni" aria-label="Yasuní"><circle cx="9897.7" cy="3634.3" r="95" class="hotspot-dot hotspot-dot-green"></circle><text x="10017.7" y="3646.3" class="hotspot-label" font-size="160">Yasuní</text></g>
-<g class="hotspot" tabindex="0" role="button" data-hotspot="palanda" aria-label="Palanda"><circle cx="5422.45" cy="9372.16" r="95" class="hotspot-dot hotspot-dot-gold"></circle><text x="5542.45" y="9384.16" class="hotspot-label" font-size="160">Palanda</text></g>
-<g class="hotspot" tabindex="0" role="button" data-hotspot="cuenca" aria-label="Cuenca"><circle cx="4698.95" cy="7633.54" r="95" class="hotspot-dot"></circle><text x="4818.95" y="7645.54" class="hotspot-label" font-size="160">Cuenca</text></g>
-<g class="hotspot" tabindex="0" role="button" data-hotspot="galapagos" aria-label="Galápagos"><circle cx="-203.27999999999997" cy="548.2000000000007" r="95" class="hotspot-dot"></circle><text x="-83.27999999999997" y="560.2000000000007" class="hotspot-label" font-size="160">Galápagos</text></g>
-  </g>
+  <g class="map-hotspots" aria-label="Ciudades e hitos del mapa"></g>
   <!-- Region selectors keep id hooks for JS -->
   <g id="svg-costa" class="region-svg" opacity="0" pointer-events="none"></g>
   <g id="svg-sierra" class="region-svg" opacity="0" pointer-events="none"></g>
@@ -219,7 +240,7 @@
 </svg>
                     </div>
 
-                    <p class="text-xs text-slate-400 border-t border-slate-700/80 pt-3">Toca provincias o hitos · teclado: Tab + Enter</p>
+                    <p class="map-capa-ayuda" id="map-capa-ayuda">Mostrando nombres de <strong>provincias</strong>. Las áreas de color siempre se pueden tocar.</p>
                 </div>
 
                 <!-- Panel Dinámico de la Región Seleccionada -->
@@ -260,19 +281,28 @@
 
             </div>
 
-                        <div class="mt-12 reveal" data-reveal>
-                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5">
-                    <div>
-                        <p class="section-kicker">El país en cifras</p>
-                        <h3 class="font-titulo text-xl sm:text-2xl font-extrabold text-slate-900">Datos clave</h3>
-                    </div>
-                    <div class="flex gap-2">
-                        <button type="button" class="dato-nav" id="dato-prev" aria-label="Anterior"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
-                        <button type="button" class="dato-nav" id="dato-next" aria-label="Siguiente"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
-                        <button type="button" class="dato-toggle" id="dato-toggle" aria-expanded="false">Ver los 10</button>
-                    </div>
+            <div class="mt-12 reveal sec-datos-block" data-reveal>
+                <div class="mb-5">
+                    <p class="section-kicker">El país en cifras</p>
+                    <h3 class="font-titulo text-xl sm:text-2xl font-extrabold text-slate-900">Datos clave</h3>
+                    <p class="section-lead mt-2">Toca una cifra para leer el detalle. Abajo verás gráficos del informe.</p>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="grid-10-datos"></div>
+                <div id="grid-10-datos" class="datos-grid"></div>
+                <div id="grid-graficos" class="graf-grid" aria-label="Gráficos del informe"></div>
+            </div>
+        </section>
+
+        <section id="historia" class="scroll-mt-24 sec-historia reveal" data-reveal>
+            <p class="section-kicker">Línea del tiempo</p>
+            <h2 class="section-title">Historia en hitos</h2>
+            <p class="section-lead">Desliza la cronología y lee cada momento clave del Ecuador, desde el cacao ancestral hasta París 2024.</p>
+            <div class="crono">
+                <div class="crono-tira" id="crono-tira" role="tablist" aria-label="Cronología de Ecuador"></div>
+                <div class="crono-detalle" id="crono-det" aria-live="polite"></div>
+                <div class="crono-nav">
+                    <button type="button" id="cr-ant" aria-label="Hito anterior">←</button>
+                    <button type="button" id="cr-sig" aria-label="Hito siguiente">→</button>
+                </div>
             </div>
         </section>
 
@@ -284,15 +314,20 @@
                 <div>
                     <p class="section-kicker">Parada 2</p>
                     <h2 class="section-title">Informe por temas</h2>
+                    <p class="section-lead mt-2">Busca un dato o descarga el informe completo en Word.</p>
                 </div>
 
-                <!-- Buscador Instantáneo dentro del Informe -->
-                <div class="w-full lg:w-96">
-                    <label for="buscador-informe" class="block text-sm font-bold text-slate-800 mb-1">Buscar en el informe</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm" aria-hidden="true"></i>
-                        <input type="search" id="buscador-informe" oninput="filtrarContenidoInforme(this.value)" placeholder="Cacao, bandera, Galápagos, Alfaro" class="w-full min-h-[44px] pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-300 text-base focus:ring-2 focus:ring-blue-600 shadow-sm">
+                <div class="w-full lg:w-auto flex flex-col sm:flex-row gap-3 lg:items-end">
+                    <div class="w-full lg:w-96">
+                        <label for="buscador-informe" class="block text-sm font-bold text-slate-800 mb-1">Buscar en el informe</label>
+                        <div class="campo-informe">
+                            <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm" aria-hidden="true"></i>
+                            <input type="search" id="buscador-informe" oninput="filtrarContenidoInforme(this.value)" placeholder="Cacao, bandera, Galápagos, Alfaro" autocomplete="off">
+                        </div>
                     </div>
+                    <a class="btn-descarga-informe" href="Informe_Ecuador_COBOLJA.docx" download>
+                        <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> Descargar informe (Word)
+                    </a>
                 </div>
             </div>
 
@@ -596,6 +631,11 @@
             </div>
 
             <div id="media-pane-audios" class="media-pane oculto">
+                <div class="mb-6">
+                    <h3 class="font-titulo text-lg font-extrabold text-slate-900">Paisajes sonoros</h3>
+                    <p class="text-sm text-slate-600 mt-1">Toca un paisaje para escuchar un ambiente sintetizado de cada región (Andes, Costa, Amazonía, Galápagos).</p>
+                    <div id="audios-paisaje" class="audios-paisaje mt-4"></div>
+                </div>
                 <div class="audio-grid">
                     <article class="audio-card audio-card-wide">
                         <div class="audio-icon"><i class="fa-solid fa-flag" aria-hidden="true"></i></div>
@@ -713,33 +753,33 @@
                 <header class="arcade-header">
                     <p class="text-yellow-300 text-xs font-bold uppercase tracking-widest">Parada 5</p>
                     <h2 class="font-titulo text-2xl sm:text-4xl font-extrabold text-white mt-1">Juegos del stand</h2>
-                    <p class="text-slate-300 mt-2 max-w-md">Elige un juego. Cada acierto suma puntos. Meta: <strong class="text-yellow-300">Gran Cóndor</strong> (600 pts).</p>
+                    <p class="text-slate-200 mt-2 max-w-xl">Elige un reto. Las opciones están equilibradas y los puntos van a tu pasaporte. Meta: <strong class="text-yellow-300">Gran Cóndor</strong> (600 pts).</p>
                 </header>
 
                 <div class="game-lobby" role="tablist" aria-label="Juegos">
                     <button type="button" role="tab" aria-selected="true" onclick="cambiarJuegoArcade('trivia')" id="tab-juego-trivia" class="game-lobby-card is-active">
-                        <span class="game-lobby-num" aria-hidden="true">01</span>
-                        <i class="fa-solid fa-brain" aria-hidden="true"></i>
+                        <span class="game-lobby-num" aria-hidden="true">🧠</span>
                         <strong>Trivia</strong>
                         <span>10 preguntas del informe</span>
+                        <em class="lobby-pts" id="lobby-pts-trivia">0 / 450</em>
                     </button>
                     <button type="button" role="tab" aria-selected="false" onclick="cambiarJuegoArcade('memorama')" id="tab-juego-memorama" class="game-lobby-card">
-                        <span class="game-lobby-num" aria-hidden="true">02</span>
-                        <i class="fa-solid fa-clone" aria-hidden="true"></i>
+                        <span class="game-lobby-num" aria-hidden="true">🃏</span>
                         <strong>Memorama</strong>
                         <span>Encuentra 6 pares</span>
+                        <em class="lobby-pts" id="lobby-pts-memorama">0 / 150</em>
                     </button>
                     <button type="button" role="tab" aria-selected="false" onclick="cambiarJuegoArcade('ruta')" id="tab-juego-ruta" class="game-lobby-card">
-                        <span class="game-lobby-num" aria-hidden="true">03</span>
-                        <i class="fa-solid fa-route" aria-hidden="true"></i>
+                        <span class="game-lobby-num" aria-hidden="true">🧭</span>
                         <strong>Ruta</strong>
-                        <span>Ordena el viaje</span>
+                        <span>Ordena la historia</span>
+                        <em class="lobby-pts" id="lobby-pts-ruta">0 / 100</em>
                     </button>
                     <button type="button" role="tab" aria-selected="false" onclick="cambiarJuegoArcade('regiones')" id="tab-juego-regiones" class="game-lobby-card">
-                        <span class="game-lobby-num" aria-hidden="true">04</span>
-                        <i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+                        <span class="game-lobby-num" aria-hidden="true">🗺️</span>
                         <strong>Regiones</strong>
                         <span>Clasifica el dato</span>
+                        <em class="lobby-pts" id="lobby-pts-regiones">0 / 120</em>
                     </button>
                 </div>
 
@@ -749,7 +789,7 @@
                      JUEGO 1: TRIVIA ACADÉMICA (HOOK #quiz-container)
                      ============================================================== -->
                 <div id="juego-vista-trivia" class="space-y-6">
-                    <div id="quiz-container" class="bg-slate-900/90 rounded-2xl p-6 sm:p-8 border border-slate-700">
+                    <div id="quiz-container" class="game-board">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4 text-xs">
                     <span class="font-bold text-yellow-400 uppercase tracking-wider">Pregunta 1 de 10</span>
                     <div class="flex items-center gap-3">
@@ -1133,8 +1173,13 @@
     <!-- Enlace a tu script interactivo en VS Code -->
     <div id="qr-hero-box" data-qr class="oculto" aria-hidden="true"></div>
     <button type="button" id="btn-subir" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <canvas id="confeti" class="oculto" aria-hidden="true"></canvas>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="banco.js"></script>
     <script src="codigo.js"></script>
+    <script src="extras.js"></script>
 
     <div id="modal-galeria" class="fixed inset-0 z-[70] bg-slate-950/90 backdrop-blur-sm oculto flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="galeria-caption">
         <button type="button" class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20" onclick="cerrarGaleria()" aria-label="Cerrar galería"><i class="fa-solid fa-xmark"></i></button>
