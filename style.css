@@ -107,7 +107,8 @@
 
         .btn-hero-primary,
         .btn-hero-ghost,
-        .btn-hero-ig {
+        .btn-hero-ig,
+        .btn-hero-tt {
             display: inline-flex;
             align-items: center;
             gap: 0.55rem;
@@ -143,7 +144,17 @@
 
         .btn-hero-ig:hover { transform: translateY(-2px); filter: brightness(1.08); }
 
-        .btn-ig-nav {
+        .btn-hero-tt {
+            background: #010101;
+            color: #fff;
+            border: 1px solid rgba(37, 244, 238, 0.45);
+            box-shadow: 0 12px 28px rgba(254, 44, 85, 0.22);
+        }
+
+        .btn-hero-tt:hover { transform: translateY(-2px); filter: brightness(1.12); }
+
+        .btn-ig-nav,
+        .btn-tt-nav {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
@@ -153,12 +164,22 @@
             font-weight: 700;
             font-size: 0.75rem;
             color: #fff;
-            background: linear-gradient(135deg, #c026d3 0%, #db2777 45%, #f59e0b 100%);
-            box-shadow: 0 8px 18px rgba(192, 38, 211, 0.25);
             transition: filter var(--motion-fast) ease, transform var(--motion-fast) ease;
         }
 
-        .btn-ig-nav:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-ig-nav {
+            background: linear-gradient(135deg, #c026d3 0%, #db2777 45%, #f59e0b 100%);
+            box-shadow: 0 8px 18px rgba(192, 38, 211, 0.25);
+        }
+
+        .btn-tt-nav {
+            background: #010101;
+            border: 1px solid rgba(37, 244, 238, 0.4);
+            box-shadow: 0 8px 18px rgba(254, 44, 85, 0.2);
+        }
+
+        .btn-ig-nav:hover,
+        .btn-tt-nav:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
         .hero-strip {
             border-top: 1px solid rgba(255, 255, 255, 0.12);
@@ -2377,7 +2398,8 @@
   .hero-ecuador .flex.flex-wrap { gap: 0.55rem; }
   .btn-hero-primary,
   .btn-hero-ghost,
-  .btn-hero-ig { width: 100%; justify-content: center; }
+  .btn-hero-ig,
+  .btn-hero-tt { width: 100%; justify-content: center; }
 
   .hito-ficha, .prov-ficha { margin-top: 0.7rem; padding: 0.85rem 0.9rem; }
   .hito-ficha h4 { font-size: 1.12rem; }
