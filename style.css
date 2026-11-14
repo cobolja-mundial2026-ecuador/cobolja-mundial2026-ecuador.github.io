@@ -108,7 +108,8 @@
         .btn-hero-primary,
         .btn-hero-ghost,
         .btn-hero-ig,
-        .btn-hero-tt {
+        .btn-hero-tt,
+        .btn-hero-como {
             display: inline-flex;
             align-items: center;
             gap: 0.55rem;
@@ -2399,7 +2400,8 @@
   .btn-hero-primary,
   .btn-hero-ghost,
   .btn-hero-ig,
-  .btn-hero-tt { width: 100%; justify-content: center; }
+  .btn-hero-tt,
+  .btn-hero-como { width: 100%; justify-content: center; }
 
   .hito-ficha, .prov-ficha { margin-top: 0.7rem; padding: 0.85rem 0.9rem; }
   .hito-ficha h4 { font-size: 1.12rem; }
@@ -2461,4 +2463,342 @@
 .ruta-ar button:hover:not(:disabled) {
   background: #FFDD00 !important;
   color: #0A1931 !important;
+}
+/* ===== Cómo se hizo — presentación exposición ===== */
+.btn-hero-primary,
+.btn-hero-ghost,
+.btn-hero-ig,
+.btn-hero-tt,
+.btn-hero-como {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.75rem 1.2rem;
+  border-radius: 0.9rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+  transition: transform var(--motion-fast) ease, background var(--motion-base) ease, border-color var(--motion-base) ease, filter var(--motion-fast) ease;
+}
+
+.btn-hero-como {
+  background: linear-gradient(135deg, #FFDD00 0%, #F5C400 100%);
+  color: #0A1931;
+  box-shadow: 0 12px 28px rgba(255, 221, 0, 0.28);
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+.btn-hero-como:hover { transform: translateY(-2px); filter: brightness(1.06); }
+
+.btn-como-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 0.85rem;
+  border-radius: 0.75rem;
+  font-weight: 800;
+  font-size: 0.72rem;
+  color: #0A1931;
+  background: #FFDD00;
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(255, 221, 0, 0.28);
+  transition: filter var(--motion-fast) ease, transform var(--motion-fast) ease;
+}
+.btn-como-nav:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+.como-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(255, 221, 0, 0.18), transparent 45%),
+    radial-gradient(ellipse at 90% 100%, rgba(239, 51, 64, 0.16), transparent 40%),
+    rgba(5, 12, 28, 0.92);
+  backdrop-filter: blur(14px);
+}
+.como-modal.oculto { display: none !important; }
+
+.como-stage {
+  width: min(1120px, 100%);
+  max-height: min(94vh, 100dvh - 24px);
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  background: #071126;
+  border: 1px solid rgba(255, 221, 0, 0.28);
+  border-radius: 1.35rem;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  color: #fff;
+}
+
+.como-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1.15rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.como-brand { display: flex; align-items: center; gap: 0.85rem; min-width: 0; }
+.como-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 221, 0, 0.14);
+  color: #FFDD00;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.como-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #93A4C3;
+  font-weight: 700;
+}
+.como-top h2 {
+  margin: 0.1rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+.como-top-actions { display: flex; align-items: center; gap: 0.5rem; }
+.como-auto-btn,
+.como-cerrar {
+  min-height: 42px;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: #E8EEF8;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-weight: 800;
+  font-size: 0.78rem;
+  padding: 0 0.85rem;
+}
+.como-cerrar { width: 42px; padding: 0; }
+.como-auto-btn[aria-pressed="true"] {
+  background: rgba(255, 221, 0, 0.18);
+  border-color: rgba(255, 221, 0, 0.45);
+  color: #FFDD00;
+}
+.como-auto-btn:hover,
+.como-cerrar:hover { background: rgba(255,255,255,0.12); }
+
+.como-progreso {
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+}
+.como-progreso i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #FFDD00, #EF3340);
+  transition: width 0.45s ease;
+}
+
+.como-cuerpo {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.como-visual {
+  margin: 0;
+  position: relative;
+  background:
+    linear-gradient(145deg, #0d1a33 0%, #122447 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.como-visual img {
+  width: 100%;
+  height: 100%;
+  max-height: min(58vh, 520px);
+  object-fit: contain;
+  border-radius: 0.85rem;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+  transform: scale(1.02);
+  opacity: 0;
+  transition: opacity 0.45s ease, transform 0.7s ease;
+}
+.como-visual img.como-img-in {
+  opacity: 1;
+  transform: scale(1);
+}
+.como-texto {
+  padding: 1.25rem 1.35rem 1rem;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #0a152b 0%, #071126 100%);
+  border-left: 1px solid rgba(255,255,255,0.08);
+}
+.como-paso {
+  margin: 0 0 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FFDD00;
+}
+.como-texto h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #fff;
+}
+.como-lead {
+  margin: 0.75rem 0 0;
+  color: #C5D2E8;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.como-puntos {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+.como-puntos li {
+  position: relative;
+  padding: 0.7rem 0.85rem 0.7rem 2.15rem;
+  border-radius: 0.75rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #E8EEF8;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: comoPuntoIn 0.45s ease forwards;
+}
+.como-puntos li::before {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  top: 0.95rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #FFDD00;
+  box-shadow: 0 0 0 4px rgba(255, 221, 0, 0.15);
+}
+.como-herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+.como-herramientas span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(0, 51, 160, 0.35);
+  border: 1px solid rgba(255, 221, 0, 0.25);
+  color: #FFE566;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.como-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.25);
+}
+.como-nav-btn {
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.84rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.como-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.12); }
+.como-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.como-nav-next {
+  background: #FFDD00;
+  color: #0A1931;
+  border-color: transparent;
+}
+.como-nav-next:hover:not(:disabled) { filter: brightness(1.06); background: #FFDD00; }
+.como-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  max-width: 46%;
+}
+.como-dots button {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  background: rgba(255,255,255,0.28);
+  cursor: pointer;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+.como-dots button[aria-selected="true"] {
+  width: 22px;
+  background: #FFDD00;
+}
+
+@keyframes comoPuntoIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .como-cuerpo { grid-template-columns: 1fr; grid-template-rows: minmax(180px, 38vh) 1fr; }
+  .como-texto { border-left: 0; border-top: 1px solid rgba(255,255,255,0.08); }
+  .como-visual img { max-height: 34vh; }
+  .como-dots { max-width: none; flex: 1; }
+}
+
+@media (max-width: 640px) {
+  .btn-hero-como { width: 100%; justify-content: center; }
+  .como-top { flex-wrap: wrap; }
+  .como-nav { flex-wrap: wrap; }
+  .como-nav-btn { flex: 1 1 calc(50% - 0.4rem); justify-content: center; }
+  .como-dots { order: 3; flex: 1 1 100%; max-width: none; margin-top: 0.25rem; }
+  .como-auto-btn span,
+  .como-nav-btn { font-size: 0.8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .como-visual img,
+  .como-progreso i,
+  .como-dots button { transition: none !important; }
+  .como-puntos li { animation: none !important; opacity: 1; transform: none; }
 }

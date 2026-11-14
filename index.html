@@ -47,6 +47,9 @@
                     <a href="https://www.tiktok.com/@ecuavita_fresh?_r=1&_t=ZS-9BNNMKpgt7Q" target="_blank" rel="noopener noreferrer" class="nav-tool-btn" aria-label="Abrir TikTok @ecuavita_fresh">
                         <i class="fa-brands fa-tiktok" aria-hidden="true"></i> TikTok
                     </a>
+                    <button type="button" onclick="abrirComoSeHizo(); cerrarMenu();" class="nav-tool-btn" aria-label="Ver cómo se hizo este stand">
+                        <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Cómo se hizo
+                    </button>
                     <button type="button" onclick="abrirModalQRInstagram(); cerrarMenu();" class="nav-tool-btn" aria-label="Mostrar QR de Instagram">
                         <i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR Instagram
                     </button>
@@ -78,6 +81,10 @@
                 <a href="https://www.tiktok.com/@ecuavita_fresh?_r=1&_t=ZS-9BNNMKpgt7Q" target="_blank" rel="noopener noreferrer" class="btn-tt-nav nav-desktop-only" aria-label="Abrir TikTok @ecuavita_fresh">
                     <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
                 </a>
+                <button type="button" onclick="abrirComoSeHizo()" class="btn-como-nav nav-desktop-only" aria-label="Ver cómo se hizo este stand">
+                    <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+                    <span>Cómo se hizo</span>
+                </button>
                 <button type="button" onclick="abrirModalQR()" class="nav-qr-btn nav-desktop-only" aria-label="Mostrar QR del stand">
                     <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
                     <span>QR</span>
@@ -109,6 +116,7 @@
                     <a href="#zona-arcade" class="btn-hero-ghost"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> Ir a los juegos</a>
                     <a href="https://www.instagram.com/ecuavita_fresh?vrfl=eWlkdGN5cW9ocHl5" target="_blank" rel="noopener noreferrer" class="btn-hero-ig"><i class="fa-brands fa-instagram" aria-hidden="true"></i> Instagram</a>
                     <a href="https://www.tiktok.com/@ecuavita_fresh?_r=1&_t=ZS-9BNNMKpgt7Q" target="_blank" rel="noopener noreferrer" class="btn-hero-tt"><i class="fa-brands fa-tiktok" aria-hidden="true"></i> TikTok</a>
+                    <button type="button" onclick="abrirComoSeHizo()" class="btn-hero-como"><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Cómo se hizo</button>
                     <button type="button" onclick="abrirModalQRInstagram()" class="btn-hero-ghost"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR Instagram</button>
                     <button type="button" onclick="abrirModalQR()" class="btn-hero-ghost"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR del stand</button>
                 </div>
@@ -1081,6 +1089,9 @@
                     <a href="https://www.tiktok.com/@ecuavita_fresh?_r=1&_t=ZS-9BNNMKpgt7Q" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-4 py-2 rounded-xl bg-black text-white text-xs font-bold flex items-center gap-2 border border-cyan-400/40 hover:bg-slate-950 transition">
                         <i class="fa-brands fa-tiktok" aria-hidden="true"></i> TikTok
                     </a>
+                    <button type="button" onclick="abrirComoSeHizo()" class="min-h-[44px] px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 text-xs font-bold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Cómo se hizo
+                    </button>
                     <button type="button" onclick="abrirModalQRInstagram()" class="min-h-[44px] px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-pink-300 text-xs font-bold border border-slate-800 transition">
                         <i class="fa-solid fa-qrcode mr-1" aria-hidden="true"></i> QR Instagram
                     </button>
@@ -1139,6 +1150,54 @@
                 <i class="fa-brands fa-instagram" aria-hidden="true"></i> Abrir perfil
             </a>
             <p class="text-xs text-slate-500 mt-3 break-all">instagram.com/ecuavita_fresh</p>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         CÓMO SE HIZO — Presentación del proceso (exposición)
+         ========================================================================== -->
+    <div id="modal-como-se-hizo" class="como-modal oculto" role="dialog" aria-modal="true" aria-labelledby="como-titulo">
+        <div class="como-stage" role="document">
+            <header class="como-top">
+                <div class="como-brand">
+                    <span class="como-pill"><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Exposición</span>
+                    <div>
+                        <p class="como-kicker">Stand digital Ecuador · COBOLJA 2026</p>
+                        <h2 id="como-titulo">Cómo se hizo</h2>
+                    </div>
+                </div>
+                <div class="como-top-actions">
+                    <button type="button" id="como-auto" class="como-auto-btn" aria-pressed="false" title="Reproducción automática">
+                        <i class="fa-solid fa-play" aria-hidden="true"></i> Auto
+                    </button>
+                    <button type="button" class="como-cerrar" onclick="cerrarComoSeHizo()" aria-label="Cerrar presentación">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </header>
+            <div class="como-progreso" aria-hidden="true"><i id="como-barra"></i></div>
+            <div class="como-cuerpo">
+                <figure class="como-visual">
+                    <img id="como-img" src="media/como-se-hizo/01-portada.png" alt="" decoding="async">
+                    <figcaption id="como-cap" class="sr-only"></figcaption>
+                </figure>
+                <div class="como-texto">
+                    <p class="como-paso" id="como-paso">Paso 1 de 11</p>
+                    <h3 id="como-slide-titulo">Stand digital Ecuador</h3>
+                    <p id="como-slide-lead" class="como-lead"></p>
+                    <ul id="como-slide-puntos" class="como-puntos"></ul>
+                    <div class="como-herramientas" id="como-herramientas" hidden></div>
+                </div>
+            </div>
+            <footer class="como-nav">
+                <button type="button" id="como-prev" class="como-nav-btn" aria-label="Diapositiva anterior">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Anterior
+                </button>
+                <div id="como-dots" class="como-dots" role="tablist" aria-label="Diapositivas"></div>
+                <button type="button" id="como-next" class="como-nav-btn como-nav-next" aria-label="Diapositiva siguiente">
+                    Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </footer>
         </div>
     </div>
 

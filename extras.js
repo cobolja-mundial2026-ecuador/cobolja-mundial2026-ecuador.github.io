@@ -966,12 +966,343 @@ function iniciarExtras() {
   }
 }
 
+/* =========================================================================
+   CÓMO SE HIZO — presentación para la exposición
+   ========================================================================= */
+const COMO_SLIDES = [
+  {
+    img: 'media/como-se-hizo/01-portada.png',
+    titulo: 'Así nació este stand digital',
+    lead: 'Esta página no es magia: es un sitio web construido con herramientas claras y publicado gratis en Internet para la feria COBOLJA.',
+    puntos: [
+      'Sirve para mostrar Ecuador: mapa, informe, sabores, multimedia y juegos.',
+      'Cualquier visitante puede abrirlo desde el celular o el computador.',
+      'En esta explicación verás el proceso paso a paso, con palabras sencillas.'
+    ],
+    tools: ['HTML', 'CSS', 'JavaScript', 'GitHub Pages']
+  },
+  {
+    img: 'media/como-se-hizo/captura-hero.png',
+    titulo: 'Primero se ve así el resultado',
+    lead: 'Antes de hablar de código, mira el producto: una portada con la identidad de Ecuador y botones para empezar el recorrido.',
+    puntos: [
+      'Colores de la bandera: amarillo, azul y rojo.',
+      'Un menú que guía por mapa, informe, sabores y juegos.',
+      'Botones a Instagram, TikTok y esta misma explicación.'
+    ],
+    tools: ['Diseño visual', 'Identidad Ecuador']
+  },
+  {
+    img: 'media/como-se-hizo/02-analogia-casa.png',
+    titulo: 'Piensa el sitio como una casa',
+    lead: 'Para entenderlo fácil: cada tecnología cumple un rol, igual que en una construcción.',
+    puntos: [
+      'HTML = ladrillos y paredes: define qué hay (textos, botones, mapa, fotos).',
+      'CSS = pintura y decoración: colores, tamaños y movimiento.',
+      'JavaScript = electricidad: hace que funcionen juegos, mapa, QR y menú.'
+    ],
+    tools: ['HTML', 'CSS', 'JavaScript']
+  },
+  {
+    img: 'media/como-se-hizo/03-tres-archivos.png',
+    titulo: 'Tres archivos principales',
+    lead: 'Casi todo el stand vive en pocos archivos fáciles de explicar en la exposición.',
+    puntos: [
+      'index.html: la estructura de cada sección.',
+      'style.css: el look & feel del portal.',
+      'codigo.js + extras.js + banco.js: datos, juegos y pasaporte.'
+    ],
+    tools: ['index.html', 'style.css', 'codigo.js']
+  },
+  {
+    img: 'media/como-se-hizo/04-tecnologias.png',
+    titulo: 'Herramientas usadas (en palabras simples)',
+    lead: 'Cada herramienta resolvió un problema concreto. Nada sobra.',
+    puntos: [
+      'HTML5, CSS3 y Tailwind para armar y embellecer rápido.',
+      'JavaScript para interactividad; Font Awesome para íconos.',
+      'QRCode.js crea códigos QR; Cursor/VS Code es donde se escribe.',
+      'Git + GitHub guardan versiones; GitHub Pages publica el sitio.'
+    ],
+    tools: ['Tailwind', 'Font Awesome', 'QRCode.js', 'Cursor', 'GitHub']
+  },
+  {
+    img: 'media/como-se-hizo/05-flujo-pasos.png',
+    titulo: 'Del cuaderno a Internet',
+    lead: 'El procedimiento completo, del borrador al enlace público.',
+    puntos: [
+      'Idea y diseño con secciones claras.',
+      'Código en el editor, prueba local y correcciones.',
+      'Subida a GitHub, activación de Pages, enlace + QR y mejoras.'
+    ],
+    tools: ['Proceso', 'Prueba local', 'Publicación']
+  },
+  {
+    img: 'media/como-se-hizo/captura-mapa-full.png',
+    titulo: 'Un ejemplo: el mapa interactivo',
+    lead: 'El mapa muestra cómo se combinan los tres lenguajes: dibujo SVG, estilos y lógica al tocar provincias, ciudades e hitos.',
+    puntos: [
+      'Las provincias vienen de un SVG real de Ecuador.',
+      'JavaScript coloca ciudades e hitos y abre fichas claras.',
+      'Hay capas para que nombres y puntos no se choquen.'
+    ],
+    tools: ['SVG', 'JavaScript', 'CSS']
+  },
+  {
+    img: 'media/como-se-hizo/06-github-pages.png',
+    titulo: 'Publicar gratis con GitHub Pages',
+    lead: 'Cuando el sitio funciona en tu computador, se sube a GitHub y Pages lo deja visible para todo el mundo.',
+    puntos: [
+      'No hace falta pagar hosting para este stand escolar.',
+      'Cada mejora se vuelve a subir y el enlace se actualiza.',
+      'El QR del stand apunta a esa misma URL pública.'
+    ],
+    tools: ['GitHub Pages', 'URL pública', 'QR']
+  },
+  {
+    img: 'media/como-se-hizo/07-secciones-stand.png',
+    titulo: 'Qué contiene el recorrido',
+    lead: 'El visitante no ve “código”: ve una feria digital con paradas claras.',
+    puntos: [
+      'Mapa, historia e informe descargable en PDF.',
+      'Sabores, multimedia (audio, video, galería).',
+      'Zona arcade con juegos y un pasaporte de visitante.'
+    ],
+    tools: ['Mapa', 'Informe', 'Juegos', 'Pasaporte']
+  },
+  {
+    img: 'media/como-se-hizo/08-git-github.png',
+    titulo: 'Git y GitHub: memoria del proyecto',
+    lead: 'Git guarda versiones. GitHub las guarda en la nube para trabajar con seguridad y mostrar el avance.',
+    puntos: [
+      'Si algo falla, se puede volver a una versión anterior.',
+      'El historial demuestra el trabajo hecho para la feria.',
+      'Desde el mismo repositorio se publica el stand.'
+    ],
+    tools: ['Git', 'GitHub', 'Historial']
+  },
+  {
+    img: 'media/como-se-hizo/10-resumen.png',
+    titulo: 'Resumen para la exposición',
+    lead: 'En una frase: diseñamos, programamos, probamos y publicamos un stand de Ecuador que cualquiera puede abrir hoy.',
+    puntos: [
+      'HTML estructura, CSS embellece, JavaScript da vida.',
+      'Cursor/VS Code para escribir; GitHub Pages para publicar.',
+      'El botón “Cómo se hizo” existe para explicarlo frente al público.'
+    ],
+    tools: ['Exposición', 'Lenguaje claro', 'Stand en vivo']
+  }
+];
+
+let comoIndice = 0;
+let comoTimer = null;
+let comoAuto = false;
+
+function comoReducirMovimiento() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function pintarSlideComo(i, { animate = true } = {}) {
+  const slide = COMO_SLIDES[i];
+  if (!slide) return;
+  comoIndice = i;
+
+  const img = document.getElementById('como-img');
+  const titulo = document.getElementById('como-slide-titulo');
+  const lead = document.getElementById('como-slide-lead');
+  const puntos = document.getElementById('como-slide-puntos');
+  const tools = document.getElementById('como-herramientas');
+  const paso = document.getElementById('como-paso');
+  const barra = document.getElementById('como-barra');
+  const prev = document.getElementById('como-prev');
+  const next = document.getElementById('como-next');
+  const cap = document.getElementById('como-cap');
+
+  if (paso) paso.textContent = `Paso ${i + 1} de ${COMO_SLIDES.length}`;
+  if (barra) barra.style.width = `${((i + 1) / COMO_SLIDES.length) * 100}%`;
+  if (titulo) titulo.textContent = slide.titulo;
+  if (lead) lead.textContent = slide.lead;
+  if (cap) cap.textContent = slide.titulo;
+
+  if (puntos) {
+    puntos.innerHTML = slide.puntos.map((t, n) =>
+      `<li style="animation-delay:${comoReducirMovimiento() || !animate ? '0ms' : `${120 + n * 90}ms`}">${t}</li>`
+    ).join('');
+  }
+
+  if (tools) {
+    if (slide.tools && slide.tools.length) {
+      tools.hidden = false;
+      tools.innerHTML = slide.tools.map((t) => `<span>${t}</span>`).join('');
+    } else {
+      tools.hidden = true;
+      tools.innerHTML = '';
+    }
+  }
+
+  if (img) {
+    img.classList.remove('como-img-in');
+    const aplicar = () => {
+      img.src = slide.img;
+      img.alt = slide.titulo;
+      requestAnimationFrame(() => img.classList.add('como-img-in'));
+    };
+    if (animate && !comoReducirMovimiento()) {
+      setTimeout(aplicar, 80);
+    } else {
+      aplicar();
+    }
+  }
+
+  document.querySelectorAll('#como-dots button').forEach((btn, n) => {
+    btn.setAttribute('aria-selected', n === i ? 'true' : 'false');
+  });
+
+  if (prev) prev.disabled = i === 0;
+  if (next) {
+    next.disabled = false;
+    next.innerHTML = i === COMO_SLIDES.length - 1
+      ? 'Cerrar <i class="fa-solid fa-check" aria-hidden="true"></i>'
+      : 'Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
+  }
+}
+
+function montarDotsComo() {
+  const caja = document.getElementById('como-dots');
+  if (!caja) return;
+  caja.innerHTML = COMO_SLIDES.map((_, n) =>
+    `<button type="button" role="tab" aria-label="Ir al paso ${n + 1}" aria-selected="${n === 0 ? 'true' : 'false'}"></button>`
+  ).join('');
+  Array.from(caja.children).forEach((btn, n) => {
+    btn.addEventListener('click', () => {
+      detenerAutoComo();
+      pintarSlideComo(n);
+      try { if (typeof reproducirSonido === 'function') reproducirSonido('clic'); } catch (e) { /* ignore */ }
+    });
+  });
+}
+
+function detenerAutoComo() {
+  comoAuto = false;
+  if (comoTimer) {
+    clearInterval(comoTimer);
+    comoTimer = null;
+  }
+  const btn = document.getElementById('como-auto');
+  if (btn) {
+    btn.setAttribute('aria-pressed', 'false');
+    btn.innerHTML = '<i class="fa-solid fa-play" aria-hidden="true"></i> Auto';
+  }
+}
+
+function iniciarAutoComo() {
+  detenerAutoComo();
+  comoAuto = true;
+  const btn = document.getElementById('como-auto');
+  if (btn) {
+    btn.setAttribute('aria-pressed', 'true');
+    btn.innerHTML = '<i class="fa-solid fa-pause" aria-hidden="true"></i> Pausa';
+  }
+  comoTimer = setInterval(() => {
+    if (comoIndice >= COMO_SLIDES.length - 1) {
+      detenerAutoComo();
+      return;
+    }
+    pintarSlideComo(comoIndice + 1);
+  }, 5200);
+}
+
+function abrirComoSeHizo() {
+  const modal = document.getElementById('modal-como-se-hizo');
+  if (!modal) return;
+  try { if (typeof reproducirSonido === 'function') reproducirSonido('clic'); } catch (e) { /* ignore */ }
+  try { if (typeof recordarFoco === 'function') recordarFoco(); } catch (e) { /* ignore */ }
+  montarDotsComo();
+  modal.classList.remove('oculto');
+  document.body.classList.add('modal-abierto');
+  pintarSlideComo(0, { animate: true });
+  const cierre = modal.querySelector('.como-cerrar');
+  if (cierre) cierre.focus();
+}
+
+function cerrarComoSeHizo() {
+  detenerAutoComo();
+  const modal = document.getElementById('modal-como-se-hizo');
+  if (modal) modal.classList.add('oculto');
+  try {
+    if (typeof capaAbierta === 'function') {
+      document.body.classList.toggle('modal-abierto', capaAbierta());
+    } else {
+      document.body.classList.remove('modal-abierto');
+    }
+  } catch (e) {
+    document.body.classList.remove('modal-abierto');
+  }
+  try { if (typeof restaurarFoco === 'function') restaurarFoco(); } catch (e) { /* ignore */ }
+}
+
+function cablearComoSeHizo() {
+  const prev = document.getElementById('como-prev');
+  const next = document.getElementById('como-next');
+  const auto = document.getElementById('como-auto');
+  const modal = document.getElementById('modal-como-se-hizo');
+  if (prev) {
+    prev.addEventListener('click', () => {
+      if (comoIndice <= 0) return;
+      detenerAutoComo();
+      pintarSlideComo(comoIndice - 1);
+    });
+  }
+  if (next) {
+    next.addEventListener('click', () => {
+      if (comoIndice >= COMO_SLIDES.length - 1) {
+        cerrarComoSeHizo();
+        return;
+      }
+      detenerAutoComo();
+      pintarSlideComo(comoIndice + 1);
+    });
+  }
+  if (auto) {
+    auto.addEventListener('click', () => {
+      if (comoAuto) detenerAutoComo();
+      else iniciarAutoComo();
+    });
+  }
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) cerrarComoSeHizo();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    const m = document.getElementById('modal-como-se-hizo');
+    if (!m || m.classList.contains('oculto')) return;
+    if (e.key === 'Escape') {
+      cerrarComoSeHizo();
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (comoIndice < COMO_SLIDES.length - 1) pintarSlideComo(comoIndice + 1);
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (comoIndice > 0) pintarSlideComo(comoIndice - 1);
+    }
+  });
+}
+
 window.abrirBienvenidaNombre = abrirBienvenidaNombre;
 window.abrirEditarNombre = abrirEditarNombre;
 window.abrirEditarFoto = abrirEditarFoto;
 window.abrirPasaporte = abrirPasaporte;
+window.abrirComoSeHizo = abrirComoSeHizo;
+window.cerrarComoSeHizo = cerrarComoSeHizo;
 
 document.addEventListener('DOMContentLoaded', () => {
   // Deja que codigo.js monte primero; luego refuerza UI
-  setTimeout(iniciarExtras, 80);
+  setTimeout(() => {
+    iniciarExtras();
+    cablearComoSeHizo();
+  }, 80);
 });

@@ -2250,7 +2250,7 @@
         const URL_INSTAGRAM = 'https://www.instagram.com/ecuavita_fresh?vrfl=eWlkdGN5cW9ocHl5';
 
         function capaAbierta() {
-            return ['modal-qr', 'modal-qr-instagram', 'modal-vscode', 'modal-ficha-culinaria'].some((id) => {
+            return ['modal-qr', 'modal-qr-instagram', 'modal-vscode', 'modal-ficha-culinaria', 'modal-como-se-hizo'].some((id) => {
                 const nodo = document.getElementById(id);
                 return nodo && !nodo.classList.contains('oculto');
             });
@@ -2440,6 +2440,7 @@
                 cerrarModalCulinario();
                 cerrarModalVSCode();
                 cerrarGaleria();
+                if (typeof cerrarComoSeHizo === 'function') cerrarComoSeHizo();
                 cerrarMenu();
                 detenerNarracion();
                 detenerAmbiente();
