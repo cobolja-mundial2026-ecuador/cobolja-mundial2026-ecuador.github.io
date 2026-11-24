@@ -1467,6 +1467,7 @@
                 colorGradiente: "from-amber-500 to-yellow-600",
                 foto: "media/sabor-patacones.jpg",
                 fotoAlt: "Patacones de plátano verde",
+                video: "https://www.youtube.com/watch?v=rjE9GzoZpm8",
                 resumenFrontal: "Obra de ingeniería culinaria popular del Pacífico ecuatorial basada en el plátano Barraganete (Musa AAB) en Grado 1 de maduración (>22% almidón), transformado mediante doble fritura y majado mecánico en caliente.",
                 puntosReverso: [
                     "<strong>Etimología:</strong> Del árabe <em>batakká</em> e italiano <em>patacca</em> (monedas coloniales de plata de 8 reales).",
@@ -1511,6 +1512,7 @@
                 colorGradiente: "from-emerald-600 to-teal-800",
                 foto: "media/sabor-maracuya.jpg",
                 fotoAlt: "Jugo de maracuyá",
+                video: "https://www.youtube.com/watch?v=KHWBNvcn5fI",
                 resumenFrontal: "El refresco insignia de la comensalidad ecuatoriana elaborado con Passiflora edulis f. flavicarpa (clon INIAP-2009), reconocido mundialmente por su alta concentración de ésteres aromáticos y acidez cítrica brillante.",
                 puntosReverso: [
                     "<strong>Selección Grado 5:</strong> Frutos amarillos pesados con cáscara ligeramente arrugada (14° a 16° Brix internos).",
@@ -1539,7 +1541,7 @@
         function renderizarFlipCardsGastronomia() {
             const contenedor = document.getElementById('contenedor-flip-cards');
             contenedor.innerHTML = platosGourmet.map(plato => `
-                <div class="flip-card" onclick="if(!event.target.closest('button')) alternarTarjetaSabores(this)">
+                <div class="flip-card" onclick="if(!event.target.closest('button, a')) alternarTarjetaSabores(this)">
                     <div class="flip-card-inner">
                         <!-- CARA FRONTAL -->
                         <div class="flip-card-front flex flex-col justify-between">
@@ -1574,9 +1576,12 @@
                                     ${plato.puntosReverso.map(p => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-yellow-400 mt-1"></i><span>${p}</span></li>`).join('')}
                                 </ul>
                             </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button type="button" onclick="event.stopPropagation(); alternarTarjetaSabores(this.closest('.flip-card'))" class="min-h-[44px] rounded-xl bg-slate-800 text-white font-bold text-xs">Volver</button>
-                                <button type="button" onclick="event.stopPropagation(); abrirModalCulinario('${plato.id}')" class="min-h-[44px] rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-titulo font-extrabold text-xs transition">Ver ficha</button>
+                            <div class="sabor-acciones">
+                                ${plato.video ? `<a class="btn-sabor-yt" href="${plato.video}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"><i class="fa-brands fa-youtube" aria-hidden="true"></i> Ver video</a>` : ''}
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" onclick="event.stopPropagation(); alternarTarjetaSabores(this.closest('.flip-card'))" class="min-h-[44px] rounded-xl bg-slate-800 text-white font-bold text-xs">Volver</button>
+                                    <button type="button" onclick="event.stopPropagation(); abrirModalCulinario('${plato.id}')" class="min-h-[44px] rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-titulo font-extrabold text-xs transition">Ver ficha</button>
+                                </div>
                             </div>
                         </div>
                     </div>

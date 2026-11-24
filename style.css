@@ -674,12 +674,37 @@
         }
 
         .flip-card {
-            height: 560px;
+            height: 600px;
         }
 
         .flip-card-back {
             overflow-y: auto;
         }
+
+        .sabor-acciones {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.85rem;
+        }
+
+        .btn-sabor-yt {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            width: 100%;
+            min-height: 44px;
+            padding: 0 0.85rem;
+            border-radius: 0.75rem;
+            background: #FF0000;
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .btn-sabor-yt:hover { filter: brightness(1.08); color: #fff; }
 
         .sabor-hero {
             position: relative;
@@ -1832,12 +1857,12 @@
             transform: none;
         }
 
-        .flip-card { height: 560px; }
+        .flip-card { height: 600px; }
 
         @media (max-width: 640px) {
             .hero-ecuador { min-height: auto; }
             .panel-region { min-height: 0; }
-            .flip-card { height: 520px; }
+            .flip-card { height: 560px; }
             .sabor-hero { height: 180px; }
         }
 
