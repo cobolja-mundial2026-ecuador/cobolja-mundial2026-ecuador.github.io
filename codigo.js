@@ -1529,8 +1529,12 @@
             }
         ];
 
-        function alternarTarjetaSabores(tarjeta) {
-            const abierta = tarjeta.classList.toggle('volteada');
+        function alternarTarjetaSabores(tarjeta, estado) {
+            /* estado: true = mostrar reverso, false = volver al frente, sin valor = alternar */
+            const abierta = typeof estado === 'boolean' ? estado : !tarjeta.classList.contains('volteada');
+            tarjeta.classList.toggle('volteada', abierta);
+            /* Al volver, ignora el hover del mouse hasta que salga de la tarjeta */
+            tarjeta.classList.toggle('sin-hover', !abierta);
             const frente = tarjeta.querySelector('.flip-card-front');
             const reverso = tarjeta.querySelector('.flip-card-back');
             if (frente) frente.toggleAttribute('inert', abierta);
@@ -1541,7 +1545,7 @@
         function renderizarFlipCardsGastronomia() {
             const contenedor = document.getElementById('contenedor-flip-cards');
             contenedor.innerHTML = platosGourmet.map(plato => `
-                <div class="flip-card" onclick="if(!event.target.closest('button, a')) alternarTarjetaSabores(this)">
+                <div class="flip-card" onmouseleave="this.classList.remove('sin-hover')" onclick="if(!event.target.closest('button, a')) alternarTarjetaSabores(this)">
                     <div class="flip-card-inner">
                         <!-- CARA FRONTAL -->
                         <div class="flip-card-front flex flex-col justify-between">
@@ -1559,7 +1563,7 @@
                                 </div>
                             </div>
                             <div class="px-4 sm:px-5 pb-4 flex items-center justify-between gap-2 text-xs font-bold text-blue-700 border-t border-slate-100 pt-3">
-                                <button type="button" class="min-h-[44px] px-3 rounded-lg bg-blue-50 text-blue-800" onclick="event.stopPropagation(); alternarTarjetaSabores(this.closest('.flip-card'))"><i class="fa-solid fa-rotate mr-1" aria-hidden="true"></i> Voltear ficha</button>
+                                <button type="button" class="min-h-[44px] px-3 rounded-lg bg-blue-50 text-blue-800" onclick="event.stopPropagation(); alternarTarjetaSabores(this.closest('.flip-card'), true)"><i class="fa-solid fa-rotate mr-1" aria-hidden="true"></i> Voltear ficha</button>
                                 <span class="px-2 py-0.5 rounded bg-yellow-100 text-amber-900">INPC / INIAP</span>
                             </div>
                         </div>
@@ -1579,7 +1583,7 @@
                             <div class="sabor-acciones">
                                 ${plato.video ? `<a class="btn-sabor-yt" href="${plato.video}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"><i class="fa-brands fa-youtube" aria-hidden="true"></i> Ver video</a>` : ''}
                                 <div class="grid grid-cols-2 gap-2">
-                                    <button type="button" onclick="event.stopPropagation(); alternarTarjetaSabores(this.closest('.flip-card'))" class="min-h-[44px] rounded-xl bg-slate-800 text-white font-bold text-xs">Volver</button>
+                                    <button type="button" onclick="event.stopPropagation(); alternarTarjetaSabores(this.closest('.flip-card'), false)" class="min-h-[44px] rounded-xl bg-slate-800 text-white font-bold text-xs">Volver</button>
                                     <button type="button" onclick="event.stopPropagation(); abrirModalCulinario('${plato.id}')" class="min-h-[44px] rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-titulo font-extrabold text-xs transition">Ver ficha</button>
                                 </div>
                             </div>

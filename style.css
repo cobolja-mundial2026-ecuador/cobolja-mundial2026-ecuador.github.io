@@ -219,9 +219,16 @@
             transform-style: preserve-3d;
         }
 
-        .flip-card:hover .flip-card-inner,
         .flip-card.volteada .flip-card-inner {
             transform: rotateY(180deg);
+        }
+
+        /* Volteo por hover solo con mouse real: en el celular el hover queda
+           "pegado" tras el toque y la tarjeta no volvía al frente con Volver. */
+        @media (hover: hover) and (pointer: fine) {
+            .flip-card:hover:not(.sin-hover) .flip-card-inner {
+                transform: rotateY(180deg);
+            }
         }
 
         .flip-card-front, .flip-card-back {
